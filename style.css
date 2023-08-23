@@ -6,7 +6,7 @@
     overflow-x: hidden;
 }
 
-p,h1,h2 {
+p, h1, h2 {
     overflow-y: hidden;
 }
 
@@ -92,7 +92,7 @@ img#imgeBitEmojie {
     text-align: center;
 }
 
-#strengths  {
+#strengths {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -139,7 +139,7 @@ img#imgeBitEmojie {
     background: linear-gradient(59deg, rgb(0, 214, 255), rgb(100, 223, 248));
 }
 
-#weakness  {
+#weakness {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -176,23 +176,34 @@ img#imgeBitEmojie {
 #slideProject {
     /*display: flex;*/
     /*flex-direction: column;*/
-    /*justify-content: space-between;*/
+    /*justify-content: flex-start;*/
 
     display: grid;
     grid-template-rows: 40px 1fr;
     grid-gap: 1vw;
+
+    min-height: 100vh;
+    height: auto;
+}
+
+#listProject {
+    margin-top: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 360px );
+    grid-gap: 50px;
+    justify-content: center;
 }
 
 .projectCard {
     position: relative;
     height: 300px;
-    width: 400px;
+    width: 350px;
     border: #eaea30 5px solid;
     border-radius: 25px;
     overflow: hidden;
 
     display: grid;
-    grid-template-rows: 40px 1fr;
+    grid-template-rows: 40px auto;
     grid-gap: 0.5rem;
 }
 
@@ -200,6 +211,9 @@ a {
     overflow: hidden;
     height: 310px;
     width: 410px;
+
+    text-decoration: none;
+    color: unset;
 }
 
 .projectCard h2 {
@@ -208,7 +222,6 @@ a {
     color: #eeeeee;
     text-align: center;
     height: 2.5rem;
-
 }
 
 .projectCard img {
@@ -218,15 +231,15 @@ a {
     margin: 5%;
     border-radius: 10px;
     object-fit: cover;
-object-position: center;
+    object-position: center;
 }
 
-#listLangages {
+.listLangages {
     position: absolute;
     top: 5px;
     right: 5px;
 
-    width: 120px;
+    width: 140px;
     display: flex;
     flex-direction: row-reverse;
 
@@ -253,6 +266,7 @@ object-position: center;
     border-radius: 50%;
     background-color: #1d1d1d;
     opacity: 1;
+    border: 2px solid #2d2d2d;
 }
 
 .iconLangage img {
