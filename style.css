@@ -122,21 +122,15 @@ img#imgeBitEmojie {
     grid-gap: 1vw;
 }
 
-#strength1 {
-    background: linear-gradient(59deg, rgb(64, 255, 0), rgb(120, 248, 100));
+.strength {
+    color: #eaea30;
+    text-decoration: underline;
+    font-weight: bold;
+    font-size: 32px;
 }
 
-#strength2 {
-    background: linear-gradient(59deg, rgb(255, 204, 0), rgb(248, 223, 100));
-}
-
-
-#strength3 {
-    background: linear-gradient(59deg, rgb(255, 77, 0), rgb(248, 135, 100));
-}
-
-#strength4 {
-    background: linear-gradient(59deg, rgb(0, 214, 255), rgb(100, 223, 248));
+.card p {
+    font-size: 24px;
 }
 
 #weakness {
@@ -180,17 +174,17 @@ img#imgeBitEmojie {
 
     display: grid;
     grid-template-rows: 40px 1fr;
-    grid-gap: 1vw;
+    grid-gap: 2vw;
 
     min-height: 100vh;
     height: auto;
 }
 
 #listProject {
-    margin-top: 25px;
+    margin-top: 50px;
     display: grid;
     grid-template-columns: repeat(auto-fill, 360px );
-    grid-gap: 50px;
+    grid-gap: 100px;
     justify-content: center;
 }
 
@@ -198,7 +192,7 @@ img#imgeBitEmojie {
     position: relative;
     height: 300px;
     width: 350px;
-    border: #eaea30 5px solid;
+    border: #eaea30 2.5px solid;
     border-radius: 25px;
     overflow: hidden;
 
@@ -272,4 +266,43 @@ a {
 .iconLangage img {
     width: 100%;
     height: 100%;
+}
+
+/*
+------------------------------------
+ */
+
+#slideContact {
+    display: grid;
+    justify-content: center;
+    grid-template-rows: 40px 1fr;
+    grid-gap: 1vw;
+    width: 78vw;
+    position: relative;
+}
+
+#containerContact {
+    position: relative;
+    margin-top: 25px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr );
+    grid-gap: 50px;
+    width: 78vw;
+}
+
+.listContact {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+
+h3 {
+    color: #eeeeee;
+    text-decoration: underline;
+}
+
+p {
+    color: #eeeeee;
 }
