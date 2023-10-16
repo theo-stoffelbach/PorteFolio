@@ -11,7 +11,10 @@ p, h1, h2 {
 }
 
 #welcome {
-    background-color: #1d1d1d;
+    background-image: url("https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif");
+    background-repeat: no-repeat;
+    background-size: cover;
+
     height: 90vh;
     width: 80vw;
     padding: 5vh 10vw;
@@ -31,16 +34,17 @@ h1 strong {
     color: #eaea30;
 }
 
+#titleWelcome {
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5); /* Ajustez l'ombre selon vos préférences */
+}
+
 img#imgeBitEmojie {
     width: auto;
     height: 250px;
 }
 
 #slideStrength {
-    /*display: flex;*/
-    /*flex-direction: column;*/
-    /*justify-content: space-between;*/
-
     display: grid;
     grid-template-rows: 40px 1fr;
     grid-gap: 1vw;
@@ -51,7 +55,7 @@ img#imgeBitEmojie {
     position: relative;
 
     background-color: #1d1d1d;
-    height: 90vh;
+    /*min-height: 90vh;*/
     width: 80vw;
     padding: 5vh 10vw;
 
@@ -64,7 +68,7 @@ img#imgeBitEmojie {
     position: relative;
 
     background-color: #2d2d2d;
-    height: 90vh;
+    /*height: 90vh;*/
     width: 80vw;
     padding: 5vh 10vw;
 
@@ -73,21 +77,13 @@ img#imgeBitEmojie {
     flex-direction: column;
 }
 
-#slideStrength {
-    /*display: flex;*/
-    /*flex-direction: column;*/
-    /*justify-content: space-between;*/
-
-    display: grid;
-    grid-template-rows: 40px 1fr;
-    grid-gap: 1vw;
-}
-
 .title {
     text-decoration: underline;
     border: none;
     width: auto;
     height: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
 
     text-align: center;
 }
@@ -97,22 +93,23 @@ img#imgeBitEmojie {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 20vh;
+    width: 100%;
+    gap: 10vh;
 }
 
 .ligneFlex {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-around;
+    /*align-items: center;*/
+    width: 100%;
     flex-direction: row;
-    gap: 20vh;
 }
 
 .card {
     padding: 1.5em;
 
     width: 20vw;
-    height: 13vh;
+    min-height: 13vh;
 
     border-radius: 25px;
     text-align: center;
@@ -133,14 +130,6 @@ img#imgeBitEmojie {
     font-size: 24px;
 }
 
-#weakness {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 20vh;
-}
-
 #slideWeakness {
     /*display: flex;*/
     /*flex-direction: column;*/
@@ -149,22 +138,6 @@ img#imgeBitEmojie {
     display: grid;
     grid-template-rows: 40px 1fr;
     grid-gap: 1vw;
-}
-
-#weakness1 {
-    background: linear-gradient(59deg, rgb(64, 255, 0), rgb(120, 248, 100));
-}
-
-#weakness2 {
-    background: linear-gradient(59deg, rgb(255, 204, 0), rgb(248, 223, 100));
-}
-
-#weakness3 {
-    background: linear-gradient(59deg, rgb(255, 77, 0), rgb(248, 135, 100));
-}
-
-#weakness4 {
-    background: linear-gradient(59deg, rgb(0, 214, 255), rgb(100, 223, 248));
 }
 
 #slideProject {
