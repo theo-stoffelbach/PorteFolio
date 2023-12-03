@@ -6,6 +6,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <link href="style/style.css" rel="stylesheet">
+    <link href="style/projectMainPage.css" rel="stylesheet">
+    <link href="style/experience.css" rel="stylesheet">
     <link href="https://imgs.search.brave.com/5qc7TkuIaSZkIrplnjDgC8gZQs8NPKpJh3D8odP4rxk/rs:fit:512:512:1/g:ce/aHR0cHM6Ly9pY29u/cy1mb3ItZnJlZS5j/b20vaWNvbmZpbGVz/L3BuZy81MTIvYnVs/YmFzYXVyLTEzMjA1/NjgxNzg2NTQwMTE1/NDAucG5n"
           rel="icon"/>
 
@@ -14,10 +16,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
           rel="stylesheet">
 
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>-->
+
+
     <title>PorteFolio</title>
 </head>
 <body>
-
+<!--Profil-->
 <section id="summary">
     <div>
         <h1 id="Name">Théo Stoffelbach</h1>
@@ -37,13 +42,13 @@
 
             <div class="tagInfo">
                 <img alt="a icon of birthday cake" class="icon" src="img/icon/iPosition3.png">
-                <h3> Toulouse </h3>
+                <h3> Toulouse, France </h3>
             </div>
         </div>
     </div>
 
     <div id="profil">
-        <img alt="" id="profilImage" src="img/Theo_bitmojie.png">
+        <img alt="" id="profilImage" src="img/image/Theo_bitmojie.png">
         <div id="SNContainer">
             <a href="https://www.linkedin.com/in/theo-stoffelbach" target="_blank">
                 <img alt="My account linkedin" class="SNIcons" src="img/icon/iLinkedin.png">
@@ -56,24 +61,26 @@
     </div>
 </section>
 
+<!--About me-->
 <section>
     <h2 class="sectionTitle">A propos de moi</h2>
     <p>
-        Rick Sanchez, un scientifique excentrique, voyage à travers des dimensions avec son petit-fils Morty. Leurs
-        aventures délirantes impliquent des inventions bizarres, des mondes étranges et des dilemmes moraux.
+        D’un naturel rigoureux et consciencieux dans
+        <bold class="personnel">mon travail</bold>
+        , je suis quelqu’un de dynamique, patient et attentif.
+    <p>
+        De nature curieuse, et de façon autodidacte que je me suis formée à l’informatique avant d'intégrer
+        <bold class="Epitech"> Epitech Digital</bold>
+        et partir au bout de ma premiere année (major de promotion).
     </p>
     <p>
-        Morty, souvent déconcerté par les actions impulsives de Rick, évolue au fil des saisons, montrant une profondeur
-        émotionnelle inattendue. Les personnages tels que Pickle Rick, Meeseeks et Birdperson ajoutent une touche
-        d'absurdité.
-    </p>
-    <p>
-        La série explore des thèmes existentiels tout en mêlant l'humour noir et l'ironie. Des références à la culture
-        pop, comme la quête du Szechuan Sauce, font de Rick et Morty un mélange unique de comédie, de science-fiction et
-        de satire sociale.
+        Puis j'ai intégré
+        <bold class="Ynov"> Ynov Informatique</bold>
+        pour avoir une spécialisation web en 3e année et enchaîne avec un master Web.
     </p>
 </section>
 
+<!--Technologies-->
 <section>
     <h2 class="sectionTitle">Technologie</h2>
 
@@ -183,47 +190,101 @@
 
 </section>
 
+<!--My projects-->
 <section>
     <h2 class="sectionTitle">Mes Projets</h2>
 
     <div id="cardsProjects">
 
-        <!--Front-End-->
+        <!--Uno -->
         <div class="cardProject">
-            <h3 class="cardTitle">Front-End</h3>
-            <div class="cardIcon">
-                <img alt="Icon of React" class="iconImg" src="img/icon/iReact2.png">
-            </div>
-            <h4 class="cardLevel">Niveau intermédiaire</h4>
-            <h4 class="cardFormation">
-                <bold class="Ynov">Ynov</bold>
-                •
-                <bold class="personnel">Personnel</bold>
+            <h3 class="cardTitle">UNO</h3>
 
+            <div class="cardProjectImage">
+                <img alt="An image of The classic game Uno" class="projectImg" src="img/image/pUNO.png">
+            </div>
+
+            <div class="tagsTechno">
+                <h4 class="tagTechno webSocket">Web Socket</h4>
+                <h4 class="tagTechno nodeJS">Node JS</h4>
+                <h4 class="tagTechno notFinish">Front pas finis</h4>
+            </div>
+
+            <h4 class="cardFormation">
+                <bold class="personnel">Personnel</bold>
             </h4>
+
+            <div class="cardIcon cardProjectTechno">
+                <img alt="Icon of NodeJS" class="iconImg" src="img/icon/iNodejs.png">
+            </div>
         </div>
 
-        <!--Back-End-->
+        <!--Crawler-->
         <div class="cardProject">
-            <h3 class="cardTitle">Back-End</h3>
-            <div class="cardIcon">
-                <img alt="Icon of NodeJS" class="iconImg" src="img/icon/iNodejs.png">
-                <img alt="Icon of Python (Django)" class="iconImg" src="img/icon/iPython.png">
+            <h3 class="cardTitle">Web Crawler</h3>
+
+            <div class="cardProjectImage">
+                <img alt="An image of the nintendo site" class="projectImg" src="img/image/pNintendo2.png">
             </div>
-            <h4 class="cardLevel">Niveau intermédiaire</h4>
+
+            <div class="tagsTechno">
+                <h4 class="tagTechno api">Api</h4>
+                <h4 class="tagTechno nodeJS">Node JS</h4>
+                <h4 class="tagTechno mongoose">Mongoose</h4>
+                <h4 class="tagTechno express">Express</h4>
+                <h4 class="tagTechno stop">Plus fonctionnel</h4>
+            </div>
+
             <h4 class="cardFormation">
-                <bold class="Epitech">Epitech Digital</bold>
-                •
                 <bold class="Ynov">Ynov</bold>
-                •
-                <bold class="personnel">Personnel</bold>
             </h4>
+
+            <div class="cardIcon cardProjectTechno">
+                <img alt="Icon of NodeJS" class="iconImg" src="img/icon/iNodejs.png">
+            </div>
+        </div>
+
+        <!--Hack 4 March-->
+        <div class="cardProject">
+            <h3 class="cardTitle">Hack 4 March</h3>
+
+            <div class="cardProjectImage">
+                <img alt="An image of my project Hack For March" class="projectImg" src="img/image/pHack4Mars.png">
+            </div>
+
+            <div class="tagsTechno">
+                <h4 class="tagTechno figma">Figma</h4>
+                <h4 class="tagTechno hackathon">Hackathon</h4>
+            </div>
+
+            <h4 class="cardFormation">
+                <bold class="Epitech">Eptech Digital</bold>
+            </h4>
+
+            <div class="cardIcon cardProjectTechno">
+                <img alt="Icon of Figma" class="iconImg" src="img/icon/iFigma.png">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--Experiences-->
+<section id="sectionExperience">
+    <h2 class="sectionTitle">Mes Experiences</h2>
+
+    <div id="experience">
+        <div class="listCards">
+
+            <div class="cardExperiences">
+                <h1> Bla Bla</h1>
+            </div>
+
+
         </div>
 
     </div>
 
 </section>
-
 
 </body>
 </html>

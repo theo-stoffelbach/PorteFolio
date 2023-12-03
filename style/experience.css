@@ -1,0 +1,19 @@
+#sectionExperience {
+    margin: 0;
+
+}
+
+#experience {
+    display: flex;
+    flex-direction: column;
+    /*background: #656565;*/
+    width: 100vw;
+    min-height: 100vh;
+    height: auto;
+}
+
+.cardExperiences {
+
+    width: 300px;
+    border: 2px solid black;
+}

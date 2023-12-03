@@ -84,27 +84,19 @@ bold {
 .sectionTitle {
     font-size: 2rem;
     font-weight: bold;
-    margin: 4rem 0 2rem;
+    margin: 4rem 0 3rem;
 
     text-decoration: underline;
     text-decoration-color: #12d541;
-    /*text-decoration-color: #fada5a;*/
-
-    text-decoration-thickness: 5px; /* Changer la taille du trait de soulignement ici */
-
-    text-underline-offset: 10px; /* Changer la position du soulignement ici */
-}
-
-.cardContainer {
-
+    text-decoration-thickness: 5px;
+    text-underline-offset: 10px;
 }
 
 #cardsTechno {
-    display: grid;
-
-    grid-template-columns: repeat(auto-fill, 400px);
-    grid-gap: 1vw;
+    display: flex;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .cardTechno {
@@ -126,7 +118,7 @@ h3.cardTitle {
 .cardIcon {
     display: flex;
     justify-content: center;
-    gap: 12px
+    gap: 20px
 }
 
 .iconImg {
@@ -142,6 +134,7 @@ h4.cardLevel {
 }
 
 h4.cardFormation {
+    margin-bottom: 12px;
     font-size: .9rem;
     color: grey;
     text-align: center;
@@ -175,18 +168,3 @@ p {
     line-height: 1.8rem;
 }
 
-#cardsProjects {
-    display: grid;
-
-    grid-template-columns: repeat(auto-fill, 600px);
-    grid-gap: 1vw;
-    justify-content: center;
-}
-
-.cardProject {
-    width: 600px;
-    height: 500px;
-    border-radius: 10px;
-    box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
-    background: #FAFAFA;
-}
