@@ -1,0 +1,192 @@
+* {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #f7f8f9;
+    margin: 6rem;
+}
+
+#Name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 4rem;
+}
+
+#LFJob {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 2rem;
+    margin: 1rem 0 .5rem 0;
+}
+
+.profilDesc {
+    font-size: 1.2rem;
+}
+
+bold {
+    font-weight: 700;
+}
+
+#infoSection {
+    margin: 1rem 0;
+    display: flex;
+    gap: 15px;
+}
+
+.tagInfo {
+    display: flex;
+    align-items: CENTER;
+    border: black 2px solid;
+    border-radius: 8px;
+    width: auto;
+    padding: 5px;
+
+}
+
+.icon {
+    width: 28px;
+    height: auto;
+}
+
+#summary {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#profil {
+    position: relative;
+}
+
+#profilImage {
+    height: 225px;
+    width: auto;
+    margin-right: 50px;
+}
+
+#SNContainer {
+    display: flex;
+    justify-content: center;
+    margin: 20px 50px 0 0;
+}
+
+.SNIcons {
+    margin: 5px;
+
+    height: 28px;
+    width: auto;
+}
+
+.sectionTitle {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 4rem 0 2rem;
+
+    text-decoration: underline;
+    text-decoration-color: #12d541;
+    /*text-decoration-color: #fada5a;*/
+
+    text-decoration-thickness: 5px; /* Changer la taille du trait de soulignement ici */
+
+    text-underline-offset: 10px; /* Changer la position du soulignement ici */
+}
+
+.cardContainer {
+
+}
+
+#cardsTechno {
+    display: grid;
+
+    grid-template-columns: repeat(auto-fill, 400px);
+    grid-gap: 1vw;
+    justify-content: center;
+}
+
+.cardTechno {
+    width: 400px;
+    height: 200px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
+    background: #FAFAFA;
+}
+
+h3.cardTitle {
+    margin: 24px 0 12px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.cardIcon {
+    display: flex;
+    justify-content: center;
+    gap: 12px
+}
+
+.iconImg {
+    /*width: 48px;*/
+    height: 50px;
+}
+
+h4.cardLevel {
+    margin: 12px 0;
+    text-align: center;
+    font-size: 1.2rem;
+    color: grey;
+}
+
+h4.cardFormation {
+    font-size: .9rem;
+    color: grey;
+    text-align: center;
+}
+
+h4.cardFormation bold {
+    margin: 5px;
+}
+
+.Ynov {
+    color: #00eaff;
+}
+
+.Epitech {
+    color: #ec1e24;
+}
+
+.personnel {
+    color: #12d541;
+}
+
+h3 {
+    margin: 5px;
+    font-size: .9rem;
+}
+
+p {
+    margin: 25px 0;
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.8rem;
+}
+
+#cardsProjects {
+    display: grid;
+
+    grid-template-columns: repeat(auto-fill, 600px);
+    grid-gap: 1vw;
+    justify-content: center;
+}
+
+.cardProject {
+    width: 600px;
+    height: 500px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
+    background: #FAFAFA;
+}

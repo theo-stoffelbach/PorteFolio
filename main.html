@@ -5,282 +5,225 @@
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <link href="style.css" rel="stylesheet">
+    <link href="style/style.css" rel="stylesheet">
     <link href="https://imgs.search.brave.com/5qc7TkuIaSZkIrplnjDgC8gZQs8NPKpJh3D8odP4rxk/rs:fit:512:512:1/g:ce/aHR0cHM6Ly9pY29u/cy1mb3ItZnJlZS5j/b20vaWNvbmZpbGVz/L3BuZy81MTIvYnVs/YmFzYXVyLTEzMjA1/NjgxNzg2NTQwMTE1/NDAucG5n"
           rel="icon"/>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
-    <script src="script.js"></script>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+
     <title>PorteFolio</title>
 </head>
 <body>
-<div id="welcome">
-    <div id="titleWelcome">
-        <h1>
-            Je suis Théo <br/>Je suis <strong>Développeur Web</strong>
-        </h1>
-    </div>
-    <img alt="" id="imgeBitEmojie" src="img/Theo_bitmojie.png">
-</div>
-<div class="slideOdd" id="slideStrength">
-    <h1 class="title"> Mes qualités sont </h1>
-    <div id="strengths">
-        <div class="ligneFlex">
-            <div class="card">
-                <h2 class="strength">Curieux</h2>
-                <p>J'aime apprendre par moi-même dans le domaine de l'informatique, notamment HTML, CSS, JavaScript,
-                    Node.js et ReactJS, que j'ai acquis en autodidacte.</p>
+
+<section id="summary">
+    <div>
+        <h1 id="Name">Théo Stoffelbach</h1>
+        <h2 id="LFJob">Développeur fullstack</h2>
+
+        <h3 class="profilDesc">
+            2e année en Informatique -
+            <bold class="Ynov">Ynov Campus Toulouse !</bold>
+        </h3>
+        <h3 class="profilDesc">Je suis à la recherche d'une nouvelle aventure professionnelle.</h3>
+
+        <div id="infoSection">
+            <div class="tagInfo">
+                <img alt="a icon of birthday cake" class="icon" src="img/icon/iBirthday.png">
+                <h3> 28/01/2003 </h3>
             </div>
 
-            <div class="card">
-                <h2 class="strength">Travaille d'équipe</h2>
-                <p>Grâce à mon école, j'ai pu acquérir cette compétence, car en travaillant en groupes de 3, 4 voire 9
-                    personnes, j'ai pu améliorer ma communication au sein d'une équipe.</p>
-            </div>
-        </div>
-
-        <div class="ligneFlex">
-            <div class="card">
-                <h2 class="strength">Persévérant</h2>
-                <p>Je ne lasse jamais même s'il faut beaucoup d'échec avant d'obtenir ce que l'on veut</p>
-            </div>
-
-            <div class="card">
-                <h2 class="strength"> Innovation </h2>
-                <p>J'aime me remettre en question sur mes connaisement et j'adore apprend toujours plus de choses sur
-                    mon métier ou autre choses de mon quotidien et les mettrent en appliquation dans mes projet ou ma
-                    vie de tous les jours </p>
+            <div class="tagInfo">
+                <img alt="a icon of birthday cake" class="icon" src="img/icon/iPosition3.png">
+                <h3> Toulouse </h3>
             </div>
         </div>
     </div>
-</div>
 
-<div class="slidePair" id="slideWeakness">
-    <h1 class="title"> Mes faiblesses sont </h1>
-    <!--        <div class="center">-->
-    <div id="weakness">
-        <div class="ligneFlex">
-            <div class="card">
-                <h2 class="strength">Social</h2>
-                <p>J'ai parfois du mal à bien me faire comprendre, mais je travaille avec l'aide de mentorat et du
-                    travail sur soi pour m'améliorer.</p>
-            </div>
+    <div id="profil">
+        <img alt="" id="profilImage" src="img/Theo_bitmojie.png">
+        <div id="SNContainer">
+            <a href="https://www.linkedin.com/in/theo-stoffelbach" target="_blank">
+                <img alt="My account linkedin" class="SNIcons" src="img/icon/iLinkedin.png">
+            </a>
 
-            <div class="card">
-                <h2 class="strength">Social</h2>
-                <p>.....</p>
-            </div>
-        </div>
-
-        <div class="ligneFlex">
-            <div class="card">
-                <h2 class="strength">Social</h2>
-                <p>.....</p>
-
-            </div>
-
-            <div class="card">
-                <h2 class="strength">Social</h2>
-                <p>.....</p>
-            </div>
-        </div>
-
-        <!--        </div>-->
-    </div>
-</div>
-
-<div class="slideOdd" id="slideProject">
-    <h1 class="title"> Liste des mes Projects </h1>
-    <div id="listProject">
-
-        <a href="">
-            <div class="projectCard">
-                <h2> Vinted Like </h2>
-                <div class="listLangages">
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_nodeJS.png"></div>
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_js.png"></div>
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                </div>
-                <img alt="Image of logo of Vinted" src="img/%5BProject%5DVinted.jpg">
-            </div>
-        </a>
-
-        <a href="">
-            <div class="projectCard">
-                <h2> Pokedex </h2>
-                <div class="listLangages">
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_nodeJS.png"></div>
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_vue.png"></div>
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                </div>
-                <img alt="Image of Pokemon Project" src="img/%5BProject%5DPokedex.png">
-            </div>
-        </a>
-
-        <a href="">
-            <div class="projectCard">
-                <h2> Hack For March </h2>
-                <div class="listLangages">
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_nodeJS.png"></div>
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_vue.png"></div>
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                </div>
-                <img alt="Image of Pokemon Project" src="img/%5BProject%5D%20H4M.PNG">
-            </div>
-        </a>
-        <a href="">
-            <div class="projectCard">
-                <h2> YOWL </h2>
-                <div class="listLangages">
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_nodeJS.png"></div>
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_vue.png"></div>
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                </div>
-                <img alt="Image of Pokemon Project" src="img/%5BProject%5D_Yowl.PNG">
-            </div>
-        </a>
-
-
-        <a href="">
-            <div class="projectCard">
-                <h2> Hangman-CLI </h2>
-                <div class="listLangages">
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_nodeJS.png"></div>
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_vue.png"></div>
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                </div>
-                <img alt="Image of Pokemon Project" src="img/%5BProject%5DHangman_CLI.PNG">
-            </div>
-        </a>
-
-        <a href="">
-            <div class="projectCard">
-                <h2> Hangman-Web </h2>
-                <div class="listLangages">
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_nodeJS.png"></div>
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_vue.png"></div>
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                </div>
-                <img alt="Image of Pokemon Project" src="img/%5BProject%5DHangman_Web.PNG   ">
-            </div>
-        </a>
-
-        <a href="">
-            <div class="projectCard">
-                <h2> Zoo </h2>
-                <div class="listLangages">
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_nodeJS.png"></div>
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_vue.png"></div>
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                </div>
-                <img alt="Image of Pokemon Project" src="img/%5BProject%5D_Zoo.PNG">
-            </div>
-        </a>
-
-
-        <a href="">
-            <div class="projectCard">
-                <h2> Groupie Tracker </h2>
-                <div class="listLangages">
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_nodeJS.png"></div>
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_vue.png"></div>
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                </div>
-                <img alt="Image of Pokemon Project" src="img/%5BProject%5DGroupie-Tracker.PNG">
-            </div>
-        </a>
-
-        <a href="">
-            <div class="projectCard">
-                <h2> Web-Crawler </h2>
-                <div class="listLangages">
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_nodeJS.png"></div>
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_vue.png"></div>
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                </div>
-                <img alt="Image of Pokemon Project" src="img/%5BProject%5DPuppeteer.png">
-            </div>
-        </a>
-
-
-        <a href="">
-            <div class="projectCard">
-                <h2> Forum </h2>
-                <div class="listLangages">
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_nodeJS.png"></div>
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_vue.png"></div>
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                </div>
-                <img alt="Image of Pokemon Project" src="img/%5BProject%5DForum.PNG">
-            </div>
-        </a>
-
-        <a href="">
-            <div class="projectCard">
-                <h2> Uno </h2>
-                <div class="listLangages">
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_nodeJS.png"></div>
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_vue.png"></div>
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                </div>
-                <img alt="Image of Pokemon Project" src="img/%5BProject%5Duno.png">
-            </div>
-        </a>
-
-        <a href="">
-            <div class="projectCard">
-                <h2> PorteFolio </h2>
-                <div class="listLangages">
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_nodeJS.png"></div>
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_vue.png"></div>
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                    <!--                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/[icon]_nodeJS.png"></div>-->
-                </div>
-                <img alt="Image of Pokemon Project" src="img/[Project]_PorteFolio.PNG">
-            </div>
-        </a>
-
-        <a href="">
-            <div class="projectCard">
-                <h2> Task Quest </h2>
-                <div class="listLangages">
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_nodeJS.png"></div>
-                    <div class="iconLangage"><img alt="" class="iconProjectImg" src="img/%5Bicon%5D_vue.png"></div>
-                </div>
-                <img alt="Image of Pokemon Project" src="img/%5BProject%5D_TaskQuest.png">
-            </div>
-        </a>
-
-    </div>
-</div>
-
-<div class="slidePair" id="slideContact">
-    <h1 class="title">Me contacter</h1>
-    <div id="containerContact">
-        <div class="listContact">
-            <div class="textContact">
-                <h3>Adress mail : </h3>
-                <p>Theos123@hotmail.fr</p>
-            </div>
-        </div>
-        <div class="listContact">
-            <div class="textContact">
-                <h3>linkin : </h3>
-                <p>@TheoStoffelbach</p>
-            </div>
+            <a href="https://github.com/theo-stoffelbach" target="_blank">
+                <img alt="My account Github" class="SNIcons" src="img/icon/iGitHub.png">
+            </a>
         </div>
     </div>
-</div>
+</section>
+
+<section>
+    <h2 class="sectionTitle">A propos de moi</h2>
+    <p>
+        Rick Sanchez, un scientifique excentrique, voyage à travers des dimensions avec son petit-fils Morty. Leurs
+        aventures délirantes impliquent des inventions bizarres, des mondes étranges et des dilemmes moraux.
+    </p>
+    <p>
+        Morty, souvent déconcerté par les actions impulsives de Rick, évolue au fil des saisons, montrant une profondeur
+        émotionnelle inattendue. Les personnages tels que Pickle Rick, Meeseeks et Birdperson ajoutent une touche
+        d'absurdité.
+    </p>
+    <p>
+        La série explore des thèmes existentiels tout en mêlant l'humour noir et l'ironie. Des références à la culture
+        pop, comme la quête du Szechuan Sauce, font de Rick et Morty un mélange unique de comédie, de science-fiction et
+        de satire sociale.
+    </p>
+</section>
+
+<section>
+    <h2 class="sectionTitle">Technologie</h2>
+
+    <div id="cardsTechno">
+
+        <!--Front-End-->
+        <div class="cardTechno">
+            <h3 class="cardTitle">Front-End</h3>
+            <div class="cardIcon">
+                <img alt="Icon of React" class="iconImg" src="img/icon/iReact2.png">
+            </div>
+            <h4 class="cardLevel">Niveau intermédiaire</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+                •
+                <bold class="personnel">Personnel</bold>
+
+            </h4>
+        </div>
+
+        <!--Back-End-->
+        <div class="cardTechno">
+            <h3 class="cardTitle">Back-End</h3>
+            <div class="cardIcon">
+                <img alt="Icon of NodeJS" class="iconImg" src="img/icon/iNodejs.png">
+                <img alt="Icon of Python (Django)" class="iconImg" src="img/icon/iPython.png">
+            </div>
+            <h4 class="cardLevel">Niveau intermédiaire</h4>
+            <h4 class="cardFormation">
+                <bold class="Epitech">Epitech Digital</bold>
+                •
+                <bold class="Ynov">Ynov</bold>
+                •
+                <bold class="personnel">Personnel</bold>
+            </h4>
+        </div>
+
+        <!--DevOps-->
+        <div class="cardTechno">
+            <h3 class="cardTitle">DevOps</h3>
+            <div class="cardIcon">
+                <img alt="Logo of OVH" class="iconImg" src="img/icon/iOVH.png">
+                <img alt="Icon of GitHub Action" class="iconImg" src="img/icon/iGitHub.png">
+                <img alt="Icon of Docker" class="iconImg" src="img/icon/iDocker.png">
+                <!-- I'm learning -->
+            </div>
+            <h4 class="cardLevel">Niveau Débutant</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+            </h4>
+        </div>
+
+        <!--App-->
+        <div class="cardTechno">
+            <h3 class="cardTitle">Applicatif</h3>
+            <div class="cardIcon">
+                <img alt="Icon of Java" class="iconImg" src="img/icon/iJava.png">
+            </div>
+            <h4 class="cardLevel">Niveau Débutant</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+            </h4>
+        </div>
+
+        <!--CLI-->
+        <div class="cardTechno">
+            <h3 class="cardTitle">Console</h3>
+            <div class="cardIcon">
+                <img alt="Icon of C" class="iconImg" src="img/icon/iCLangage.png">
+                <img alt="Icon of C++" class="iconImg" src="img/icon/iC++Langage.png">
+                <img alt="Icon of C#" class="iconImg" src="img/icon/iC%23Langage.png">
+            </div>
+            <h4 class="cardLevel">Niveau Débutant</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+            </h4>
+        </div>
+
+        <!-- UI / UX -->
+        <div class="cardTechno">
+            <h3 class="cardTitle"> UI & UX</h3>
+            <div class="cardIcon">
+                <img alt="Logo of Figma" class="iconImg" src="img/icon/iFigma.png">
+            </div>
+            <h4 class="cardLevel">Niveau Débutant</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+            </h4>
+        </div>
+
+        <!-- Gestion -->
+        <div class="cardTechno">
+            <h3 class="cardTitle"> Gestion de Projet</h3>
+            <div class="cardIcon">
+                <img alt="Logo of Trello" class="iconImg" src="img/icon/iTrello.png">
+                <img alt="Logo of Jira" class="iconImg" src="img/icon/iJira2.png">
+                <img alt="Logo of Notion" class="iconImg" src="img/icon/iNotion.png">
+            </div>
+            <h4 class="cardLevel">Niveau Débutant</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+            </h4>
+        </div>
+
+
+    </div>
+
+</section>
+
+<section>
+    <h2 class="sectionTitle">Mes Projets</h2>
+
+    <div id="cardsProjects">
+
+        <!--Front-End-->
+        <div class="cardProject">
+            <h3 class="cardTitle">Front-End</h3>
+            <div class="cardIcon">
+                <img alt="Icon of React" class="iconImg" src="img/icon/iReact2.png">
+            </div>
+            <h4 class="cardLevel">Niveau intermédiaire</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+                •
+                <bold class="personnel">Personnel</bold>
+
+            </h4>
+        </div>
+
+        <!--Back-End-->
+        <div class="cardProject">
+            <h3 class="cardTitle">Back-End</h3>
+            <div class="cardIcon">
+                <img alt="Icon of NodeJS" class="iconImg" src="img/icon/iNodejs.png">
+                <img alt="Icon of Python (Django)" class="iconImg" src="img/icon/iPython.png">
+            </div>
+            <h4 class="cardLevel">Niveau intermédiaire</h4>
+            <h4 class="cardFormation">
+                <bold class="Epitech">Epitech Digital</bold>
+                •
+                <bold class="Ynov">Ynov</bold>
+                •
+                <bold class="personnel">Personnel</bold>
+            </h4>
+        </div>
+
+    </div>
+
+</section>
+
 
 </body>
 </html>
