@@ -5,7 +5,7 @@
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <link href="style.css" rel="stylesheet">
+    <link href="style/style.css" rel="stylesheet">
     <link href="https://imgs.search.brave.com/5qc7TkuIaSZkIrplnjDgC8gZQs8NPKpJh3D8odP4rxk/rs:fit:512:512:1/g:ce/aHR0cHM6Ly9pY29u/cy1mb3ItZnJlZS5j/b20vaWNvbmZpbGVz/L3BuZy81MTIvYnVs/YmFzYXVyLTEzMjA1/NjgxNzg2NTQwMTE1/NDAucG5n"
           rel="icon"/>
 
@@ -14,37 +14,214 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
           rel="stylesheet">
 
-    <!--    <script src="script.js"></script>-->
     <title>PorteFolio</title>
 </head>
 <body>
 
-<section>
+<section id="summary">
     <div>
         <h1 id="Name">Théo Stoffelbach</h1>
         <h2 id="LFJob">Développeur fullstack</h2>
 
         <h3 class="profilDesc">
             2e année en Informatique -
-            <bold>Ynov Campus Toulouse !</bold>
+            <bold class="Ynov">Ynov Campus Toulouse !</bold>
         </h3>
         <h3 class="profilDesc">Je suis à la recherche d'une nouvelle aventure professionnelle.</h3>
 
         <div id="infoSection">
             <div class="tagInfo">
                 <img alt="a icon of birthday cake" class="icon" src="img/icon/iBirthday.png">
-                <p> 28/01/2003 </p>
+                <h3> 28/01/2003 </h3>
             </div>
 
             <div class="tagInfo">
                 <img alt="a icon of birthday cake" class="icon" src="img/icon/iPosition3.png">
-                <p> Toulouse </p>
+                <h3> Toulouse </h3>
             </div>
         </div>
     </div>
-    <div id="profilImage">
-        <img alt="" src="">
+
+    <div id="profil">
+        <img alt="" id="profilImage" src="img/Theo_bitmojie.png">
+        <div id="SNContainer">
+            <a href="https://www.linkedin.com/in/theo-stoffelbach" target="_blank">
+                <img alt="My account linkedin" class="SNIcons" src="img/icon/iLinkedin.png">
+            </a>
+
+            <a href="https://github.com/theo-stoffelbach" target="_blank">
+                <img alt="My account Github" class="SNIcons" src="img/icon/iGitHub.png">
+            </a>
+        </div>
     </div>
+</section>
+
+<section>
+    <h2 class="sectionTitle">A propos de moi</h2>
+    <p>
+        Rick Sanchez, un scientifique excentrique, voyage à travers des dimensions avec son petit-fils Morty. Leurs
+        aventures délirantes impliquent des inventions bizarres, des mondes étranges et des dilemmes moraux.
+    </p>
+    <p>
+        Morty, souvent déconcerté par les actions impulsives de Rick, évolue au fil des saisons, montrant une profondeur
+        émotionnelle inattendue. Les personnages tels que Pickle Rick, Meeseeks et Birdperson ajoutent une touche
+        d'absurdité.
+    </p>
+    <p>
+        La série explore des thèmes existentiels tout en mêlant l'humour noir et l'ironie. Des références à la culture
+        pop, comme la quête du Szechuan Sauce, font de Rick et Morty un mélange unique de comédie, de science-fiction et
+        de satire sociale.
+    </p>
+</section>
+
+<section>
+    <h2 class="sectionTitle">Technologie</h2>
+
+    <div id="cardsTechno">
+
+        <!--Front-End-->
+        <div class="cardTechno">
+            <h3 class="cardTitle">Front-End</h3>
+            <div class="cardIcon">
+                <img alt="Icon of React" class="iconImg" src="img/icon/iReact2.png">
+            </div>
+            <h4 class="cardLevel">Niveau intermédiaire</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+                •
+                <bold class="personnel">Personnel</bold>
+
+            </h4>
+        </div>
+
+        <!--Back-End-->
+        <div class="cardTechno">
+            <h3 class="cardTitle">Back-End</h3>
+            <div class="cardIcon">
+                <img alt="Icon of NodeJS" class="iconImg" src="img/icon/iNodejs.png">
+                <img alt="Icon of Python (Django)" class="iconImg" src="img/icon/iPython.png">
+            </div>
+            <h4 class="cardLevel">Niveau intermédiaire</h4>
+            <h4 class="cardFormation">
+                <bold class="Epitech">Epitech Digital</bold>
+                •
+                <bold class="Ynov">Ynov</bold>
+                •
+                <bold class="personnel">Personnel</bold>
+            </h4>
+        </div>
+
+        <!--DevOps-->
+        <div class="cardTechno">
+            <h3 class="cardTitle">DevOps</h3>
+            <div class="cardIcon">
+                <img alt="Logo of OVH" class="iconImg" src="img/icon/iOVH.png">
+                <img alt="Icon of GitHub Action" class="iconImg" src="img/icon/iGitHub.png">
+                <img alt="Icon of Docker" class="iconImg" src="img/icon/iDocker.png">
+                <!-- I'm learning -->
+            </div>
+            <h4 class="cardLevel">Niveau Débutant</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+            </h4>
+        </div>
+
+        <!--App-->
+        <div class="cardTechno">
+            <h3 class="cardTitle">Applicatif</h3>
+            <div class="cardIcon">
+                <img alt="Icon of Java" class="iconImg" src="img/icon/iJava.png">
+            </div>
+            <h4 class="cardLevel">Niveau Débutant</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+            </h4>
+        </div>
+
+        <!--CLI-->
+        <div class="cardTechno">
+            <h3 class="cardTitle">Console</h3>
+            <div class="cardIcon">
+                <img alt="Icon of C" class="iconImg" src="img/icon/iCLangage.png">
+                <img alt="Icon of C++" class="iconImg" src="img/icon/iC++Langage.png">
+                <img alt="Icon of C#" class="iconImg" src="img/icon/iC%23Langage.png">
+            </div>
+            <h4 class="cardLevel">Niveau Débutant</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+            </h4>
+        </div>
+
+        <!-- UI / UX -->
+        <div class="cardTechno">
+            <h3 class="cardTitle"> UI & UX</h3>
+            <div class="cardIcon">
+                <img alt="Logo of Figma" class="iconImg" src="img/icon/iFigma.png">
+            </div>
+            <h4 class="cardLevel">Niveau Débutant</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+            </h4>
+        </div>
+
+        <!-- Gestion -->
+        <div class="cardTechno">
+            <h3 class="cardTitle"> Gestion de Projet</h3>
+            <div class="cardIcon">
+                <img alt="Logo of Trello" class="iconImg" src="img/icon/iTrello.png">
+                <img alt="Logo of Jira" class="iconImg" src="img/icon/iJira2.png">
+                <img alt="Logo of Notion" class="iconImg" src="img/icon/iNotion.png">
+            </div>
+            <h4 class="cardLevel">Niveau Débutant</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+            </h4>
+        </div>
+
+
+    </div>
+
+</section>
+
+<section>
+    <h2 class="sectionTitle">Mes Projets</h2>
+
+    <div id="cardsProjects">
+
+        <!--Front-End-->
+        <div class="cardProject">
+            <h3 class="cardTitle">Front-End</h3>
+            <div class="cardIcon">
+                <img alt="Icon of React" class="iconImg" src="img/icon/iReact2.png">
+            </div>
+            <h4 class="cardLevel">Niveau intermédiaire</h4>
+            <h4 class="cardFormation">
+                <bold class="Ynov">Ynov</bold>
+                •
+                <bold class="personnel">Personnel</bold>
+
+            </h4>
+        </div>
+
+        <!--Back-End-->
+        <div class="cardProject">
+            <h3 class="cardTitle">Back-End</h3>
+            <div class="cardIcon">
+                <img alt="Icon of NodeJS" class="iconImg" src="img/icon/iNodejs.png">
+                <img alt="Icon of Python (Django)" class="iconImg" src="img/icon/iPython.png">
+            </div>
+            <h4 class="cardLevel">Niveau intermédiaire</h4>
+            <h4 class="cardFormation">
+                <bold class="Epitech">Epitech Digital</bold>
+                •
+                <bold class="Ynov">Ynov</bold>
+                •
+                <bold class="personnel">Personnel</bold>
+            </h4>
+        </div>
+
+    </div>
+
 </section>
 
 
