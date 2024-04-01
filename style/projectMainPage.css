@@ -1,0 +1,91 @@
+#cardsProjects {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.cardProjectImage {
+    display: flex;
+    justify-content: center;
+}
+
+.cardProject {
+    width: 600px;
+    height: 532px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
+    background: #FAFAFA;
+}
+
+.tagsTechno {
+    display: flex;
+    justify-content: center;
+    margin: 12px 0 24px;
+    gap: 20px;
+}
+
+.tagTechno {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    padding: 4px;
+    letter-spacing: 1.1px;
+}
+
+.projectImg {
+    width: auto;
+    height: 300px;
+    border-radius: 10px;
+
+    object-fit: cover;
+    object-position: center;
+}
+
+.nodeJS {
+    background: #b3df72;
+    color: black;
+}
+
+.mongoose {
+    background: #487200;
+    color: black;
+}
+
+.express {
+    background: #343434;
+    color: #f7f8f9;
+}
+
+.webSocket {
+    background: #00eaff;
+    color: black;
+}
+
+.api {
+    background: #ff7815;
+    color: #f7f8f9;
+}
+
+.figma {
+    background: #5f2092;
+    color: #f7f8f9;
+}
+
+.hackathon {
+    background: #ff4200;
+    color: #f7f8f9;
+}
+
+.stop {
+    background: #c20000;
+    color: #f7f8f9;
+}
+
+.notFinish {
+    background: #656565;
+    color: #f7f8f9;
+}
+
+
