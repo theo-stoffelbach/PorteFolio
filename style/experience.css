@@ -1,96 +1,109 @@
 a {
-    text-decoration: inherit;
+    text-decoration: none;
     color: inherit;
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--primary-color);
 }
 
 #sectionExperience {
     margin: 0;
+    background: var(--surface-color);
+    padding: 3rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--divider-color);
 }
 
 #experience {
     position: relative;
-    display: grid;
-    grid-template-columns: auto 5px auto;
-    grid-template-rows: repeat(5, 200px);
-    justify-content: center;
-    min-height: 100vh;
-    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 #arrow {
-    position: relative;
-    height: 100%;
-    background: black;
-    grid-row: 1 / -1;
-    grid-column: 2 / 2;
-    width: 100%;
-    border-radius: 3px;
+    display: none; /* Caché pour le nouveau design */
 }
 
 .listCards {
     display: flex;
-    flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
     margin: 0;
+    position: relative;
+}
 
+.listCards::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.listCards::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    background: var(--primary-color);
+    border: 4px solid var(--surface-color);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    box-shadow: var(--shadow-medium);
 }
 
 .cardExperiences {
-    width: 300px;
-    border: 2px solid black;
-    border-radius: 25px;
-    height: 100%;
-    overflow: auto;
-    /*scrollbar-width: thin;*/
+    width: 100%;
+    max-width: 400px;
+    background: var(--surface-color);
+    border: 2px solid var(--divider-color);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-light);
+    transition: var(--transition);
+    position: relative;
+    z-index: 3;
+}
 
-    scrollbar-width: none;
-    /*overflow: hidden;*/
-    /*overflow-y: scroll;*/
+.cardExperiences:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-heavy);
+    border-color: var(--primary-color);
 }
 
 .linkChrono {
-    height: 2px;
-    width: 100px;
-    background: black;
-
+    display: none; /* Caché pour le nouveau design */
 }
 
 .cardExperiences__title {
-    font-size: 1.5em;
-    font-weight: bold;
+    font-size: 1.25rem;
+    font-weight: 600;
     text-align: center;
-    /*margin: 0;*/
-    margin-bottom: 1em;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
 }
 
 .cardExperiences__paragraphe {
-    font-size: 1em;
-    text-align: center;
+    font-size: 1rem;
+    text-align: left;
     margin: 0;
-
-}
-
-#card2XP {
-    /*background-color: red;*/
-    grid-row: 1 / 2;
-    /*grid-column: 3/3;*/
-}
-
-#card2XP {
-    /*background-color: red;*/
-    grid-row: 2 / 3;
-    grid-column: 3/3;
-}
-
-#card3XP {
-    grid-row: 3 / 4;
-    /*grid-column: 3/3;*/
-}
-
-#card4XP {
-    grid-row: 4 / 5;
-    grid-column: 3/3;
+    color: var(--text-secondary);
+    line-height: 1.6;
 }
 
 .center {
@@ -98,30 +111,44 @@ a {
 }
 
 .h3FontSize {
-    font-size: 1.5em;
-    font-weight: bold;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
 }
 
+/* Responsive pour les expériences */
+@media (max-width: 768px) {
+    #sectionExperience {
+        padding: 2rem 1rem;
+    }
+    
+    .listCards::before,
+    .listCards::after {
+        display: none;
+    }
+    
+    .cardExperiences {
+        max-width: 100%;
+        padding: 1.5rem;
+    }
+}
+
+/* Scrollbar personnalisée */
 .cardExperiences::-webkit-scrollbar {
-    width: 5px;
+    width: 6px;
 }
 
-.cardExperiences::-webkit-scrollbar:horizontal {
-    height: 12px;
+.cardExperiences::-webkit-scrollbar-track {
+    background: var(--divider-color);
+    border-radius: 3px;
 }
 
+.cardExperiences::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 3px;
+}
 
-/*.cardExperiences::-webkit-scrollbar-track {*/
-/*    background-color: red; /
-/*}*/
-
-
-/*.cardExperiences::-webkit-scrollbar-thumb {*/
-/*    background-color: blue;*/
-/*    border-radius: 6px;*/
-/*}*/
-
-
-/*.cardExperiences::-webkit-scrollbar-thumb:hover {*/
-/*    background-color: #555;*/
-/*}*/
+.cardExperiences::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
