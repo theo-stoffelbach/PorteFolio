@@ -1,154 +1,144 @@
 #cardsProjects {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
-    margin: 2rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--spacing-3);
+  margin: var(--spacing-4) 0;
 }
 
 .cardProjectImage {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-    overflow: hidden;
-    border-radius: var(--border-radius);
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-3);
+  overflow: hidden;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-canvas-subtle);
 }
 
 .cardProject {
-    background: var(--surface-color);
-    border-radius: var(--border-radius);
-    padding: 2rem;
-    box-shadow: var(--shadow-light);
-    transition: var(--transition);
-    border: 1px solid var(--divider-color);
-    position: relative;
-    overflow: hidden;
-    height: auto;
-    min-height: 500px;
-}
-
-.cardProject::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  background: var(--color-canvas-default);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-3);
+  border: 1px solid var(--color-border-default);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
 }
 
 .cardProject:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-heavy);
-    border-color: var(--primary-color);
+  border-color: var(--color-fg-muted);
+  box-shadow: var(--shadow-medium);
 }
 
 .tagsTechno {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 1.5rem 0;
-    gap: 0.75rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: var(--spacing-3) 0;
+  gap: var(--spacing-1);
 }
 
 .tagTechno {
-    font-size: 0.75rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    border-radius: 20px;
-    padding: 0.5rem 1rem;
-    letter-spacing: 0.5px;
-    transition: var(--transition);
-    text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 20px;
+  padding: 4px 12px;
+  border: 1px solid;
+  transition: opacity 0.2s ease;
 }
 
 .tagTechno:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-light);
+  opacity: 0.8;
 }
 
 .projectImg {
-    width: 100%;
-    height: 200px;
-    border-radius: var(--border-radius);
-    object-fit: cover;
-    object-position: center;
-    transition: var(--transition);
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.2s ease;
 }
 
 .projectImg:hover {
-    transform: scale(1.05);
+  transform: scale(1.02);
 }
 
+.cardProjectTechno {
+  margin-top: auto;
+  padding-top: var(--spacing-3);
+}
+
+/* GitHub-style tags */
 .nodeJS {
-    background: linear-gradient(135deg, #68d391, #48bb78);
-    color: white;
-    box-shadow: 0 2px 4px rgba(104, 211, 145, 0.3);
+  background: var(--color-success-subtle);
+  color: var(--color-success-fg);
+  border-color: var(--color-success-fg);
 }
 
 .mongoose {
-    background: linear-gradient(135deg, #38a169, #2f855a);
-    color: white;
-    box-shadow: 0 2px 4px rgba(56, 161, 105, 0.3);
+  background: #dafbe1;
+  color: #116329;
+  border-color: #116329;
 }
 
 .express {
-    background: linear-gradient(135deg, #2d3748, #1a202c);
-    color: white;
-    box-shadow: 0 2px 4px rgba(45, 55, 72, 0.3);
+  background: #f6f8fa;
+  color: #1f2328;
+  border-color: #1f2328;
 }
 
 .webSocket {
-    background: linear-gradient(135deg, #00bcd4, #00acc1);
-    color: white;
-    box-shadow: 0 2px 4px rgba(0, 188, 212, 0.3);
+  background: #ddf4ff;
+  color: #0969da;
+  border-color: #0969da;
 }
 
 .api {
-    background: linear-gradient(135deg, #ff7043, #ff5722);
-    color: white;
-    box-shadow: 0 2px 4px rgba(255, 112, 67, 0.3);
+  background: #fff8c5;
+  color: #9a6700;
+  border-color: #9a6700;
 }
 
 .figma {
-    background: linear-gradient(135deg, #9c27b0, #7b1fa2);
-    color: white;
-    box-shadow: 0 2px 4px rgba(156, 39, 176, 0.3);
+  background: #fbefff;
+  color: #8250df;
+  border-color: #8250df;
 }
 
 .hackathon {
-    background: linear-gradient(135deg, #ff5722, #d32f2f);
-    color: white;
-    box-shadow: 0 2px 4px rgba(255, 87, 34, 0.3);
+  background: #ffebe9;
+  color: #d1242f;
+  border-color: #d1242f;
 }
 
 .stop {
-    background: linear-gradient(135deg, #f44336, #d32f2f);
-    color: white;
-    box-shadow: 0 2px 4px rgba(244, 67, 54, 0.3);
+  background: var(--color-danger-subtle);
+  color: var(--color-danger-fg);
+  border-color: var(--color-danger-fg);
 }
 
 .notFinish {
-    background: linear-gradient(135deg, #9e9e9e, #757575);
-    color: white;
-    box-shadow: 0 2px 4px rgba(158, 158, 158, 0.3);
+  background: #f6f8fa;
+  color: #656d76;
+  border-color: #656d76;
 }
 
 /* Responsive pour les projets */
 @media (max-width: 768px) {
-    #cardsProjects {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-    
-    .cardProject {
-        padding: 1.5rem;
-        min-height: auto;
-    }
-    
-    .projectImg {
-        height: 180px;
-    }
+  #cardsProjects {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-3);
+  }
+  
+  .cardProject {
+    padding: var(--spacing-3);
+    min-height: auto;
+  }
+  
+  .projectImg {
+    height: 160px;
+  }
 }
-
-
