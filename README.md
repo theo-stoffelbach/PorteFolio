@@ -53,15 +53,48 @@ npm run build
 npm start
 ```
 
-## 🐳 Déploiement Docker
+## 🐳 Déploiement
 
-### Build et Lancement
+### Déploiement Local
 
 ```bash
-docker-compose up -d
+docker-compose up -d --build
 ```
 
 Le portfolio sera accessible sur `http://localhost:3000`
+
+### Déploiement sur NAS (Auto-mise à jour) 🚀
+
+Le projet est configuré pour un déploiement automatique sur NAS avec GitHub Actions + Watchtower.
+
+**Workflow :**
+
+1. Push sur `V3_PorteFolio` → GitHub Actions build l'image
+2. Image publiée sur GitHub Container Registry (GHCR)
+3. Watchtower détecte automatiquement la nouvelle image
+4. Portfolio mis à jour sur le NAS (toutes les 5 min)
+
+**Déploiement initial :**
+
+```bash
+# Windows (PowerShell)
+.\deploy-to-nas.ps1
+
+# Linux/Mac
+./deploy-to-nas.sh
+```
+
+**OU manuellement :**
+
+```bash
+ssh Theo@192.168.1.3
+mkdir -p /mnt/pool2/docker/portfolio
+cd /mnt/pool2/docker/portfolio
+git clone https://github.com/theo-stoffelbach/PorteFolio.git .
+docker-compose up -d
+```
+
+📖 **Documentation complète :** Voir [DEPLOY.md](DEPLOY.md)
 
 ### Configuration
 
@@ -71,6 +104,7 @@ Le fichier `docker-compose.yml` configure:
 - Volume pour persistance des données (`/data`)
 - Healthcheck automatique
 - Restart automatique
+- Watchtower pour auto-update (mode production)
 
 ## 📊 API REST
 
