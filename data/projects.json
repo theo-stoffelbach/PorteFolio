@@ -1,0 +1,135 @@
+[
+  {
+    "id": "pokedex-2025",
+    "title": "Pokédex Interactive",
+    "description": "Application Pokédex en temps réel avec NodeJS, Express et Socket.IO pour les interactions multijoueurs",
+    "technologies": ["NodeJS", "Express", "Socket.IO", "React"],
+    "imageUrl": "/images/projects/pokedex.jpg.svg",
+    "projectUrl": "https://github.com/theostoffelbach/pokedex",
+    "color": "#3b82f6",
+    "weeks": [40, 41, 42, 43, 44, 45],
+    "phases": [
+      { 
+        "week": 40, 
+        "phase": "Initialisation",
+        "description": "L'idée est venue d'un besoin de créer une application interactive pour les fans de Pokémon. Brainstorming sur les fonctionnalités principales : recherche, filtres, et interactions en temps réel avec Socket.IO. Création du cahier des charges et des maquettes initiales."
+      },
+      { 
+        "week": 41, 
+        "phase": "Développement",
+        "description": "Mise en place de l'architecture backend avec NodeJS et Express. Création des routes API pour récupérer les données des Pokémon depuis l'API PokeAPI. Intégration de Socket.IO pour les interactions temps réel."
+      },
+      { 
+        "week": 42, 
+        "phase": "Développement",
+        "description": "Développement du frontend avec React. Création des composants pour afficher les Pokémon, des filtres par type et génération. Implémentation du système de recherche avancée et de la mise en favoris."
+      },
+      { 
+        "week": 43, 
+        "phase": "Développement",
+        "description": "Ajout des fonctionnalités multijoueurs avec Socket.IO : système de chat en direct, partage de Pokémon entre utilisateurs, et notifications en temps réel. Optimisation des performances et de la gestion du cache."
+      },
+      { 
+        "week": 44, 
+        "phase": "Tests",
+        "description": "Tests unitaires et d'intégration sur les routes API et les composants React. Tests de charge pour vérifier la scalabilité des WebSockets. Correction des bugs identifiés et tests utilisateurs avec retours d'expérience."
+      },
+      { 
+        "week": 45, 
+        "phase": "Déploiement",
+        "description": "Configuration de l'environnement de production. Déploiement sur Heroku avec intégration continue via GitHub Actions. Configuration des variables d'environnement et monitoring des performances post-déploiement."
+      }
+    ],
+    "year": 2025,
+    "featured": true
+  },
+  {
+    "id": "ecommerce-2024",
+    "title": "E-commerce Full Stack",
+    "description": "Plateforme e-commerce complète avec gestion de panier, paiement et authentification",
+    "technologies": ["React", "NodeJS", "MongoDB", "Stripe"],
+    "imageUrl": "/images/projects/ecommerce.jpg.svg",
+    "projectUrl": "https://github.com/theostoffelbach/ecommerce",
+    "color": "#10b981",
+    "weeks": [15, 16, 17, 18, 19, 20, 21],
+    "phases": [
+      { 
+        "week": 15, 
+        "phase": "Initialisation",
+        "description": "Analyse du marché e-commerce et identification des besoins. Réflexion sur l'expérience utilisateur : panier, checkout, authentification. Définition de l'architecture technique avec MongoDB pour la base de données et Stripe pour les paiements."
+      },
+      { 
+        "week": 16, 
+        "phase": "Développement",
+        "description": "Mise en place du backend NodeJS avec Express et MongoDB. Création des modèles de données (produits, utilisateurs, commandes). Implémentation de l'authentification JWT et des routes API CRUD pour les produits."
+      },
+      { 
+        "week": 17, 
+        "phase": "Développement",
+        "description": "Développement du système de panier avec gestion du state React. Création des pages produits avec filtres et recherche. Intégration du design responsive et des animations pour améliorer l'UX."
+      },
+      { 
+        "week": 18, 
+        "phase": "Développement",
+        "description": "Intégration de Stripe pour le processus de paiement sécurisé. Création du tunnel de commande (panier → informations → paiement → confirmation). Gestion des stocks et des promotions."
+      },
+      { 
+        "week": 19, 
+        "phase": "Développement",
+        "description": "Développement du dashboard admin pour gérer les produits, commandes et utilisateurs. Ajout des statistiques de vente et graphiques. Système de notifications par email pour les confirmations de commande."
+      },
+      { 
+        "week": 20, 
+        "phase": "Tests",
+        "description": "Tests de sécurité sur l'authentification et les paiements. Tests du processus complet d'achat avec différents scénarios. Validation de la conformité PCI DSS pour les paiements. Tests de performance sur la base de données."
+      },
+      { 
+        "week": 21, 
+        "phase": "Déploiement",
+        "description": "Déploiement sur AWS avec configuration de l'environnement de production. Mise en place du SSL et configuration des webhooks Stripe. Migration des données de test vers la production et formation utilisateur."
+      }
+    ],
+    "year": 2024,
+    "featured": true
+  },
+  {
+    "id": "dashboard-2024",
+    "title": "Dashboard Analytics",
+    "description": "Tableau de bord analytique avec visualisations de données en temps réel",
+    "technologies": ["React", "TypeScript", "Chart.js", "Firebase"],
+    "imageUrl": "/images/projects/dashboard.jpg.svg",
+    "projectUrl": "https://github.com/theostoffelbach/dashboard",
+    "color": "#8b5cf6",
+    "weeks": [25, 26, 27, 28, 29],
+    "phases": [
+      { 
+        "week": 25, 
+        "phase": "Initialisation",
+        "description": "Besoin identifié pour un tableau de bord analytique moderne. Étude des besoins en visualisation de données : graphiques, KPIs, temps réel. Choix de Chart.js pour les graphiques et Firebase pour le backend temps réel. Création des wireframes et mockups."
+      },
+      { 
+        "week": 26, 
+        "phase": "Développement",
+        "description": "Configuration de Firebase (Firestore et Authentication). Développement de l'architecture TypeScript avec interfaces typées strictes. Création des composants de base : layout, sidebar, cards de KPIs. Intégration de Chart.js pour les premiers graphiques."
+      },
+      { 
+        "week": 27, 
+        "phase": "Développement",
+        "description": "Implémentation des différents types de graphiques : ligne, barre, donut, radar. Création du système de filtres par date et catégorie. Développement des fonctionnalités temps réel avec Firebase listeners. Ajout des animations et transitions fluides."
+      },
+      { 
+        "week": 28, 
+        "phase": "Tests",
+        "description": "Tests de performance sur le rendu des graphiques avec de grandes quantités de données. Validation de la synchronisation temps réel sur plusieurs clients. Tests d'accessibilité et de compatibilité navigateurs. Optimisation du bundle et lazy loading des composants."
+      },
+      { 
+        "week": 29, 
+        "phase": "Déploiement",
+        "description": "Déploiement sur Vercel avec configuration du domaine personnalisé. Configuration des règles de sécurité Firebase. Mise en place du monitoring avec Firebase Analytics. Documentation utilisateur et vidéo de démonstration."
+      }
+    ],
+    "year": 2024,
+    "featured": false
+  }
+]
+

@@ -1,2 +1,154 @@
-# portefolio
-A porteFolio to show all my project
+# Portfolio Théo Stoffelbach
+
+Portfolio professionnel inspiré du design GitHub, développé avec Next.js 15, TypeScript, et Tailwind CSS.
+
+## 🚀 Technologies
+
+- **Next.js 15** (App Router)
+- **TypeScript**
+- **Tailwind CSS** + **Primer CSS**
+- **Framer Motion** (animations)
+- **Docker** (déploiement)
+
+## 📁 Structure du Projet
+
+```
+/app                 # Pages Next.js App Router
+  /api              # API Routes REST
+  /experiences      # Page expériences
+  /projets          # Page projets
+  /formation        # Page formation
+  /contact          # Page contact
+/components         # Composants React réutilisables
+/data               # Données JSON (projets, expériences, formations)
+/lib                # Utilitaires et types TypeScript
+/public             # Assets statiques
+```
+
+## 🛠️ Installation et Développement
+
+### Prérequis
+
+- Node.js 20+
+- npm ou yarn
+
+### Installation
+
+```bash
+npm install
+```
+
+### Développement
+
+```bash
+npm run dev
+```
+
+Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
+
+### Build de Production
+
+```bash
+npm run build
+npm start
+```
+
+## 🐳 Déploiement Docker
+
+### Build et Lancement
+
+```bash
+docker-compose up -d
+```
+
+Le portfolio sera accessible sur `http://localhost:3000`
+
+### Configuration
+
+Le fichier `docker-compose.yml` configure:
+
+- Port: 3000
+- Volume pour persistance des données (`/data`)
+- Healthcheck automatique
+- Restart automatique
+
+## 📊 API REST
+
+### Endpoints Disponibles
+
+- `GET /api/projects` - Liste des projets
+- `GET /api/projects/[id]` - Détails d'un projet
+- `POST /api/projects` - Créer un projet
+- `PUT /api/projects/[id]` - Modifier un projet
+- `DELETE /api/projects/[id]` - Supprimer un projet
+
+- `GET /api/experiences` - Liste des expériences
+- `GET /api/experiences/[id]` - Détails d'une expérience
+- `POST /api/experiences` - Créer une expérience
+- `PUT /api/experiences/[id]` - Modifier une expérience
+- `DELETE /api/experiences/[id]` - Supprimer une expérience
+
+- `GET /api/formations` - Liste des formations
+- `GET /api/formations/[id]` - Détails d'une formation
+- `POST /api/formations` - Créer une formation
+- `PUT /api/formations/[id]` - Modifier une formation
+- `DELETE /api/formations/[id]` - Supprimer une formation
+
+- `GET /api/activity/[year]` - Grille d'activité GitHub par année
+
+## 📝 Gestion des Données
+
+Les données sont stockées dans `/data` au format JSON:
+
+- `projects.json` - Projets avec semaines de travail
+- `experiences.json` - Expériences professionnelles
+- `formations.json` - Formations académiques
+
+### Format d'un Projet
+
+```json
+{
+  "id": "pokedex-2025",
+  "title": "Pokédex Interactive",
+  "description": "Description du projet",
+  "technologies": ["NodeJS", "React"],
+  "imageUrl": "/images/projects/pokedex.jpg.svg",
+  "projectUrl": "https://github.com/...",
+  "color": "#3b82f6",
+  "weeks": [40, 41, 42, 43, 44, 45],
+  "year": 2025,
+  "featured": true
+}
+```
+
+## 🎨 Personnalisation
+
+### Palette de Couleurs GitHub
+
+Modifié dans `tailwind.config.ts`:
+
+- `github-gray-dark`: #24292e
+- `github-gray`: #586069
+- `github-gray-light`: #f6f8fa
+- `github-blue`: #0366d6
+- `github-green`: #28a745
+- `github-border`: #e1e4e8
+
+### Remplacement des Images
+
+Remplacez les fichiers dans `/public/images`:
+
+- `profile.jpg.svg` → Votre photo de profil
+- `/projects/*.jpg.svg` → Screenshots de vos projets
+
+## 🔐 Sécurité Future
+
+Une page `/login` sera ajoutée pour l'authentification admin et la gestion des données via l'interface.
+
+## 📄 Licence
+
+ISC
+
+## 👤 Auteur
+
+Théo Stoffelbach - theo.stoffelbach@hotmail.com
