@@ -35,7 +35,7 @@ export default function Hero() {
 
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-4xl md:text-5xl font-bold text-github-gray-dark dark:text-white mb-2">
-              Théo Stoffelbach 2
+              Théo Stoffelbach
             </h1>
             <p className="text-xl text-github-gray dark:text-gray-300 mb-4">
               Développeur Web (NodeJS, ReactJS) - Alternant chez SII
