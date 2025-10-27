@@ -2,7 +2,7 @@
 
 Portfolio professionnel inspiré du design GitHub, développé avec Next.js 15, TypeScript, et Tailwind CSS.
 
-## 🚀 Technologies
+## Technologies
 
 - **Next.js 15** (App Router)
 - **TypeScript**
@@ -10,7 +10,7 @@ Portfolio professionnel inspiré du design GitHub, développé avec Next.js 15, 
 - **Framer Motion** (animations)
 - **Docker** (déploiement)
 
-## 📁 Structure du Projet
+## Structure du Projet
 
 ```
 /app                 # Pages Next.js App Router
@@ -25,7 +25,7 @@ Portfolio professionnel inspiré du design GitHub, développé avec Next.js 15, 
 /public             # Assets statiques
 ```
 
-## 🛠️ Installation et Développement
+## Installation et Développement
 
 ### Prérequis
 
@@ -53,17 +53,17 @@ npm run build
 npm start
 ```
 
-## 🐳 Déploiement
+## Déploiement
 
 ### Déploiement Local
 
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 Le portfolio sera accessible sur `http://localhost:3000`
 
-### Déploiement sur NAS (Auto-mise à jour) 🚀
+### Déploiement sur NAS (Auto-mise à jour)
 
 Le projet est configuré pour un déploiement automatique sur NAS avec GitHub Actions + Watchtower.
 
@@ -88,13 +88,12 @@ Le projet est configuré pour un déploiement automatique sur NAS avec GitHub Ac
 
 ```bash
 ssh Theo@192.168.1.3
-mkdir -p /mnt/pool2/docker/portfolio
-cd /mnt/pool2/docker/portfolio
-git clone https://github.com/theo-stoffelbach/PorteFolio.git .
-docker-compose up -d
+cd /volume1/Docker_data/portefolio/PorteFolio
+docker compose pull
+docker compose up -d
 ```
 
-📖 **Documentation complète :** Voir [DEPLOY.md](DEPLOY.md)
+**Documentation complète :** Voir [DEPLOY.md](DEPLOY.md)
 
 ### Configuration
 
@@ -106,7 +105,7 @@ Le fichier `docker-compose.yml` configure:
 - Restart automatique
 - Watchtower pour auto-update (mode production)
 
-## 📊 API REST
+## API REST
 
 ### Endpoints Disponibles
 
@@ -130,7 +129,7 @@ Le fichier `docker-compose.yml` configure:
 
 - `GET /api/activity/[year]` - Grille d'activité GitHub par année
 
-## 📝 Gestion des Données
+## Gestion des Données
 
 Les données sont stockées dans `/data` au format JSON:
 
@@ -146,7 +145,7 @@ Les données sont stockées dans `/data` au format JSON:
   "title": "Pokédex Interactive",
   "description": "Description du projet",
   "technologies": ["NodeJS", "React"],
-  "imageUrl": "/images/projects/pokedex.jpg.svg",
+  "imageUrl": "/images/projects/pokedex.jpg",
   "projectUrl": "https://github.com/...",
   "color": "#3b82f6",
   "weeks": [40, 41, 42, 43, 44, 45],
@@ -155,7 +154,7 @@ Les données sont stockées dans `/data` au format JSON:
 }
 ```
 
-## 🎨 Personnalisation
+## Personnalisation
 
 ### Palette de Couleurs GitHub
 
@@ -172,17 +171,13 @@ Modifié dans `tailwind.config.ts`:
 
 Remplacez les fichiers dans `/public/images`:
 
-- `profile.jpg.svg` → Votre photo de profil
-- `/projects/*.jpg.svg` → Screenshots de vos projets
+- `profile.jpg` → Votre photo de profil
+- `/projects/*.jpg` → Screenshots de vos projets
 
-## 🔐 Sécurité Future
+## Sécurité Future
 
 Une page `/login` sera ajoutée pour l'authentification admin et la gestion des données via l'interface.
 
-## 📄 Licence
-
-ISC
-
-## 👤 Auteur
+## Auteur
 
 Théo Stoffelbach - theo.stoffelbach@hotmail.com

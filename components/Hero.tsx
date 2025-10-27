@@ -25,7 +25,7 @@ export default function Hero() {
         <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
           <div className="relative w-48 h-48 md:w-56 md:h-56">
             <Image
-              src="/images/profile.jpg.svg"
+              src="/images/profile.jpg"
               alt="Théo Stoffelbach"
               fill
               className="rounded-full object-cover border-4 border-github-border dark:border-gray-700"
