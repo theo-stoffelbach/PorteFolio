@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import NavbarSelector from "@/components/NavbarSelector";
 
 export const metadata: Metadata = {
   title: "Théo Stoffelbach - Développeur Web",
@@ -30,7 +30,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-white dark:bg-gray-900">
-        <Navbar />
+        <NavbarSelector />
         <main className="min-h-screen bg-github-gray-light dark:bg-gray-900">
           {children}
         </main>
