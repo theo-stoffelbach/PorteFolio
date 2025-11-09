@@ -2,6 +2,7 @@ export interface ProjectPhase {
   week: number;
   phase: string;
   description?: string;
+  emoji?: string;
 }
 
 export interface Project {
@@ -25,6 +26,12 @@ export interface Experience {
   duration: string;
   technologies: string[];
   description: string;
+  startDate?: string;
+  endDate?: string;
+  location?: string;
+  responsibilities?: string[];
+  achievements?: string[];
+  fullDescription?: string;
 }
 
 export interface Formation {
