@@ -19,6 +19,9 @@ export default function ProjectEditForm({
   const [activeTab, setActiveTab] = useState<"basic" | "details" | "phases">(
     "basic"
   );
+  const [weeksInput, setWeeksInput] = useState<string>(
+    initialProject.weeks.join(", ")
+  );
 
   const handleBasicChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -39,10 +42,43 @@ export default function ProjectEditForm({
   };
 
   const handleWeeksChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const weeks = e.target.value.split(",").map((w) => parseInt(w.trim()));
+    const inputValue = e.target.value;
+    setWeeksInput(inputValue);
+
+    // Parser les semaines depuis l'input
+    const weeks: number[] = [];
+    if (inputValue.trim()) {
+      const parts = inputValue.split(/[,;]/).map(p => p.trim()).filter(p => p);
+      parts.forEach(part => {
+        const num = parseInt(part);
+        if (!isNaN(num)) {
+          weeks.push(num);
+        }
+      });
+    }
+
+    // Créer automatiquement les phases correspondantes aux semaines
+    const existingWeeks = new Set(project.phases?.map(p => p.week) || []);
+    let newPhases = [...(project.phases || [])];
+
+    // Ajouter les nouvelles phases pour les semaines qui n'existent pas
+    weeks.forEach(week => {
+      if (!existingWeeks.has(week)) {
+        newPhases.push({
+          week,
+          phase: `Phase Semaine ${week}`,
+          description: "",
+        });
+      }
+    });
+
+    // Supprimer les phases dont la semaine n'est plus dans la liste
+    newPhases = newPhases.filter(phase => weeks.includes(phase.week));
+
     setProject((prev) => ({
       ...prev,
-      weeks,
+      weeks: weeks.length > 0 ? weeks.sort((a, b) => a - b) : [],
+      phases: newPhases,
     }));
   };
 
@@ -218,14 +254,17 @@ export default function ProjectEditForm({
             {/* Weeks */}
             <div>
               <label className="block text-sm font-semibold text-github-gray-dark dark:text-white mb-2">
-                Semaines (séparées par des virgules)
+                Semaines du projet (séparées par des virgules)
               </label>
+              <p className="text-sm text-github-gray dark:text-gray-400 mb-2">
+                En ajoutant des semaines ici, les phases correspondantes seront créées automatiquement dans l'onglet Phases
+              </p>
               <input
                 type="text"
-                value={project.weeks.join(", ")}
+                value={weeksInput}
                 onChange={handleWeeksChange}
                 className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
-                placeholder="1, 2, 3, 4"
+                placeholder="1, 2, 3, 4, 5, 6"
               />
             </div>
 
@@ -251,12 +290,17 @@ export default function ProjectEditForm({
           <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8">
             <PhaseManager
               phases={project.phases}
-              onPhasesChange={(phases) =>
+              onPhasesChange={(phases) => {
+                // Synchroniser les semaines avec les phases
+                const weeksFromPhases = phases.map(p => p.week).sort((a, b) => a - b);
+                setWeeksInput(weeksFromPhases.join(", "));
+
                 setProject((prev) => ({
                   ...prev,
                   phases,
-                }))
-              }
+                  weeks: weeksFromPhases,
+                }));
+              }}
             />
           </div>
         )}
