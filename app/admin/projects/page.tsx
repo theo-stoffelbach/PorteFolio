@@ -36,9 +36,50 @@ export default function AdminProjectsPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-github-gray-dark dark:text-white mb-8">
-        Gestion des Projets
-      </h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold text-github-gray-dark dark:text-white">
+          Gestion des Projets
+        </h1>
+        <button
+          onClick={async () => {
+            // Créer un nouveau projet avec les données par défaut
+            const newProject: Project = {
+              id: `projet-${Date.now()}`,
+              title: "Nouveau Projet",
+              description: "Description du projet",
+              technologies: [],
+              imageUrl: "",
+              color: "#3b82f6",
+              weeks: [],
+              year: new Date().getFullYear(),
+              featured: false,
+            };
+
+            try {
+              // Créer le projet via l'API
+              const res = await fetch("/api/projects", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newProject),
+              });
+
+              if (res.ok) {
+                const createdProject = await res.json();
+                // Rediriger vers la page d'édition
+                window.location.href = `/admin/projects/${createdProject.id}`;
+              } else {
+                alert("Erreur lors de la création du projet");
+              }
+            } catch (error) {
+              console.error("Erreur:", error);
+              alert("Erreur lors de la création du projet");
+            }
+          }}
+          className="px-6 py-3 bg-github-blue dark:bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
+        >
+          + Nouveau Projet
+        </button>
+      </div>
 
       <div className="space-y-6">
         {projects.map((project, index) => (
