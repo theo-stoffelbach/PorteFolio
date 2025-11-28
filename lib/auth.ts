@@ -1,0 +1,117 @@
+/**
+ * Utilitaires d'authentification
+ *
+ * Fournit les fonctions pour :
+ * - Vérifier les mots de passe avec bcrypt
+ * - Générer des tokens JWT
+ * - Vérifier les tokens JWT
+ * - Protéger les routes API
+ */
+
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { NextRequest } from 'next/server';
+
+// Configuration depuis les variables d'environnement
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me-in-production';
+const JWT_EXPIRES_IN = parseInt(process.env.JWT_EXPIRES_IN || '604800'); // 7 jours par défaut
+
+export interface JWTPayload {
+  email: string;
+  iat?: number;
+  exp?: number;
+}
+
+/**
+ * Vérifie si le mot de passe correspond au hash stocké
+ */
+export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+  try {
+    return await bcrypt.compare(password, hash);
+  } catch (error) {
+    console.error('Erreur lors de la vérification du mot de passe:', error);
+    return false;
+  }
+}
+
+/**
+ * Génère un hash bcrypt pour un mot de passe
+ * Utile pour les migrations ou tests
+ */
+export async function hashPassword(password: string): Promise<string> {
+  return await bcrypt.hash(password, 10);
+}
+
+/**
+ * Génère un token JWT pour l'utilisateur authentifié
+ */
+export function generateToken(email: string): string {
+  const payload: JWTPayload = {
+    email,
+  };
+
+  return jwt.sign(payload, JWT_SECRET, {
+    expiresIn: JWT_EXPIRES_IN,
+  });
+}
+
+/**
+ * Vérifie et décode un token JWT
+ * Retourne null si le token est invalide ou expiré
+ */
+export function verifyToken(token: string): JWTPayload | null {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
+    return decoded;
+  } catch (error) {
+    console.error('Token invalide:', error);
+    return null;
+  }
+}
+
+/**
+ * Extrait et vérifie le token depuis une requête Next.js
+ * Retourne le payload du token si valide, null sinon
+ */
+export function getTokenFromRequest(request: NextRequest): JWTPayload | null {
+  const token = request.cookies.get('admin_token')?.value;
+
+  if (!token) {
+    return null;
+  }
+
+  return verifyToken(token);
+}
+
+/**
+ * Vérifie si une requête est authentifiée
+ */
+export function isAuthenticated(request: NextRequest): boolean {
+  const tokenPayload = getTokenFromRequest(request);
+  return tokenPayload !== null;
+}
+
+/**
+ * Récupère les credentials admin depuis les variables d'environnement
+ * Lance une erreur si les variables ne sont pas configurées en production
+ */
+export function getAdminCredentials(): { email: string; passwordHash: string } {
+  const email = process.env.ADMIN_EMAIL;
+  const passwordHash = process.env.ADMIN_PASSWORD_HASH;
+
+  // En production, exiger des credentials configurés
+  if (process.env.NODE_ENV === 'production') {
+    if (!email || !passwordHash) {
+      throw new Error(
+        'ADMIN_EMAIL et ADMIN_PASSWORD_HASH doivent être configurés en production. ' +
+        'Utilisez "npm run create-admin" pour générer un compte.'
+      );
+    }
+  }
+
+  // Valeurs par défaut en développement (pour faciliter les tests)
+  return {
+    email: email || 'admin@portfolio.com',
+    passwordHash: passwordHash || '$2a$10$rN6vZJPQKQjKQ7xXJZQx5.YqW8yZ0pVHqZkYqZkYqZkYqZkYqZkYq', // "admin123"
+  };
+}

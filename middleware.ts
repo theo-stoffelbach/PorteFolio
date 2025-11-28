@@ -1,17 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyToken } from "@/lib/auth";
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("admin_token")?.value;
+  const pathname = request.nextUrl.pathname;
 
-  // Si l'utilisateur essaie d'accéder à /admin sans token
-  if (request.nextUrl.pathname.startsWith("/admin")) {
-    if (!token) {
+  // Vérifier la validité du token JWT
+  const isValidToken = token ? verifyToken(token) !== null : false;
+
+  // Protection de la route /admin
+  if (pathname.startsWith("/admin")) {
+    if (!isValidToken) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
-  // Si l'utilisateur est déjà connecté et essaie d'aller sur /login
-  if (request.nextUrl.pathname === "/login" && token) {
+  // Protection des routes API mutantes (POST, PUT, DELETE)
+  if (pathname.startsWith("/api/")) {
+    const isApiRoute =
+      pathname.startsWith("/api/projects") ||
+      pathname.startsWith("/api/experiences") ||
+      pathname.startsWith("/api/formations");
+
+    const isMutatingMethod = ["POST", "PUT", "DELETE", "PATCH"].includes(
+      request.method
+    );
+
+    // Exclure les routes d'authentification de la protection
+    const isAuthRoute = pathname.startsWith("/api/auth");
+
+    if (isApiRoute && isMutatingMethod && !isAuthRoute) {
+      if (!isValidToken) {
+        return NextResponse.json(
+          { message: "Non autorisé - Authentification requise" },
+          { status: 401 }
+        );
+      }
+    }
+  }
+
+  // Rediriger vers /admin si déjà connecté et essaie d'accéder à /login
+  if (pathname === "/login" && isValidToken) {
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 
@@ -19,5 +48,11 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/login"],
+  matcher: [
+    "/admin/:path*",
+    "/login",
+    "/api/projects/:path*",
+    "/api/experiences/:path*",
+    "/api/formations/:path*",
+  ],
 };

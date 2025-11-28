@@ -174,9 +174,40 @@ Remplacez les fichiers dans `/public/images`:
 - `profile.jpg` → Votre photo de profil
 - `/projects/*.jpg` → Screenshots de vos projets
 
-## Sécurité Future
+## 🔐 Sécurité et Authentification
 
-Une page `/login` sera ajoutée pour l'authentification admin et la gestion des données via l'interface.
+Le portfolio dispose d'un système d'authentification sécurisé pour protéger les routes admin et les API de modification.
+
+### Configuration rapide
+
+```bash
+# 1. Générer un compte admin
+npm run create-admin
+
+# 2. Copier les variables générées dans .env
+cp .env.example .env
+# Puis éditer .env avec les valeurs générées
+
+# 3. Déployer
+docker-compose up -d
+```
+
+### Fonctionnalités de sécurité
+
+- ✅ **Mots de passe hashés** avec bcrypt (10 rounds)
+- ✅ **Tokens JWT** signés pour l'authentification stateless
+- ✅ **Cookies HttpOnly** protection contre XSS
+- ✅ **Routes API protégées** (POST/PUT/DELETE nécessitent authentification)
+- ✅ **Panel admin** accessible sur `/admin` (protégé)
+- ✅ **Variables d'environnement** pour les credentials (jamais en dur)
+
+### Documentation complète
+
+Consultez [SECURITY.md](SECURITY.md) pour :
+- Configuration détaillée
+- Bonnes pratiques de sécurité
+- Dépannage
+- Architecture technique
 
 ## Auteur
 
