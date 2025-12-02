@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     // Définir le cookie avec le token JWT
     response.cookies.set("admin_token", token, {
       httpOnly: true, // Empêche l'accès depuis JavaScript
-      secure: process.env.NODE_ENV === "production", // HTTPS uniquement en production
+      secure: request.headers.get('x-forwarded-proto') === 'https', // Détecte HTTPS via reverse proxy
       sameSite: "lax", // Protection CSRF
       maxAge: parseInt(process.env.JWT_EXPIRES_IN || "604800"), // 7 jours par défaut
       path: "/", // Disponible sur tout le site
