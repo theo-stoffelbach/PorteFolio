@@ -27,9 +27,17 @@ export default function ProjectEditForm({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value, type } = e.target as HTMLInputElement;
+    let parsedValue: string | number | boolean = value;
+
+    if (type === "checkbox") {
+      parsedValue = (e.target as HTMLInputElement).checked;
+    } else if (name === "year") {
+      parsedValue = parseInt(value, 10) || 0;
+    }
+
     setProject((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+      [name]: parsedValue,
     }));
   };
 
