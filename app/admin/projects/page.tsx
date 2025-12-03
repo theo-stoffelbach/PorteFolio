@@ -7,6 +7,12 @@ import Link from "next/link";
 export default function AdminProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   useEffect(() => {
     fetchProjects();
@@ -36,12 +42,13 @@ export default function AdminProjectsPage() {
 
       if (res.ok) {
         setProjects(projects.filter((p) => p.id !== id));
+        showToast("Projet supprimé avec succès !", "success");
       } else {
-        alert("Erreur lors de la suppression du projet");
+        showToast("Erreur lors de la suppression du projet", "error");
       }
     } catch (error) {
       console.error("Erreur:", error);
-      alert("Erreur lors de la suppression du projet");
+      showToast("Erreur lors de la suppression du projet", "error");
     }
   };
 
@@ -57,6 +64,28 @@ export default function AdminProjectsPage() {
 
   return (
     <div>
+      {/* Toast Notification */}
+      {toast && (
+        <div
+          className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in ${
+            toast.type === "success"
+              ? "bg-green-500 text-white"
+              : "bg-red-500 text-white"
+          }`}
+        >
+          {toast.type === "success" ? (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          ) : (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          )}
+          <span className="font-medium">{toast.message}</span>
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold text-github-gray-dark dark:text-white">
           Gestion des Projets
@@ -86,14 +115,18 @@ export default function AdminProjectsPage() {
 
               if (res.ok) {
                 const createdProject = await res.json();
-                // Rediriger vers la page d'édition
-                window.location.href = `/admin/projects/${createdProject.id}`;
+                setProjects([...projects, createdProject]);
+                showToast("Projet créé avec succès !", "success");
+                // Rediriger vers la page d'édition après un court délai
+                setTimeout(() => {
+                  window.location.href = `/admin/projects/${createdProject.id}`;
+                }, 1000);
               } else {
-                alert("Erreur lors de la création du projet");
+                showToast("Erreur lors de la création du projet", "error");
               }
             } catch (error) {
               console.error("Erreur:", error);
-              alert("Erreur lors de la création du projet");
+              showToast("Erreur lors de la création du projet", "error");
             }
           }}
           className="px-6 py-3 bg-github-blue dark:bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
