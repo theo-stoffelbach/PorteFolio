@@ -3,18 +3,20 @@
  *
  * Fournit les fonctions pour :
  * - Vérifier les mots de passe avec bcrypt
- * - Générer des tokens JWT
+ * - Générer des tokens JWT (compatible Edge Runtime avec jose)
  * - Vérifier les tokens JWT
  * - Protéger les routes API
  */
 
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { SignJWT, jwtVerify } from 'jose';
 import { NextRequest } from 'next/server';
 
 // Configuration depuis les variables d'environnement
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me-in-production';
-const JWT_EXPIRES_IN = parseInt(process.env.JWT_EXPIRES_IN || '604800'); // 7 jours par défaut
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || 'dev-secret-change-me-in-production'
+);
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '604800'; // 7 jours par défaut
 
 export interface JWTPayload {
   email: string;
@@ -44,25 +46,27 @@ export async function hashPassword(password: string): Promise<string> {
 
 /**
  * Génère un token JWT pour l'utilisateur authentifié
+ * Utilise jose pour la compatibilité Edge Runtime
  */
-export function generateToken(email: string): string {
-  const payload: JWTPayload = {
-    email,
-  };
+export async function generateToken(email: string): Promise<string> {
+  const token = await new SignJWT({ email })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime(`${JWT_EXPIRES_IN}s`)
+    .sign(JWT_SECRET);
 
-  return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN,
-  });
+  return token;
 }
 
 /**
  * Vérifie et décode un token JWT
  * Retourne null si le token est invalide ou expiré
+ * Compatible Edge Runtime avec jose
  */
-export function verifyToken(token: string): JWTPayload | null {
+export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
-    return decoded;
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    return payload as unknown as JWTPayload;
   } catch (error) {
     console.error('Token invalide:', error);
     return null;
@@ -73,7 +77,7 @@ export function verifyToken(token: string): JWTPayload | null {
  * Extrait et vérifie le token depuis une requête Next.js
  * Retourne le payload du token si valide, null sinon
  */
-export function getTokenFromRequest(request: NextRequest): JWTPayload | null {
+export async function getTokenFromRequest(request: NextRequest): Promise<JWTPayload | null> {
   const token = request.cookies.get('admin_token')?.value;
 
   if (!token) {
@@ -86,8 +90,8 @@ export function getTokenFromRequest(request: NextRequest): JWTPayload | null {
 /**
  * Vérifie si une requête est authentifiée
  */
-export function isAuthenticated(request: NextRequest): boolean {
-  const tokenPayload = getTokenFromRequest(request);
+export async function isAuthenticated(request: NextRequest): Promise<boolean> {
+  const tokenPayload = await getTokenFromRequest(request);
   return tokenPayload !== null;
 }
 

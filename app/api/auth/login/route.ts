@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Générer un token JWT
-    const token = generateToken(email);
+    const token = await generateToken(email);
 
     // Créer la réponse avec cookie sécurisé
     const response = NextResponse.json(

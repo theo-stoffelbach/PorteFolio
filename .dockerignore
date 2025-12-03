@@ -10,4 +10,7 @@ docker-compose.yml
 *.md
 .vscode
 .idea
+source_code
+.env
+.env.*
 

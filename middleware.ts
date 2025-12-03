@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/auth";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const token = request.cookies.get("admin_token")?.value;
   const pathname = request.nextUrl.pathname;
 
   // Vérifier la validité du token JWT
-  const isValidToken = token ? verifyToken(token) !== null : false;
+  const isValidToken = token ? (await verifyToken(token)) !== null : false;
 
   // Protection de la route /admin
   if (pathname.startsWith("/admin")) {

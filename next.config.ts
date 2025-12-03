@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [],
   },
+  serverExternalPackages: ['bcryptjs', 'jose'],
 }
 
 export default nextConfig
