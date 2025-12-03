@@ -14,6 +14,12 @@ export default function AdminProjectDetailPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   useEffect(() => {
     if (projectId) {
@@ -50,10 +56,13 @@ export default function AdminProjectDetailPage() {
 
       if (res.ok) {
         setProject(updatedProject);
-        // Afficher un message de succès (optionnel)
+        showToast("Modifications enregistrées !", "success");
+      } else {
+        showToast("Erreur lors de la sauvegarde", "error");
       }
     } catch (error) {
       console.error("Erreur lors de la sauvegarde:", error);
+      showToast("Erreur lors de la sauvegarde", "error");
     } finally {
       setSaving(false);
     }
@@ -87,6 +96,28 @@ export default function AdminProjectDetailPage() {
 
   return (
     <div>
+      {/* Toast Notification */}
+      {toast && (
+        <div
+          className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 ${
+            toast.type === "success"
+              ? "bg-green-500 text-white"
+              : "bg-red-500 text-white"
+          }`}
+        >
+          {toast.type === "success" ? (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          ) : (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          )}
+          <span className="font-medium">{toast.message}</span>
+        </div>
+      )}
+
       {/* Header */}
       <div className="mb-8">
         <Link
