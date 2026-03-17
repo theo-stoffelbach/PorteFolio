@@ -1,0 +1,207 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { TimelineEvent } from "@/lib/types";
+
+export default function Timeline() {
+  const [events, setEvents] = useState<TimelineEvent[]>([]);
+  const [scrolled, setScrolled] = useState(false);
+  const timelineRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Simuler des événements depuis l'API
+    const mockEvents: TimelineEvent[] = [
+      {
+        id: "epitech",
+        title: "Formation Epitech Digital",
+        date: "2022-2023",
+        type: "formation",
+        description: "Formation intensive en développement web",
+        side: "left",
+      },
+      {
+        id: "ynov",
+        title: "Formation Ynov",
+        date: "2023-2025",
+        type: "formation",
+        description: "Master en développement web avec spécialisation backend",
+        side: "right",
+      },
+      {
+        id: "berenisse",
+        title: "Stage Bérénisse Phone",
+        date: "2023 - 3 mois",
+        type: "experience",
+        description: "Stage développement web full-stack",
+        side: "left",
+      },
+      {
+        id: "sii",
+        title: "Alternance SII",
+        date: "2024 - Présent",
+        type: "experience",
+        description: "Développeur Web en Perl",
+        side: "right",
+      },
+    ];
+    setEvents(mockEvents);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (timelineRef.current) {
+        const elementTop = timelineRef.current.getBoundingClientRect().top;
+        const elementVisible = window.innerHeight - elementTop;
+        if (elementVisible > 200) {
+          setScrolled(true);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <section className="py-12 sm:py-16 bg-white dark:bg-gray-800">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-2xl sm:text-3xl font-bold text-github-gray-dark dark:text-white mb-8 sm:mb-12 text-center">
+          Chronologie
+        </h2>
+
+        <div ref={timelineRef} className="relative">
+          {/* Ligne verticale - à gauche sur mobile, au centre sur desktop */}
+          <div className="absolute left-4 sm:left-1/2 sm:transform sm:-translate-x-1/2 w-0.5 sm:w-1 h-full bg-github-blue dark:bg-blue-500"></div>
+
+          <div className="space-y-6 sm:space-y-8">
+            {events.map((event, index) => (
+              <div
+                key={event.id}
+                className={`relative ${
+                  scrolled
+                    ? "opacity-100 translate-x-0"
+                    : "opacity-0 translate-x-4 sm:translate-x-8"
+                } transition-all duration-700`}
+                style={{ transitionDelay: `${index * 150}ms` }}
+              >
+                {/* Version Mobile - toujours à droite de la ligne */}
+                <div className="sm:hidden flex items-start">
+                  {/* Point sur la ligne */}
+                  <div className="relative z-10 flex-shrink-0">
+                    <div className="w-3 h-3 bg-github-blue dark:bg-blue-500 rounded-full border-2 border-white dark:border-gray-800 shadow-md ml-[10px]"></div>
+                  </div>
+
+                  {/* Trait horizontal + Contenu */}
+                  <div className="flex-1 ml-4 pl-4 border-l-2 border-github-blue/30 dark:border-blue-500/30">
+                    <div className="bg-white dark:bg-gray-700 border border-github-border dark:border-gray-600 rounded-lg p-4 shadow-sm">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-sm">
+                          {event.type === "formation" ? "🎓" : "💼"}
+                        </span>
+                        <h3 className="text-base font-semibold text-github-gray-dark dark:text-white">
+                          {event.title}
+                        </h3>
+                      </div>
+                      <p className="text-xs text-github-blue dark:text-blue-400 font-medium mb-2">
+                        {event.date}
+                      </p>
+                      <p className="text-sm text-github-gray-dark dark:text-gray-300">
+                        {event.description}
+                      </p>
+                      {event.type === "experience" && (
+                        <a href={`/experiences/${event.id}`} className="mt-2 inline-block text-github-blue dark:text-blue-400 hover:underline text-xs font-semibold">
+                          Voir détails →
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Version Desktop - alternance gauche/droite */}
+                <div className="hidden sm:flex items-center">
+                  {/* Conteneur gauche avec boîte et trait */}
+                  {event.side === "left" && (
+                    <>
+                      <div className="w-5/12 pr-8 text-right relative z-20">
+                        <div className="bg-white dark:bg-gray-700 border border-github-border dark:border-gray-600 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer hover:border-github-blue dark:hover:border-blue-400">
+                          <div className="flex items-center justify-end gap-2 mb-2">
+                            <h3 className="text-lg font-semibold text-github-gray-dark dark:text-white">
+                              {event.title}
+                            </h3>
+                            <span className="text-sm font-semibold text-github-blue dark:text-blue-400">
+                              {event.type === "formation" ? "🎓" : "💼"}
+                            </span>
+                          </div>
+                          <p className="text-sm text-github-gray dark:text-gray-300 mb-2">
+                            {event.date}
+                          </p>
+                          <p className="text-github-gray-dark dark:text-gray-300">
+                            {event.description}
+                          </p>
+                          {event.type === "experience" && (
+                            <a href={`/experiences/${event.id}`} className="mt-3 inline-block text-github-blue dark:text-blue-400 hover:underline text-sm font-semibold">
+                              Voir détails →
+                            </a>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Trait horizontal gauche + Point sur la ligne */}
+                      <div className="relative z-10 w-2/12 flex justify-center pointer-events-none">
+                        <div className="absolute top-1/2 right-1/2 transform -translate-y-1/2 h-0.5 bg-github-blue dark:bg-blue-500 w-1/2"></div>
+                        <div className="w-4 h-4 bg-github-blue dark:bg-blue-500 rounded-full border-4 border-white dark:border-gray-800 shadow-md"></div>
+                      </div>
+
+                      {/* Espace vide droite */}
+                      <div className="w-5/12"></div>
+                    </>
+                  )}
+
+                  {/* Conteneur droite avec boîte et trait */}
+                  {event.side === "right" && (
+                    <>
+                      {/* Espace vide gauche */}
+                      <div className="w-5/12"></div>
+
+                      {/* Point sur la ligne + Trait horizontal droite */}
+                      <div className="relative z-10 w-2/12 flex justify-center pointer-events-none">
+                        <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 h-0.5 bg-github-blue dark:bg-blue-500 w-3/4"></div>
+                        <div className="w-4 h-4 bg-github-blue dark:bg-blue-500 rounded-full border-4 border-white dark:border-gray-800 shadow-md"></div>
+                      </div>
+
+                      <div className="w-5/12 pl-8 relative z-20">
+                        <div className="bg-white dark:bg-gray-700 border border-github-border dark:border-gray-600 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer hover:border-github-blue dark:hover:border-blue-400">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-sm font-semibold text-github-blue dark:text-blue-400">
+                              {event.type === "formation" ? "🎓" : "💼"}
+                            </span>
+                            <h3 className="text-lg font-semibold text-github-gray-dark dark:text-white">
+                              {event.title}
+                            </h3>
+                          </div>
+                          <p className="text-sm text-github-gray dark:text-gray-300 mb-2">
+                            {event.date}
+                          </p>
+                          <p className="text-github-gray-dark dark:text-gray-300">
+                            {event.description}
+                          </p>
+                          {event.type === "experience" && (
+                            <a href={`/experiences/${event.id}`} className="mt-3 inline-block text-github-blue dark:text-blue-400 hover:underline text-sm font-semibold">
+                              Voir détails →
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

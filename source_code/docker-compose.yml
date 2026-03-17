@@ -1,0 +1,44 @@
+services:
+  portfolio:
+    image: ghcr.io/theo-stoffelbach/portefolio:v1.0.0
+    container_name: portfolio
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-604800}
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3000",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # --------------------------------------------------------------------------
+  # WATCHTOWER SUPPRIMÉ - Vulnérabilité critique (docker.sock exposé)
+  # --------------------------------------------------------------------------
+  # Alternative pour mettre à jour :
+  #   1. Manuellement : docker pull ghcr.io/theo-stoffelbach/portefolio:v1.0.0
+  #   2. Cron sur l'hôte : 0 4 * * * docker pull ... && docker-compose up -d
+  #   3. Ou utiliser un registry webhook
+  # --------------------------------------------------------------------------

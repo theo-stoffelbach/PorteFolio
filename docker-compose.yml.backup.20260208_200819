@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  portfolio:
+    build:
+      context: ./source_code
+      dockerfile: Dockerfile
+    image: portfolio:local
+    container_name: portfolio
+    expose:
+      - "3000"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-604800}
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    # volumes:
+    #   - ./data:/app/data  # Désactivé temporairement - problème de permissions NAS
+    restart: unless-stopped
+    networks:
+      - webnet
+      - npm-public
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://127.0.0.1:3000",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  webnet:
+    external: true
+
+  npm-public:
+    external: true
