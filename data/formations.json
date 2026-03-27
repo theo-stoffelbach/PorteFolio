@@ -1,0 +1,17 @@
+[
+  {
+    "id": "ynov-master",
+    "school": "Ynov Campus",
+    "period": "2023 - 2025",
+    "description": "Master en développement web avec spécialisation backend. Formation axée sur les technologies modernes et les architectures microservices.",
+    "skills": ["NodeJS", "React", "TypeScript", "Docker", "Kubernetes", "CI/CD", "Agile", "Scrum"]
+  },
+  {
+    "id": "epitech-digital",
+    "school": "Epitech Digital",
+    "period": "2022 - 2023",
+    "description": "Formation intensive en développement web avec projets pratiques. Approche pédagogique basée sur la pratique et l'autonomie.",
+    "skills": ["JavaScript", "HTML/CSS", "PHP", "Python", "Git", "Linux", "MySQL"]
+  }
+]
+

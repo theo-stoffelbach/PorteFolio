@@ -1,0 +1,19 @@
+[
+  {
+    "id": "sii-alternance",
+    "company": "SII",
+    "position": "Développeur Web - Alternant",
+    "duration": "2024 - Présent",
+    "technologies": ["Perl", "Java", "PostgreSQL", "Linux"],
+    "description": "Développement web backend en Perl avec optimisation de bases de données PostgreSQL. Participation aux projets clients et maintenance de systèmes existants. Utilisation occasionnelle de Java pour certains modules."
+  },
+  {
+    "id": "berenisse-stage",
+    "company": "Bérénisse Phone",
+    "position": "Stagiaire Développeur Web",
+    "duration": "2023 - 3 mois",
+    "technologies": ["React", "NodeJS", "MySQL", "API REST"],
+    "description": "Stage de 3 mois en développement web full-stack. Création d'interfaces utilisateur React et développement d'API REST avec NodeJS. Collaboration avec l'équipe sur les fonctionnalités principales de l'application."
+  }
+]
+
