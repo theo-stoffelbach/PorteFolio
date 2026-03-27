@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   portfolio:
-    image: ghcr.io/theostoffelbach/portefolio:v1.0.0-patched
+    image: ghcr.io/theo-stoffelbach/portefolio:latest
     container_name: portfolio
     restart: unless-stopped
     
