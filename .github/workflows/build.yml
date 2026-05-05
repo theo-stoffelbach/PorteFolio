@@ -5,10 +5,34 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
+  test:
+    name: 🧪 Lint, TypeCheck & Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npm audit --audit-level=moderate
+      - run: npm run build
+
   build-and-push:
     name: Build Docker image and push to GHCR
     runs-on: ubuntu-latest
+    needs: test
+    if: success()
     permissions:
       contents: read
       packages: write
