@@ -1,17 +1,13 @@
 services:
   portfolio:
-    image: ghcr.io/theo-stoffelbach/portefolio:v1.0.0
+    image: ghcr.io/theo-stoffelbach/portefolio:latest
     container_name: portfolio
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - ADMIN_EMAIL=${ADMIN_EMAIL}
-      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-604800}
     env_file:
-      - .env
+      - ../.env.runtime
     volumes:
       - ./data:/app/data
     restart: unless-stopped

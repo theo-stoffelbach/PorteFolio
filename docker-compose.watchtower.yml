@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   portfolio:
-    image: ghcr.io/theo-stoffelbach/portefolio:v1.0.0
+    image: ghcr.io/theo-stoffelbach/portefolio:latest
     container_name: portfolio
     restart: unless-stopped
     
@@ -13,13 +11,9 @@ services:
     expose:
       - "3000"
     env_file:
-      - .env
+      - .env.runtime
     environment:
       NODE_ENV: production
-      ADMIN_EMAIL: ${ADMIN_EMAIL}
-      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-604800}
     security_opt:
       - no-new-privileges:true
     cap_drop:
