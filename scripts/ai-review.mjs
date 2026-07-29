@@ -11,7 +11,7 @@ import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-const ALL_REVIEWERS = ['codex', 'claude'];
+const ALL_REVIEWERS = ['claude'];
 const MAX_DIFF_CHARS = 150_000;
 const MAX_REVIEW_CHARS = 60_000;
 const PROBE_TIMEOUT_MS = 30_000;
@@ -84,26 +84,8 @@ function probe(command) {
 }
 
 function windowsCandidates(name) {
-  const { APPDATA, USERPROFILE, LOCALAPPDATA } = process.env;
+  const { USERPROFILE } = process.env;
   return {
-    codex: APPDATA
-      ? [
-          join(
-            APPDATA,
-            'npm',
-            'node_modules',
-            '@openai',
-            'codex',
-            'node_modules',
-            '@openai',
-            'codex-win32-x64',
-            'vendor',
-            'x86_64-pc-windows-msvc',
-            'bin',
-            'codex.exe'
-          ),
-        ]
-      : [],
     claude: USERPROFILE
       ? [join(USERPROFILE, '.local', 'bin', 'claude.exe')]
       : [],
@@ -158,26 +140,13 @@ function pickReviewers() {
     (reviewer) => resolveCommand(reviewer) !== null
   );
   if (available.length === 0) {
-    fail('Aucun reviewer CLI disponible (codex, claude ou agy).');
+    fail('Aucun reviewer CLI sûr disponible (claude).');
   }
   return available;
 }
 
 function reviewerArgs(reviewer) {
   switch (reviewer) {
-    case 'codex':
-      return [
-        'exec',
-        '--sandbox',
-        'read-only',
-        '--ask-for-approval',
-        'never',
-        '--ephemeral',
-        '--ignore-user-config',
-        '--ignore-rules',
-        '--skip-git-repo-check',
-        '-',
-      ];
     case 'claude':
       return [
         '--print',
