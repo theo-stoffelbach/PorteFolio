@@ -50,7 +50,7 @@ function request(
 test('les mutations n’acceptent que l’origine same-origin transmise par NPM', () => {
   const trustedHeaders = {
     origin: BASE_URL,
-    'x-forwarded-host': 'theo-stoffelbach.fr',
+    host: 'theo-stoffelbach.fr',
     'x-forwarded-proto': 'https',
   };
   assert.equal(
@@ -66,6 +66,19 @@ test('les mutations n’acceptent que l’origine same-origin transmise par NPM'
       })
     ),
     false
+  );
+  assert.equal(
+    isTrustedMutationOrigin(
+      request('/api/projects', {
+        headers: {
+          ...trustedHeaders,
+          origin: 'https://evil.example',
+          'x-forwarded-host': 'evil.example',
+        },
+      })
+    ),
+    false,
+    'X-Forwarded-Host ne doit jamais étendre les origines autorisées'
   );
   assert.equal(
     isTrustedMutationOrigin(

@@ -36,15 +36,16 @@ function getExpectedOrigins(request: NextRequest): Set<string> {
     }
   }
 
-  const forwardedHost =
-    request.headers.get('x-forwarded-host')?.split(',')[0]?.trim() ||
-    request.headers.get('host')?.trim();
+  // NPM réécrit Host et X-Forwarded-Proto. X-Forwarded-Host peut provenir du
+  // client : ne jamais l'utiliser pour construire une origine de confiance.
+  const requestHost =
+    request.headers.get('host')?.trim() || request.nextUrl.host;
   const forwardedProto =
     request.headers.get('x-forwarded-proto')?.split(',')[0]?.trim() ||
     request.nextUrl.protocol.replace(':', '');
 
-  if (forwardedHost && (forwardedProto === 'https' || forwardedProto === 'http')) {
-    const requestOrigin = normalizeOrigin(`${forwardedProto}://${forwardedHost}`);
+  if (requestHost && (forwardedProto === 'https' || forwardedProto === 'http')) {
+    const requestOrigin = normalizeOrigin(`${forwardedProto}://${requestHost}`);
     if (requestOrigin) {
       origins.add(requestOrigin);
     }
