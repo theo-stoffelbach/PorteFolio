@@ -5,7 +5,6 @@
  *
  * Usage:
  *   npm run create-admin
- *   docker exec -it portfolio npm run create-admin
  *
  * Ce script permet de générer un hash bcrypt sécurisé pour le mot de passe admin
  */

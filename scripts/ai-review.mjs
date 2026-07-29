@@ -22,7 +22,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ALL_REVIEWERS = ['claude', 'kimi', 'gemini', 'codex'];
-const MAX_DIFF_BYTES = 80_000;
+const MAX_SOURCE_DIFF_BYTES = 400_000;
+const MAX_REVIEWER_CHUNK_BYTES = 70_000;
 const MAX_REVIEW_CHARS = 60_000;
 const PROBE_TIMEOUT_MS = 30_000;
 const GH_TIMEOUT_MS = 60_000;
@@ -549,11 +550,83 @@ function buildDiff() {
   ]);
   let truncated = false;
   const encodedDiff = Buffer.from(diff, 'utf8');
-  if (encodedDiff.byteLength > MAX_DIFF_BYTES) {
-    diff = encodedDiff.subarray(0, MAX_DIFF_BYTES).toString('utf8');
+  if (encodedDiff.byteLength > MAX_SOURCE_DIFF_BYTES) {
+    diff = encodedDiff.subarray(0, MAX_SOURCE_DIFF_BYTES).toString('utf8');
     truncated = true;
   }
   return { diff, omittedGeneratedFiles, truncated };
+}
+
+function splitUtf8Section(section, maxBytes) {
+  const parts = [];
+  let remaining = Buffer.from(section, 'utf8');
+
+  while (remaining.byteLength > maxBytes) {
+    let end = maxBytes;
+    while (end > 0 && (remaining[end] & 0xc0) === 0x80) {
+      end -= 1;
+    }
+    if (end === 0) end = maxBytes;
+    parts.push(remaining.subarray(0, end).toString('utf8'));
+    remaining = remaining.subarray(end);
+  }
+
+  if (remaining.byteLength > 0) {
+    parts.push(remaining.toString('utf8'));
+  }
+  return parts;
+}
+
+function splitDiff(diff) {
+  const sections = diff.split(/(?=^diff --git )/m).filter(Boolean);
+  const chunks = [];
+  let current = '';
+  let currentBytes = 0;
+
+  for (const section of sections) {
+    for (const part of splitUtf8Section(
+      section,
+      MAX_REVIEWER_CHUNK_BYTES
+    )) {
+      const partBytes = Buffer.byteLength(part, 'utf8');
+      if (
+        current &&
+        currentBytes + partBytes > MAX_REVIEWER_CHUNK_BYTES
+      ) {
+        chunks.push(current);
+        current = '';
+        currentBytes = 0;
+      }
+      current += part;
+      currentBytes += partBytes;
+    }
+  }
+
+  if (current) chunks.push(current);
+  return chunks;
+}
+
+function aggregateChunkReviews(reviews) {
+  const verdictPattern =
+    /^VERDICT:\s*(APPROVE|REQUEST_CHANGES|COMMENT)\s*$/gim;
+  const verdicts = reviews.flatMap((review) =>
+    [...review.matchAll(verdictPattern)].map((match) =>
+      match[1].toUpperCase()
+    )
+  );
+  const verdict = verdicts.includes('REQUEST_CHANGES')
+    ? 'REQUEST_CHANGES'
+    : verdicts.length === reviews.length &&
+        verdicts.every((value) => value === 'APPROVE')
+      ? 'APPROVE'
+      : 'COMMENT';
+  const bodies = reviews.map((review, index) => {
+    const content = review.replace(verdictPattern, '').trim();
+    return reviews.length === 1
+      ? content
+      : `### Fragment ${index + 1}/${reviews.length}\n\n${content}`;
+  });
+  return `${bodies.join('\n\n')}\n\nVERDICT: ${verdict}`;
 }
 
 function normalizeVerdict(review, truncated) {
@@ -679,7 +752,12 @@ if (omittedGeneratedFiles.length > 0) {
 try {
   for (const reviewer of reviewers) {
     const startedAt = new Date().toISOString();
-    const prompt = `${REVIEW_INSTRUCTIONS}
+    const chunks = splitDiff(diff);
+    const chunkReviews = [];
+    let completed = true;
+
+    for (const [index, chunk] of chunks.entries()) {
+      const prompt = `${REVIEW_INSTRUCTIONS}
 
 Métadonnées de la cible :
 - Reviewer : ${reviewer}
@@ -687,6 +765,7 @@ Métadonnées de la cible :
 - Commit HEAD complet : ${headSha}
 - Date de début : ${startedAt}
 - Diff source tronqué : ${truncationLabel}
+- Fragment analysé : ${index + 1}/${chunks.length}
 - Fichiers générés omis : ${generatedFilesLabel}
 
 ${
@@ -697,11 +776,21 @@ ${
 
 Voici le diff source :
 
-${diff}`;
+${chunk}`;
 
-    console.log(`🤖 Review par ${reviewer}…`);
-    let review = reviewWith(reviewer, prompt, tempDirectory);
-    if (!review) continue;
+      console.log(
+        `🤖 Review par ${reviewer} — fragment ${index + 1}/${chunks.length}…`
+      );
+      const chunkReview = reviewWith(reviewer, prompt, tempDirectory);
+      if (!chunkReview) {
+        completed = false;
+        break;
+      }
+      chunkReviews.push(chunkReview);
+    }
+
+    if (!completed || chunkReviews.length !== chunks.length) continue;
+    let review = aggregateChunkReviews(chunkReviews);
 
     const currentSha = runGit(['rev-parse', 'HEAD']);
     const currentWorktreeSnapshot = runGit([

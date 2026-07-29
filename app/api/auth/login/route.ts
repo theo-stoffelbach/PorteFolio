@@ -145,6 +145,10 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-    return apiErrorResponse(error, "Erreur lors de la connexion");
+    return apiErrorResponse(
+      error,
+      "Erreur lors de la connexion",
+      rateLimitHeaders(rateLimit)
+    );
   }
 }

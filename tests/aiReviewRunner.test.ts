@@ -43,3 +43,11 @@ test('Codex est isolé et ses outils sont désactivés', () => {
   );
   assert.doesNotMatch(reviewerImage, /gemini-cli/);
 });
+
+test('le runner fragmente le diff sans transformer cela en troncature', () => {
+  assert.match(runner, /const MAX_SOURCE_DIFF_BYTES = 400_000/);
+  assert.match(runner, /const MAX_REVIEWER_CHUNK_BYTES = 70_000/);
+  assert.match(runner, /function splitDiff\(diff\)/);
+  assert.match(runner, /Fragment analysé : \$\{index \+ 1\}\/\$\{chunks\.length\}/);
+  assert.match(runner, /chunkReviews\.length !== chunks\.length/);
+});

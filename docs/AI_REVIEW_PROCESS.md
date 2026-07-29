@@ -83,8 +83,11 @@ PR.
 
 Les `package-lock.json`, fichiers générés très volumineux, sont omis du prompt
 mais toujours contrôlés par `npm ci`, `npm audit` et le build de la CI. Si le
-reste du diff dépasse la limite de contexte, `Diff tronqué` vaut `oui` et le
-runner interdit automatiquement un verdict `APPROVE`.
+reste du diff dépasse la taille sûre d'un appel CLI, le runner le découpe aux
+frontières de fichiers et exige une réponse sur chaque fragment avant de
+publier la synthèse. `Diff tronqué` ne vaut `oui` que si la limite globale de
+contexte est dépassée ; dans ce cas, le runner interdit automatiquement un
+verdict `APPROVE`.
 
 ## Boucle de finalisation
 

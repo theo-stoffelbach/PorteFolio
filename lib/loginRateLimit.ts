@@ -15,6 +15,9 @@ export interface LoginRateLimitResult {
   retryAfter: number;
 }
 
+// Le déploiement Compose exécute un seul processus. Ce compteur est donc
+// volontairement local et repart à zéro au redémarrage. Utiliser un stockage
+// atomique partagé (Redis, par exemple) avant d'ajouter des replicas.
 const buckets = new Map<string, LoginBucket>();
 
 function cleanupExpiredBuckets(now: number): void {

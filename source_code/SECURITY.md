@@ -25,6 +25,12 @@ Le portfolio utilise un système d'authentification sécurisé basé sur :
 
 Les routes **GET** restent publiques pour permettre l'affichage du portfolio.
 
+La limitation de connexion (5 essais sur 15 minutes) est stockée en mémoire et
+convient au déploiement Compose actuel à une seule instance. Elle repart à zéro
+au redémarrage. Avant tout passage à plusieurs replicas, remplacez-la par un
+compteur partagé atomique (Redis, par exemple) ou une limite commune dans le
+reverse proxy.
+
 ---
 
 ## 🚀 Configuration initiale
@@ -34,12 +40,13 @@ Les routes **GET** restent publiques pour permettre l'affichage du portfolio.
 Le projet inclut un script interactif pour générer vos credentials :
 
 ```bash
-# En local (développement)
+# Depuis le checkout du projet (développement ou NAS)
 npm run create-admin
-
-# Dans Docker (production)
-docker exec -it portfolio npm run create-admin
 ```
+
+L'image de production ne contient volontairement ni npm ni le script afin de
+réduire sa surface d'attaque. Générez les valeurs depuis le checkout, copiez-les
+dans `.env.runtime`, puis redémarrez le conteneur.
 
 Le script vous demandera :
 - 📧 **Email admin** : votre adresse email
@@ -150,7 +157,8 @@ docker-compose up -d
 
 1. Générer un nouveau hash :
    ```bash
-   docker exec -it portfolio npm run create-admin
+   cd /volume2/docker/portefolio/source_code
+   npm run create-admin
    ```
 
 2. Mettre à jour `.env` avec le nouveau hash :
@@ -266,7 +274,8 @@ Les requêtes GET restent publiques.
 cat .env | grep ADMIN
 
 # Recréer les credentials si nécessaire
-docker exec -it portfolio npm run create-admin
+cd /volume2/docker/portefolio/source_code
+npm run create-admin
 
 # Redémarrer le container
 docker-compose restart portfolio
@@ -284,7 +293,8 @@ docker-compose restart portfolio
 docker exec portfolio printenv ADMIN_EMAIL
 
 # Régénérer le hash si doute
-docker exec -it portfolio npm run create-admin
+cd /volume2/docker/portefolio/source_code
+npm run create-admin
 ```
 
 ### Problème : Token expiré trop vite

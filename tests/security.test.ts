@@ -7,6 +7,7 @@ import {
   isTrustedMutationOrigin,
   readJsonBody,
 } from '../lib/apiSecurity';
+import { POST as login } from '../app/api/auth/login/route';
 import {
   generateToken,
   hashPassword,
@@ -111,6 +112,28 @@ test('le lecteur JSON applique le type et la limite réelle du corps', async () 
     body: JSON.stringify({ value: 'x'.repeat(100) }),
   });
   await assert.rejects(readJsonBody(oversized, 32), { status: 413 });
+});
+
+test('les erreurs JSON du login exposent encore le quota consommé', async () => {
+  const response = await login(
+    request('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        origin: BASE_URL,
+        host: 'theo-stoffelbach.fr',
+        'x-forwarded-proto': 'https',
+        'x-real-ip': `test-malformed-${Date.now()}`,
+        'content-type': 'text/plain',
+      },
+      body: '{}',
+    })
+  );
+
+  assert.equal(response.status, 415);
+  assert.equal(response.headers.get('cache-control'), 'no-store');
+  assert.equal(response.headers.get('x-ratelimit-limit'), '5');
+  assert.equal(response.headers.get('x-ratelimit-remaining'), '4');
+  assert.ok(response.headers.get('x-ratelimit-reset'));
 });
 
 test('les JWT vérifient secret, issuer, audience et compte admin', async () => {

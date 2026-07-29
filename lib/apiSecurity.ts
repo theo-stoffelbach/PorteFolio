@@ -153,14 +153,18 @@ export async function readJsonBody(
 
 export function apiErrorResponse(
   error: unknown,
-  fallbackMessage: string
+  fallbackMessage: string,
+  extraHeaders: HeadersInit = {}
 ): NextResponse {
+  const headers = new Headers(extraHeaders);
+  headers.set('Cache-Control', 'no-store');
+
   if (error instanceof ApiRequestError) {
     return NextResponse.json(
       { error: error.message },
       {
         status: error.status,
-        headers: { 'Cache-Control': 'no-store' },
+        headers,
       }
     );
   }
@@ -170,7 +174,7 @@ export function apiErrorResponse(
     { error: fallbackMessage },
     {
       status: 500,
-      headers: { 'Cache-Control': 'no-store' },
+      headers,
     }
   );
 }
