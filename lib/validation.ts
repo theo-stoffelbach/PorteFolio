@@ -127,7 +127,8 @@ function booleanValue(
 function safeUrl(
   record: UnknownRecord,
   key: string,
-  required: boolean
+  required: boolean,
+  localOnly = false
 ): string | undefined {
   const value = optionalString(record, key, 2048);
   if (required && value === undefined) {
@@ -137,6 +138,9 @@ function safeUrl(
 
   if (value.startsWith('/') && !value.startsWith('//')) {
     return value;
+  }
+  if (localOnly) {
+    invalid(`${key} doit être un chemin local`);
   }
 
   try {
@@ -227,7 +231,7 @@ function parseProject(
     project.technologies = stringArray(record, 'technologies', 50, 100, true) as string[];
   }
   if (!partial || record.imageUrl !== undefined) {
-    project.imageUrl = safeUrl(record, 'imageUrl', true) as string;
+    project.imageUrl = safeUrl(record, 'imageUrl', true, true) as string;
   }
   if (record.projectUrl !== undefined) {
     project.projectUrl = safeUrl(record, 'projectUrl', false);

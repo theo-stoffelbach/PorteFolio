@@ -7,24 +7,17 @@
  * l'analyse.
  */
 import { execFileSync, spawnSync } from 'node:child_process';
-import {
-  existsSync,
-  mkdtempSync,
-  rmSync,
-  unlinkSync,
-  writeFileSync,
-} from 'node:fs';
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-const ALL_REVIEWERS = ['codex', 'claude', 'agy'];
+const ALL_REVIEWERS = ['codex', 'claude'];
 const MAX_DIFF_CHARS = 150_000;
 const MAX_REVIEW_CHARS = 60_000;
 const PROBE_TIMEOUT_MS = 30_000;
 const GH_TIMEOUT_MS = 60_000;
 const GIT_TIMEOUT_MS = 60_000;
 const REVIEWER_TIMEOUT_MS = 15 * 60 * 1000;
-const AGY_PROMPT_FILE = '.ai-review-prompt.md';
 const GENERATED_DIFF_PATHS = [
   'package-lock.json',
   'source_code/package-lock.json',
@@ -114,9 +107,6 @@ function windowsCandidates(name) {
     claude: USERPROFILE
       ? [join(USERPROFILE, '.local', 'bin', 'claude.exe')]
       : [],
-    agy: LOCALAPPDATA
-      ? [join(LOCALAPPDATA, 'agy', 'bin', 'agy.exe')]
-      : [],
   }[name] ?? [];
 }
 
@@ -173,10 +163,21 @@ function pickReviewers() {
   return available;
 }
 
-function reviewerArgs(reviewer, promptFile) {
+function reviewerArgs(reviewer) {
   switch (reviewer) {
     case 'codex':
-      return ['exec', '--skip-git-repo-check', SHORT_ARG];
+      return [
+        'exec',
+        '--sandbox',
+        'read-only',
+        '--ask-for-approval',
+        'never',
+        '--ephemeral',
+        '--ignore-user-config',
+        '--ignore-rules',
+        '--skip-git-repo-check',
+        '-',
+      ];
     case 'claude':
       return [
         '--print',
@@ -188,58 +189,71 @@ function reviewerArgs(reviewer, promptFile) {
         '--no-session-persistence',
         SHORT_ARG,
       ];
-    case 'agy':
-      return [
-        '-p',
-        `@${promptFile} Lis ce fichier et réponds uniquement avec la review complète.`,
-        '--dangerously-skip-permissions',
-      ];
     default:
       fail(`Reviewer inconnu "${reviewer}"`);
   }
 }
 
-function reviewWith(reviewer, payload) {
+function reviewerEnvironment() {
+  const allowedNames = [
+    'PATH',
+    'HOME',
+    'USER',
+    'LOGNAME',
+    'SHELL',
+    'LANG',
+    'LC_ALL',
+    'TERM',
+    'COLORTERM',
+    'XDG_CONFIG_HOME',
+    'USERPROFILE',
+    'APPDATA',
+    'LOCALAPPDATA',
+    'SYSTEMROOT',
+    'WINDIR',
+    'COMSPEC',
+    'PATHEXT',
+    'TEMP',
+    'TMP',
+    'TMPDIR',
+  ];
+  return Object.fromEntries(
+    allowedNames
+      .filter((name) => process.env[name] !== undefined)
+      .map((name) => [name, process.env[name]])
+  );
+}
+
+function reviewWith(reviewer, payload, isolatedDirectory) {
   const command = resolveCommand(reviewer);
   if (!command) return null;
 
-  const promptFile = join(process.cwd(), AGY_PROMPT_FILE);
-  const usesPromptFile = reviewer === 'agy';
-  try {
-    if (usesPromptFile) writeFileSync(promptFile, payload, 'utf8');
-    const result = spawnSync(command, reviewerArgs(reviewer, promptFile), {
-      encoding: 'utf8',
-      shell: false,
-      maxBuffer: 32 * 1024 * 1024,
-      input: usesPromptFile ? undefined : payload,
-      timeout: REVIEWER_TIMEOUT_MS,
-    });
+  const result = spawnSync(command, reviewerArgs(reviewer), {
+    cwd: isolatedDirectory,
+    encoding: 'utf8',
+    env: reviewerEnvironment(),
+    shell: false,
+    maxBuffer: 32 * 1024 * 1024,
+    input: payload,
+    timeout: REVIEWER_TIMEOUT_MS,
+  });
 
-    if (result.status !== 0) {
-      const timedOut =
-        result.error?.code === 'ETIMEDOUT' || result.signal === 'SIGTERM';
-      const reason = timedOut
-        ? `timeout (${REVIEWER_TIMEOUT_MS / 60_000} min)`
-        : result.stderr || result.error?.message || 'erreur inconnue';
-      console.warn(`⚠️  ${reviewer} a échoué :\n${reason}`);
-      return null;
-    }
-
-    const output = result.stdout.trim();
-    if (!output) {
-      console.warn(`⚠️  ${reviewer} n'a produit aucune review.`);
-      return null;
-    }
-    return output;
-  } finally {
-    if (usesPromptFile) {
-      try {
-        unlinkSync(promptFile);
-      } catch {
-        // Le fichier n'a pas été créé ou a déjà été supprimé.
-      }
-    }
+  if (result.status !== 0) {
+    const timedOut =
+      result.error?.code === 'ETIMEDOUT' || result.signal === 'SIGTERM';
+    const reason = timedOut
+      ? `timeout (${REVIEWER_TIMEOUT_MS / 60_000} min)`
+      : result.stderr || result.error?.message || 'erreur inconnue';
+    console.warn(`⚠️  ${reviewer} a échoué :\n${reason}`);
+    return null;
   }
+
+  const output = result.stdout.trim();
+  if (!output) {
+    console.warn(`⚠️  ${reviewer} n'a produit aucune review.`);
+    return null;
+  }
+  return output;
 }
 
 function getPrSnapshot() {
@@ -336,6 +350,11 @@ if (!branch || branch === 'main' || branch === 'master') {
 }
 
 const headSha = runGit(['rev-parse', 'HEAD']);
+const worktreeSnapshot = runGit([
+  'status',
+  '--porcelain=v1',
+  '--untracked-files=all',
+]);
 const initialPr = getPrSnapshot();
 if (
   initialPr.headRefName !== branch ||
@@ -390,18 +409,24 @@ Voici le diff source :
 ${diff}`;
 
     console.log(`🤖 Review par ${reviewer}…`);
-    let review = reviewWith(reviewer, prompt);
+    let review = reviewWith(reviewer, prompt, tempDirectory);
     if (!review) continue;
 
     const currentSha = runGit(['rev-parse', 'HEAD']);
+    const currentWorktreeSnapshot = runGit([
+      'status',
+      '--porcelain=v1',
+      '--untracked-files=all',
+    ]);
     const currentPr = getPrSnapshot();
     if (
       currentSha !== headSha ||
+      currentWorktreeSnapshot !== worktreeSnapshot ||
       currentPr.headRefOid !== headSha ||
       currentPr.headRefName !== branch
     ) {
       console.warn(
-        `⚠️  Review ${reviewer} non publiée : HEAD a changé pendant l'analyse.`
+        `⚠️  Review ${reviewer} non publiée : Git ou la PR a changé pendant l'analyse.`
       );
       continue;
     }

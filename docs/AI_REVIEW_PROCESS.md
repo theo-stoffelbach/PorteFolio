@@ -18,8 +18,7 @@ Le système complète les GitHub Actions ; il ne les remplace pas.
 ## Reviewers pris en charge
 
 - `codex` : Codex CLI connecté à un compte OpenAI ;
-- `claude` : Claude Code connecté à un compte Anthropic ;
-- `agy` : Antigravity CLI connecté à un compte Google.
+- `claude` : Claude Code connecté à un compte Anthropic.
 
 Sans `AI_REVIEWER`, tous les exécutables disponibles sont lancés. Une sélection
 peut être forcée :
@@ -30,6 +29,18 @@ AI_REVIEWER=codex,claude npm run review:ai
 
 L'échec d'un reviewer n'empêche pas les autres de terminer. Il doit être
 signalé comme indisponible ; son approbation ne doit jamais être supposée.
+
+Le runner ne doit être lancé que sur une branche de confiance dont les
+modifications de `package.json` et `scripts/ai-review.mjs` ont été inspectées.
+Pour une contribution externe non fiable, ne jamais exécuter le script contenu
+dans la PR : utiliser une copie approuvée provenant de la branche protégée.
+
+Les reviewers travaillent dans un répertoire temporaire sans checkout :
+Codex est forcé en sandbox `read-only`, sans approbation ni configuration
+utilisateur, et Claude est lancé sans outils en mode plan. Seules les variables
+d'environnement indispensables à l'exécution et à l'authentification locale
+sont transmises. Le runner vérifie aussi que l'état complet du worktree n'a pas
+changé pendant chaque analyse.
 
 ## Fraîcheur obligatoire
 

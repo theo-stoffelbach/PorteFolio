@@ -32,6 +32,9 @@ function cleanupExpiredBuckets(now: number): void {
 }
 
 export function getLoginClientKey(headers: Headers): string {
+  // Frontière de confiance du déploiement : le conteneur n'a aucun port
+  // publié et NPM remplace X-Real-IP par $remote_addr avant de transmettre
+  // la requête. Ne pas exposer directement l'application sans adapter ceci.
   const realIp = headers.get('x-real-ip')?.trim();
   if (realIp) return realIp.slice(0, 128);
 

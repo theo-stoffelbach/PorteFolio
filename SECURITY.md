@@ -202,6 +202,7 @@ docker exec portfolio printenv | grep ADMIN
 docker exec -it portfolio sh
 curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
+  -H "Origin: http://localhost:3000" \
   -d '{"email":"votre@email.com","password":"votre_password"}'
 ```
 

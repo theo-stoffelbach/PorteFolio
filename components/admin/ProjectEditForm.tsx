@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Project } from "@/lib/types";
+import { parseProjectBasicInput } from "@/lib/projectForm";
 import PhaseManager from "@/components/admin/PhaseManager";
 
 interface ProjectEditFormProps {
@@ -27,13 +28,12 @@ export default function ProjectEditForm({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value, type } = e.target as HTMLInputElement;
-    let parsedValue: string | number | boolean = value;
-
-    if (type === "checkbox") {
-      parsedValue = (e.target as HTMLInputElement).checked;
-    } else if (name === "year") {
-      parsedValue = parseInt(value, 10) || 0;
-    }
+    const parsedValue = parseProjectBasicInput(
+      name,
+      type,
+      value,
+      (e.target as HTMLInputElement).checked
+    );
 
     setProject((prev) => ({
       ...prev,
