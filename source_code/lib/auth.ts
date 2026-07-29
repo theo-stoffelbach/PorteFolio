@@ -31,10 +31,11 @@ function getJwtSecret(): Uint8Array {
 }
 
 export function getJwtExpiresIn(): number {
-  const value = Number.parseInt(
-    process.env.JWT_EXPIRES_IN || String(DEFAULT_JWT_EXPIRES_IN),
-    10
-  );
+  const configuredValue =
+    process.env.JWT_EXPIRES_IN || String(DEFAULT_JWT_EXPIRES_IN);
+  const value = /^\d+$/.test(configuredValue)
+    ? Number(configuredValue)
+    : Number.NaN;
 
   if (
     !Number.isSafeInteger(value) ||

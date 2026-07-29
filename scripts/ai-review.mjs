@@ -582,12 +582,15 @@ function splitDiff(diff) {
   const chunks = [];
   let current = '';
   let currentBytes = 0;
+  let sectionSplit = false;
 
   for (const section of sections) {
-    for (const part of splitUtf8Section(
+    const sectionParts = splitUtf8Section(
       section,
       MAX_REVIEWER_CHUNK_BYTES
-    )) {
+    );
+    if (sectionParts.length > 1) sectionSplit = true;
+    for (const part of sectionParts) {
       const partBytes = Buffer.byteLength(part, 'utf8');
       if (
         current &&
@@ -603,10 +606,10 @@ function splitDiff(diff) {
   }
 
   if (current) chunks.push(current);
-  return chunks;
+  return { chunks, sectionSplit };
 }
 
-function aggregateChunkReviews(reviews) {
+function aggregateChunkReviews(reviews, allowApproval) {
   const verdictPattern =
     /^VERDICT:\s*(APPROVE|REQUEST_CHANGES|COMMENT)\s*$/gim;
   const verdicts = reviews.flatMap((review) =>
@@ -614,12 +617,13 @@ function aggregateChunkReviews(reviews) {
       match[1].toUpperCase()
     )
   );
-  const verdict = verdicts.includes('REQUEST_CHANGES')
+  let verdict = verdicts.includes('REQUEST_CHANGES')
     ? 'REQUEST_CHANGES'
     : verdicts.length === reviews.length &&
         verdicts.every((value) => value === 'APPROVE')
       ? 'APPROVE'
       : 'COMMENT';
+  if (!allowApproval && verdict === 'APPROVE') verdict = 'COMMENT';
   const bodies = reviews.map((review, index) => {
     const content = review.replace(verdictPattern, '').trim();
     return reviews.length === 1
@@ -631,11 +635,16 @@ function aggregateChunkReviews(reviews) {
 
 function normalizeVerdict(review, truncated) {
   if (!truncated) return review;
-  const withoutApproval = review.replace(
-    /VERDICT:\s*APPROVE/gi,
-    'VERDICT: COMMENT'
-  );
-  return `${withoutApproval}\n\n_Review partielle : le diff source a été tronqué._`;
+  const verdict = /^VERDICT:\s*REQUEST_CHANGES\s*$/im.test(review)
+    ? 'REQUEST_CHANGES'
+    : 'COMMENT';
+  const withoutVerdict = review
+    .replace(
+      /^VERDICT:\s*(APPROVE|REQUEST_CHANGES|COMMENT)\s*$/gim,
+      ''
+    )
+    .trim();
+  return `${withoutVerdict}\n\n_Review partielle : le diff source a été tronqué._\n\nVERDICT: ${verdict}`;
 }
 
 function clipReview(review) {
@@ -752,7 +761,7 @@ if (omittedGeneratedFiles.length > 0) {
 try {
   for (const reviewer of reviewers) {
     const startedAt = new Date().toISOString();
-    const chunks = splitDiff(diff);
+    const { chunks, sectionSplit } = splitDiff(diff);
     const chunkReviews = [];
     let completed = true;
 
@@ -766,6 +775,7 @@ Métadonnées de la cible :
 - Date de début : ${startedAt}
 - Diff source tronqué : ${truncationLabel}
 - Fragment analysé : ${index + 1}/${chunks.length}
+- Fichier individuel scindé : ${sectionSplit ? 'oui' : 'non'}
 - Fichiers générés omis : ${generatedFilesLabel}
 
 ${
@@ -790,7 +800,10 @@ ${chunk}`;
     }
 
     if (!completed || chunkReviews.length !== chunks.length) continue;
-    let review = aggregateChunkReviews(chunkReviews);
+    let review = aggregateChunkReviews(
+      chunkReviews,
+      !truncated && !sectionSplit
+    );
 
     const currentSha = runGit(['rev-parse', 'HEAD']);
     const currentWorktreeSnapshot = runGit([
@@ -820,6 +833,7 @@ ${chunk}`;
 - Commit : \`${headSha}\`
 - Date : \`${reviewedAt}\`
 - Diff tronqué : **${truncationLabel}**
+- Fichier individuel scindé : **${sectionSplit ? 'oui' : 'non'}**
 - Fichiers générés omis : ${generatedFilesLabel}
 
 ${review}

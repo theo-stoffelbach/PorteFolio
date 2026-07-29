@@ -128,15 +128,24 @@ function safeUrl(
   record: UnknownRecord,
   key: string,
   required: boolean,
-  localOnly = false
+  localOnly = false,
+  allowEmpty = false
 ): string | undefined {
   const value = optionalString(record, key, 2048);
   if (required && value === undefined) {
     invalid(`${key} est requis`);
   }
-  if (value === undefined || value === '') return value;
+  if (value === undefined) return value;
+  if (value === '') {
+    if (required && !allowEmpty) invalid(`${key} est requis`);
+    return value;
+  }
 
-  if (value.startsWith('/') && !value.startsWith('//')) {
+  if (
+    value.startsWith('/') &&
+    !value.startsWith('//') &&
+    !value.includes('\\')
+  ) {
     return value;
   }
   if (localOnly) {
@@ -231,7 +240,8 @@ function parseProject(
     project.technologies = stringArray(record, 'technologies', 50, 100, true) as string[];
   }
   if (!partial || record.imageUrl !== undefined) {
-    project.imageUrl = safeUrl(record, 'imageUrl', true, true) as string;
+    // Une chaîne vide représente explicitement un projet sans image.
+    project.imageUrl = safeUrl(record, 'imageUrl', true, true, true) as string;
   }
   if (record.projectUrl !== undefined) {
     project.projectUrl = safeUrl(record, 'projectUrl', false);

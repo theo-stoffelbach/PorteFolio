@@ -8,7 +8,12 @@ type Rule =
   | { kind: 'integer'; min: number; max: number; required?: boolean }
   | { kind: 'boolean' }
   | { kind: 'strings'; maxItems: number; maxLength: number; required?: boolean }
-  | { kind: 'url'; required?: boolean; localOnly?: boolean }
+  | {
+      kind: 'url';
+      required?: boolean;
+      localOnly?: boolean;
+      allowEmpty?: boolean;
+    }
   | { kind: 'color'; required?: boolean }
   | { kind: 'weeks'; required?: boolean }
   | { kind: 'phases' };
@@ -64,10 +69,25 @@ function parseStrings(
     .filter(Boolean);
 }
 
-function parseUrl(value: unknown, key: string, localOnly = false): string {
+function parseUrl(
+  value: unknown,
+  key: string,
+  required = false,
+  localOnly = false,
+  allowEmpty = false
+): string {
   const result = parseOptionalString(value, key, 2048);
-  if (!result) return result;
-  if (result.startsWith('/') && !result.startsWith('//')) return result;
+  if (!result) {
+    if (required && !allowEmpty) invalid(`${key} est requis`);
+    return result;
+  }
+  if (
+    result.startsWith('/') &&
+    !result.startsWith('//') &&
+    !result.includes('\\')
+  ) {
+    return result;
+  }
   if (localOnly) invalid(`${key} doit être un chemin local`);
 
   try {
@@ -171,7 +191,13 @@ function parseWithSchema(
         result[key] = parseStrings(field, key, rule.maxItems, rule.maxLength);
         break;
       case 'url':
-        result[key] = parseUrl(field, key, rule.localOnly);
+        result[key] = parseUrl(
+          field,
+          key,
+          rule.required,
+          rule.localOnly,
+          rule.allowEmpty
+        );
         break;
       case 'color': {
         const color = parseString(field, key, 7);
@@ -199,7 +225,13 @@ const projectSchema: Record<string, Rule> = {
   title: { kind: 'string', max: 200, required: true },
   description: { kind: 'string', max: 5000, required: true },
   technologies: { kind: 'strings', maxItems: 50, maxLength: 100, required: true },
-  imageUrl: { kind: 'url', required: true, localOnly: true },
+  // Une chaîne vide représente explicitement un projet sans image.
+  imageUrl: {
+    kind: 'url',
+    required: true,
+    localOnly: true,
+    allowEmpty: true,
+  },
   projectUrl: { kind: 'url' },
   color: { kind: 'color', required: true },
   weeks: { kind: 'weeks', required: true },

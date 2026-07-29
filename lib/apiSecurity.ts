@@ -97,13 +97,17 @@ export async function readJsonBody(
   maxBytes = DEFAULT_MAX_JSON_BYTES
 ): Promise<unknown> {
   const contentType = request.headers.get('content-type')?.toLowerCase() || '';
-  if (!contentType.startsWith('application/json')) {
+  const mediaType = contentType.split(';', 1)[0]?.trim();
+  if (mediaType !== 'application/json') {
     throw new ApiRequestError('Content-Type application/json requis', 415);
   }
 
   const contentLength = request.headers.get('content-length');
   if (contentLength) {
-    const parsedLength = Number.parseInt(contentLength, 10);
+    if (!/^\d+$/.test(contentLength)) {
+      throw new ApiRequestError('Content-Length invalide', 400);
+    }
+    const parsedLength = Number(contentLength);
     if (!Number.isSafeInteger(parsedLength) || parsedLength < 0) {
       throw new ApiRequestError('Content-Length invalide', 400);
     }

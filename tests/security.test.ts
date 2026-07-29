@@ -10,6 +10,7 @@ import {
 import { POST as login } from '../app/api/auth/login/route';
 import {
   generateToken,
+  getJwtExpiresIn,
   hashPassword,
   verifyToken,
 } from '../lib/auth';
@@ -106,6 +107,23 @@ test('le lecteur JSON applique le type et la limite réelle du corps', async () 
   });
   await assert.rejects(readJsonBody(wrongType), { status: 415 });
 
+  const jsonPrefix = request('/api/projects', {
+    method: 'POST',
+    headers: { 'content-type': 'application/jsonp' },
+    body: '{}',
+  });
+  await assert.rejects(readJsonBody(jsonPrefix), { status: 415 });
+
+  const malformedLength = request('/api/projects', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'content-length': '2junk',
+    },
+    body: '{}',
+  });
+  await assert.rejects(readJsonBody(malformedLength), { status: 400 });
+
   const oversized = request('/api/projects', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
@@ -141,6 +159,10 @@ test('les JWT vérifient secret, issuer, audience et compte admin', async () => 
   process.env.JWT_EXPIRES_IN = '3600';
   process.env.ADMIN_EMAIL = 'admin@example.com';
   process.env.ADMIN_PASSWORD_HASH = await hashPassword('mot-de-passe-test');
+
+  process.env.JWT_EXPIRES_IN = '3600abc';
+  assert.throws(() => getJwtExpiresIn());
+  process.env.JWT_EXPIRES_IN = '3600';
 
   const token = await generateToken(process.env.ADMIN_EMAIL);
   assert.equal((await verifyToken(token))?.email, process.env.ADMIN_EMAIL);
@@ -202,6 +224,13 @@ test('les deux validateurs acceptent sans image mais refusent une image distante
       () => parse({ ...VALID_PROJECT, imageUrl: 'https://example.com/test.png' }),
       { status: 400 }
     );
+    assert.throws(
+      () => parse({ ...VALID_PROJECT, imageUrl: '/\\evil.example/test.png' }),
+      { status: 400 }
+    );
+    const withoutImage = { ...VALID_PROJECT } as Partial<typeof VALID_PROJECT>;
+    delete withoutImage.imageUrl;
+    assert.throws(() => parse(withoutImage), { status: 400 });
     assert.throws(() => parse({ ...VALID_PROJECT, year: '2026' }), {
       status: 400,
     });
