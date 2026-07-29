@@ -7,12 +7,22 @@
  * l'analyse.
  */
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import {
+  chmodSync,
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
+import { homedir, tmpdir } from 'node:os';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ALL_REVIEWERS = ['claude'];
-const MAX_DIFF_CHARS = 150_000;
+const ALL_REVIEWERS = ['claude', 'kimi', 'gemini', 'codex'];
+const MAX_DIFF_BYTES = 80_000;
 const MAX_REVIEW_CHARS = 60_000;
 const PROBE_TIMEOUT_MS = 30_000;
 const GH_TIMEOUT_MS = 60_000;
@@ -22,6 +32,13 @@ const GENERATED_DIFF_PATHS = [
   'package-lock.json',
   'source_code/package-lock.json',
 ];
+const SCRIPT_DIRECTORY = dirname(fileURLToPath(import.meta.url));
+const REVIEWER_DIRECTORY = join(SCRIPT_DIRECTORY, 'reviewers');
+const KIMI_AGENT_FILE = join(REVIEWER_DIRECTORY, 'kimi-agent.yaml');
+const GEMINI_AGENT_FILE = join(REVIEWER_DIRECTORY, 'gemini-agent.md');
+const REVIEWER_IMAGE = 'portefolio-ai-reviewers:codex-0.146.0';
+const REVIEWER_DOCKERFILE = join(REVIEWER_DIRECTORY, 'Dockerfile');
+const USER_HOME = homedir();
 
 const REVIEW_INSTRUCTIONS = `Tu es un reviewer senior indépendant.
 
@@ -50,9 +67,6 @@ ou VERDICT: REQUEST_CHANGES
 ou VERDICT: COMMENT
 `;
 
-const SHORT_ARG =
-  "Suis les instructions de review reçues sur l'entrée standard et réponds uniquement avec la review.";
-
 function fail(message) {
   console.error(`❌ ${message}`);
   process.exit(1);
@@ -75,8 +89,11 @@ function gh(args) {
 }
 
 function probe(command) {
+  const probeEnvironment = { ...process.env };
+  delete probeEnvironment.GODEBUG;
   const result = spawnSync(command, ['--version'], {
     encoding: 'utf8',
+    env: probeEnvironment,
     shell: false,
     timeout: PROBE_TIMEOUT_MS,
   });
@@ -89,6 +106,18 @@ function windowsCandidates(name) {
     claude: USERPROFILE
       ? [join(USERPROFILE, '.local', 'bin', 'claude.exe')]
       : [],
+    kimi: USERPROFILE
+      ? [
+          join(USERPROFILE, '.local', 'bin', 'kimi-cli.exe'),
+          join(USERPROFILE, '.local', 'bin', 'kimi.exe'),
+        ]
+      : [],
+    gemini: USERPROFILE
+      ? [
+          join(USERPROFILE, '.local', 'bin', 'agy.exe'),
+          join(USERPROFILE, '.local', 'bin', 'agy'),
+        ]
+      : [],
   }[name] ?? [];
 }
 
@@ -97,10 +126,15 @@ const resolvedCommands = new Map();
 function resolveCommand(name) {
   if (resolvedCommands.has(name)) return resolvedCommands.get(name);
 
+  const candidates = {
+    claude: ['claude'],
+    kimi: ['kimi-cli', 'kimi'],
+    gemini: ['agy'],
+    codex: ['docker'],
+  }[name] ?? [];
   let command = null;
-  if (probe(name)) {
-    command = name;
-  } else if (process.platform === 'win32') {
+  command = candidates.find((candidate) => probe(candidate)) ?? null;
+  if (!command && process.platform === 'win32') {
     command =
       windowsCandidates(name).find(
         (candidate) => existsSync(candidate) && probe(candidate)
@@ -109,6 +143,15 @@ function resolveCommand(name) {
 
   resolvedCommands.set(name, command);
   return command;
+}
+
+function reviewerAuthAvailable(reviewer) {
+  switch (reviewer) {
+    case 'codex':
+      return existsSync(join(USER_HOME, '.codex', 'auth.json'));
+    default:
+      return true;
+  }
 }
 
 function pickReviewers() {
@@ -132,20 +175,26 @@ function pickReviewers() {
       if (!resolveCommand(reviewer)) {
         fail(`Le reviewer "${reviewer}" n'est pas installé ou connecté.`);
       }
+      if (!reviewerAuthAvailable(reviewer)) {
+        fail(`Le reviewer "${reviewer}" n'a pas de profil authentifié.`);
+      }
     }
     return selected;
   }
 
   const available = ALL_REVIEWERS.filter(
-    (reviewer) => resolveCommand(reviewer) !== null
+    (reviewer) =>
+      resolveCommand(reviewer) !== null && reviewerAuthAvailable(reviewer)
   );
   if (available.length === 0) {
-    fail('Aucun reviewer CLI sûr disponible (claude).');
+    fail(
+      `Aucun reviewer sûr disponible (${ALL_REVIEWERS.join(', ')}).`
+    );
   }
   return available;
 }
 
-function reviewerArgs(reviewer) {
+function reviewerArgs(reviewer, payload) {
   switch (reviewer) {
     case 'claude':
       return [
@@ -156,11 +205,179 @@ function reviewerArgs(reviewer) {
         '--tools',
         '',
         '--no-session-persistence',
-        SHORT_ARG,
+        payload,
+      ];
+    case 'kimi':
+      return [
+        '--agent-file',
+        KIMI_AGENT_FILE,
+        '--quiet',
+        '--prompt',
+        payload,
+      ];
+    case 'gemini':
+      return [
+        '--agent',
+        'portefolio-pr-reviewer',
+        '--print',
+        payload,
+        '--output-format',
+        'text',
+        '--mode',
+        'plan',
+        '--sandbox',
+        '--print-timeout',
+        `${REVIEWER_TIMEOUT_MS / 1000}s`,
       ];
     default:
       fail(`Reviewer inconnu "${reviewer}"`);
   }
+}
+
+function dockerBaseArgs() {
+  const uid = typeof process.getuid === 'function' ? process.getuid() : 1000;
+  const gid = typeof process.getgid === 'function' ? process.getgid() : 1000;
+  return [
+    'run',
+    '--rm',
+    '--interactive',
+    '--read-only',
+    '--cap-drop',
+    'ALL',
+    '--security-opt',
+    'no-new-privileges:true',
+    '--pids-limit',
+    '128',
+    '--memory',
+    '1g',
+    '--cpus',
+    '1',
+    '--user',
+    `${uid}:${gid}`,
+    '--tmpfs',
+    '/tmp:rw,nosuid,nodev,noexec,size=64m',
+    '--tmpfs',
+    '/workspace:rw,nosuid,nodev,noexec,size=16m',
+    '--workdir',
+    '/workspace',
+  ];
+}
+
+function ensureReviewerImage() {
+  const inspect = spawnSync(
+    'docker',
+    ['image', 'inspect', REVIEWER_IMAGE],
+    {
+      encoding: 'utf8',
+      shell: false,
+      timeout: PROBE_TIMEOUT_MS,
+    }
+  );
+  if (inspect.status === 0) return true;
+
+  console.log(
+    `📦 Construction de l'image isolée ${REVIEWER_IMAGE}…`
+  );
+  const build = spawnSync(
+    'docker',
+    [
+      'build',
+      '--file',
+      REVIEWER_DOCKERFILE,
+      '--tag',
+      REVIEWER_IMAGE,
+      REVIEWER_DIRECTORY,
+    ],
+    {
+      encoding: 'utf8',
+      shell: false,
+      timeout: REVIEWER_TIMEOUT_MS,
+      maxBuffer: 32 * 1024 * 1024,
+    }
+  );
+  if (build.status !== 0) {
+    console.warn(
+      `⚠️  Image des reviewers impossible à construire :\n${
+        build.stderr || build.error?.message || 'erreur inconnue'
+      }`
+    );
+    return false;
+  }
+  return true;
+}
+
+function copyPrivateFile(source, destination) {
+  if (!existsSync(source)) return false;
+  copyFileSync(source, destination);
+  chmodSync(destination, 0o600);
+  return true;
+}
+
+function prepareCodexProfile(isolatedDirectory) {
+  const profileRoot = join(isolatedDirectory, 'codex-profile');
+  const profileDirectory = join(profileRoot, '.codex');
+  mkdirSync(profileDirectory, { recursive: true, mode: 0o700 });
+  if (
+    !copyPrivateFile(
+      join(USER_HOME, '.codex', 'auth.json'),
+      join(profileDirectory, 'auth.json')
+    )
+  ) {
+    return null;
+  }
+  return profileRoot;
+}
+
+function containerReviewerArgs(reviewer, isolatedDirectory) {
+  if (!ensureReviewerImage()) return null;
+
+  if (reviewer === 'codex') {
+    const profileRoot = prepareCodexProfile(isolatedDirectory);
+    if (!profileRoot) return null;
+    return [
+      ...dockerBaseArgs(),
+      '--env',
+      'CODEX_HOME=/review-home/.codex',
+      '--volume',
+      `${profileRoot}:/review-home`,
+      REVIEWER_IMAGE,
+      'codex',
+      '--sandbox',
+      'read-only',
+      '--ask-for-approval',
+      'never',
+      '--config',
+      'features.shell_tool=false',
+      '--config',
+      'features.unified_exec=false',
+      '--config',
+      'features.code_mode=false',
+      '--config',
+      'features.apps=false',
+      '--config',
+      'features.plugins=false',
+      '--config',
+      'features.multi_agent=false',
+      '--config',
+      'features.browser_use=false',
+      '--config',
+      'features.in_app_browser=false',
+      '--config',
+      'features.computer_use=false',
+      '--config',
+      'web_search="disabled"',
+      'exec',
+      '--ephemeral',
+      '--skip-git-repo-check',
+      '--ignore-user-config',
+      '--ignore-rules',
+      '--color',
+      'never',
+      '-',
+    ];
+  }
+
+  return null;
 }
 
 function reviewerEnvironment() {
@@ -193,19 +410,76 @@ function reviewerEnvironment() {
   );
 }
 
+function flattenPrivateValues(value, values = []) {
+  if (typeof value === 'string' && value.length >= 16) {
+    values.push(value);
+  } else if (Array.isArray(value)) {
+    for (const item of value) flattenPrivateValues(item, values);
+  } else if (value && typeof value === 'object') {
+    for (const item of Object.values(value)) {
+      flattenPrivateValues(item, values);
+    }
+  }
+  return values;
+}
+
+function reviewerPrivateValues(reviewer) {
+  const files = {
+    codex: [join(USER_HOME, '.codex', 'auth.json')],
+    kimi: [
+      join(USER_HOME, '.kimi', 'credentials', 'kimi-code.json'),
+      join(USER_HOME, '.kimi-code', 'credentials', 'kimi-code.json'),
+    ],
+  }[reviewer] ?? [];
+
+  const values = [];
+  for (const file of files) {
+    if (!existsSync(file)) continue;
+    try {
+      flattenPrivateValues(JSON.parse(readFileSync(file, 'utf8')), values);
+    } catch {
+      // Un profil illisible ne doit pas empêcher les autres reviewers.
+    }
+  }
+  return values;
+}
+
 function reviewWith(reviewer, payload, isolatedDirectory) {
   const command = resolveCommand(reviewer);
   if (!command) return null;
+  if (reviewer === 'gemini') {
+    const agentDirectory = join(
+      isolatedDirectory,
+      '.agents',
+      'agents',
+      'portefolio-pr-reviewer'
+    );
+    mkdirSync(agentDirectory, { recursive: true, mode: 0o700 });
+    copyFileSync(GEMINI_AGENT_FILE, join(agentDirectory, 'agent.md'));
+  }
+  const containerArgs = reviewer === 'codex'
+    ? containerReviewerArgs(reviewer, isolatedDirectory)
+    : null;
+  if (reviewer === 'codex' && !containerArgs) {
+    console.warn(
+      `⚠️  ${reviewer} indisponible : profil ou image isolée manquante.`
+    );
+    return null;
+  }
 
-  const result = spawnSync(command, reviewerArgs(reviewer), {
-    cwd: isolatedDirectory,
-    encoding: 'utf8',
-    env: reviewerEnvironment(),
-    shell: false,
-    maxBuffer: 32 * 1024 * 1024,
-    input: payload,
-    timeout: REVIEWER_TIMEOUT_MS,
-  });
+  const result = spawnSync(
+    command,
+    containerArgs ?? reviewerArgs(reviewer, payload),
+    {
+      cwd: isolatedDirectory,
+      encoding: 'utf8',
+      env: reviewerEnvironment(),
+      shell: false,
+      maxBuffer: 32 * 1024 * 1024,
+      input: payload,
+      timeout: REVIEWER_TIMEOUT_MS,
+    }
+  );
 
   if (result.status !== 0) {
     const timedOut =
@@ -220,6 +494,16 @@ function reviewWith(reviewer, payload, isolatedDirectory) {
   const output = result.stdout.trim();
   if (!output) {
     console.warn(`⚠️  ${reviewer} n'a produit aucune review.`);
+    return null;
+  }
+  if (
+    reviewerPrivateValues(reviewer).some((value) =>
+      output.includes(value)
+    )
+  ) {
+    console.warn(
+      `⚠️  ${reviewer} a reproduit une valeur privée : review supprimée.`
+    );
     return null;
   }
   return output;
@@ -264,8 +548,9 @@ function buildDiff() {
     ...exclusions,
   ]);
   let truncated = false;
-  if (diff.length > MAX_DIFF_CHARS) {
-    diff = diff.slice(0, MAX_DIFF_CHARS);
+  const encodedDiff = Buffer.from(diff, 'utf8');
+  if (encodedDiff.byteLength > MAX_DIFF_BYTES) {
+    diff = encodedDiff.subarray(0, MAX_DIFF_BYTES).toString('utf8');
     truncated = true;
   }
   return { diff, omittedGeneratedFiles, truncated };
@@ -302,6 +587,43 @@ function postReview(prNumber, bodyFile) {
 }
 
 if (process.env.CI) fail('Ce runner est réservé à un usage local.');
+
+if (process.argv.includes('--smoke')) {
+  const reviewers = pickReviewers();
+  const smokeDirectory = mkdtempSync(join(tmpdir(), 'ai-review-smoke-'));
+  let passed = 0;
+  try {
+    for (const reviewer of reviewers) {
+      console.log(`🧪 Isolation et authentification de ${reviewer}…`);
+      const output = reviewWith(
+        reviewer,
+        `Test d'authentification du reviewer ${reviewer}.
+N'utilise aucun outil. Réponds exactement : REVIEWER_SMOKE_OK`,
+        smokeDirectory
+      );
+      if (
+        output?.trim() === 'REVIEWER_SMOKE_OK'
+      ) {
+        passed += 1;
+        console.log(`✅ ${reviewer} authentifié ; garde-fous chargés.`);
+      } else {
+        console.warn(
+          `⚠️  ${reviewer} n'a pas passé le test d'isolation.${
+            output ? ` Réponse : ${output.slice(0, 500)}` : ''
+          }`
+        );
+      }
+    }
+  } finally {
+    rmSync(smokeDirectory, { recursive: true, force: true });
+  }
+  if (passed !== reviewers.length) {
+    fail(`${passed}/${reviewers.length} reviewer(s) ont passé le smoke test.`);
+  }
+  console.log(`🎉 ${passed}/${reviewers.length} reviewer(s) opérationnels.`);
+  process.exit(0);
+}
+
 if (!probe('gh')) fail("La CLI GitHub 'gh' est indisponible.");
 
 try {

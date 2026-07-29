@@ -1,0 +1,5 @@
+version: 1
+agent:
+  name: pr-reviewer
+  system_prompt_path: ./kimi-system.md
+  tools: []

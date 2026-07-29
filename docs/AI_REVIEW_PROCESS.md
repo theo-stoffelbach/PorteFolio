@@ -17,34 +17,53 @@ Le système complète les GitHub Actions ; il ne les remplace pas.
 
 ## Reviewers pris en charge
 
-- `claude` : Claude Code connecté à un compte Anthropic.
+- `claude` : Claude Code connecté à un compte Anthropic ;
+- `kimi` : Kimi CLI connecté à un compte Moonshot ;
+- `gemini` : Gemini via Google Antigravity CLI (`agy`) ;
+- `codex` : OpenAI Codex CLI connecté à ChatGPT.
 
 Sans `AI_REVIEWER`, tous les exécutables disponibles sont lancés. Une sélection
 peut être forcée :
 
 ```bash
-AI_REVIEWER=claude npm run review:ai
+AI_REVIEWER=claude,kimi,gemini,codex npm run review:ai
 ```
 
 L'échec d'un reviewer n'empêche pas les autres de terminer. Il doit être
 signalé comme indisponible ; son approbation ne doit jamais être supposée.
-
-Codex CLI n'est pas lancé par ce script : son sandbox `read-only` autorise
-encore la lecture de fichiers de l'hôte, donc un diff hostile pourrait tenter
-d'exfiltrer les credentials utilisés par la CLI. Une revue Codex doit être
-réalisée par l'agent principal ou par une intégration isolée qui ne donne aucun
-outil ni accès aux secrets au modèle.
 
 Le runner ne doit être lancé que sur une branche de confiance dont les
 modifications de `package.json` et `scripts/ai-review.mjs` ont été inspectées.
 Pour une contribution externe non fiable, ne jamais exécuter le script contenu
 dans la PR : utiliser une copie approuvée provenant de la branche protégée.
 
-Les reviewers travaillent dans un répertoire temporaire sans checkout. Claude
-est lancé sans outils, en mode plan. Seules les variables d'environnement
-indispensables à l'exécution et à l'authentification locale sont transmises. Le
-runner vérifie aussi que l'état complet du worktree n'a pas changé pendant
-chaque analyse.
+Les reviewers travaillent dans un répertoire temporaire sans checkout et ne
+reçoivent que le prompt textuel :
+
+- Claude reçoit `--tools ""` et ne persiste pas de session ;
+- Kimi charge un agent personnalisé dont la liste `tools` est vide ;
+- Gemini charge un agent Antigravity local dont `tools: []`, sans MCP, skill,
+  plugin ni sous-agent ;
+- Codex s'exécute dans une image Docker épinglée et minimale. Le conteneur est
+  en lecture seule, sans capabilities, avec `no-new-privileges`, des limites
+  CPU/RAM/PID et aucun checkout monté. Seul un profil d'authentification
+  temporaire y est monté ; les fonctions shell, fichiers, web, apps, plugins et
+  multi-agent sont désactivées.
+
+Seules les variables d'environnement indispensables à l'exécution et à
+l'authentification locale sont transmises. Le runner vérifie aussi que l'état
+complet du worktree n'a pas changé pendant chaque analyse et refuse une sortie
+qui reproduirait une valeur privée connue.
+
+Après une installation ou une mise à jour des CLI, vérifier l'authentification
+et l'absence d'outils avant toute publication :
+
+```bash
+npm run review:ai:smoke
+```
+
+Ce test contrôle les garde-fous locaux, puis vérifie que chaque reviewer peut
+répondre avec son profil authentifié. Il ne publie aucun commentaire GitHub.
 
 ## Fraîcheur obligatoire
 

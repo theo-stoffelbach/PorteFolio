@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "test": "tsx --test tests/*.test.ts",
     "review:ai": "node scripts/ai-review.mjs",
+    "review:ai:smoke": "node scripts/ai-review.mjs --smoke",
     "create-admin": "node scripts/create-admin.js"
   },
   "repository": {
