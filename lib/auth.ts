@@ -12,15 +12,41 @@ import bcrypt from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
 import { NextRequest } from 'next/server';
 
-// Configuration depuis les variables d'environnement
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '604800'; // 7 jours par défaut
+export const ADMIN_COOKIE_NAME = 'admin_token';
+
+const JWT_ISSUER = 'portefolio-admin';
+const JWT_AUDIENCE = 'portefolio-admin-ui';
+const DEFAULT_JWT_EXPIRES_IN = 604800;
+const MIN_JWT_EXPIRES_IN = 300;
+const MAX_JWT_EXPIRES_IN = 604800;
 
 function getJwtSecret(): Uint8Array {
   const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error('FATAL: JWT_SECRET doit être défini dans les variables d\'environnement.');
+  if (!secret || new TextEncoder().encode(secret).byteLength < 32) {
+    throw new Error(
+      'FATAL: JWT_SECRET doit être défini et contenir au moins 32 octets.'
+    );
   }
   return new TextEncoder().encode(secret);
+}
+
+export function getJwtExpiresIn(): number {
+  const value = Number.parseInt(
+    process.env.JWT_EXPIRES_IN || String(DEFAULT_JWT_EXPIRES_IN),
+    10
+  );
+
+  if (
+    !Number.isSafeInteger(value) ||
+    value < MIN_JWT_EXPIRES_IN ||
+    value > MAX_JWT_EXPIRES_IN
+  ) {
+    throw new Error(
+      `JWT_EXPIRES_IN doit être compris entre ${MIN_JWT_EXPIRES_IN} et ${MAX_JWT_EXPIRES_IN} secondes.`
+    );
+  }
+
+  return value;
 }
 
 export interface JWTPayload {
@@ -54,10 +80,14 @@ export async function hashPassword(password: string): Promise<string> {
  * Utilise jose pour la compatibilité Edge Runtime
  */
 export async function generateToken(email: string): Promise<string> {
+  const expiresIn = getJwtExpiresIn();
+
   const token = await new SignJWT({ email })
     .setProtectedHeader({ alg: 'HS256' })
+    .setIssuer(JWT_ISSUER)
+    .setAudience(JWT_AUDIENCE)
     .setIssuedAt()
-    .setExpirationTime(`${JWT_EXPIRES_IN}s`)
+    .setExpirationTime(Math.floor(Date.now() / 1000) + expiresIn)
     .sign(getJwtSecret());
 
   return token;
@@ -70,10 +100,19 @@ export async function generateToken(email: string): Promise<string> {
  */
 export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, getJwtSecret());
+    const { payload } = await jwtVerify(token, getJwtSecret(), {
+      algorithms: ['HS256'],
+      issuer: JWT_ISSUER,
+      audience: JWT_AUDIENCE,
+    });
+
+    const { email } = getAdminCredentials();
+    if (payload.email !== email) {
+      return null;
+    }
+
     return payload as unknown as JWTPayload;
-  } catch (error) {
-    console.error('Token invalide:', error);
+  } catch {
     return null;
   }
 }
@@ -83,7 +122,7 @@ export async function verifyToken(token: string): Promise<JWTPayload | null> {
  * Retourne le payload du token si valide, null sinon
  */
 export async function getTokenFromRequest(request: NextRequest): Promise<JWTPayload | null> {
-  const token = request.cookies.get('admin_token')?.value;
+  const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
 
   if (!token) {
     return null;

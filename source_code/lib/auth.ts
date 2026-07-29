@@ -3,24 +3,50 @@
  *
  * Fournit les fonctions pour :
  * - Vérifier les mots de passe avec bcrypt
- * - Générer des tokens JWT
+ * - Générer des tokens JWT (compatible Edge Runtime avec jose)
  * - Vérifier les tokens JWT
  * - Protéger les routes API
  */
 
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { SignJWT, jwtVerify } from 'jose';
 import { NextRequest } from 'next/server';
 
-// Configuration depuis les variables d'environnement
-const JWT_EXPIRES_IN = parseInt(process.env.JWT_EXPIRES_IN || '604800'); // 7 jours par défaut
+export const ADMIN_COOKIE_NAME = 'admin_token';
 
-function getJwtSecret(): string {
+const JWT_ISSUER = 'portefolio-admin';
+const JWT_AUDIENCE = 'portefolio-admin-ui';
+const DEFAULT_JWT_EXPIRES_IN = 604800;
+const MIN_JWT_EXPIRES_IN = 300;
+const MAX_JWT_EXPIRES_IN = 604800;
+
+function getJwtSecret(): Uint8Array {
   const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error('FATAL: JWT_SECRET doit être défini dans les variables d\'environnement.');
+  if (!secret || new TextEncoder().encode(secret).byteLength < 32) {
+    throw new Error(
+      'FATAL: JWT_SECRET doit être défini et contenir au moins 32 octets.'
+    );
   }
-  return secret;
+  return new TextEncoder().encode(secret);
+}
+
+export function getJwtExpiresIn(): number {
+  const value = Number.parseInt(
+    process.env.JWT_EXPIRES_IN || String(DEFAULT_JWT_EXPIRES_IN),
+    10
+  );
+
+  if (
+    !Number.isSafeInteger(value) ||
+    value < MIN_JWT_EXPIRES_IN ||
+    value > MAX_JWT_EXPIRES_IN
+  ) {
+    throw new Error(
+      `JWT_EXPIRES_IN doit être compris entre ${MIN_JWT_EXPIRES_IN} et ${MAX_JWT_EXPIRES_IN} secondes.`
+    );
+  }
+
+  return value;
 }
 
 export interface JWTPayload {
@@ -52,26 +78,37 @@ export async function hashPassword(password: string): Promise<string> {
 /**
  * Génère un token JWT pour l'utilisateur authentifié
  */
-export function generateToken(email: string): string {
-  const payload: JWTPayload = {
-    email,
-  };
+export async function generateToken(email: string): Promise<string> {
+  const expiresIn = getJwtExpiresIn();
 
-  return jwt.sign(payload, getJwtSecret(), {
-    expiresIn: JWT_EXPIRES_IN,
-  });
+  return new SignJWT({ email })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuer(JWT_ISSUER)
+    .setAudience(JWT_AUDIENCE)
+    .setIssuedAt()
+    .setExpirationTime(Math.floor(Date.now() / 1000) + expiresIn)
+    .sign(getJwtSecret());
 }
 
 /**
  * Vérifie et décode un token JWT
  * Retourne null si le token est invalide ou expiré
  */
-export function verifyToken(token: string): JWTPayload | null {
+export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
-    const decoded = jwt.verify(token, getJwtSecret()) as JWTPayload;
-    return decoded;
-  } catch (error) {
-    console.error('Token invalide:', error);
+    const { payload } = await jwtVerify(token, getJwtSecret(), {
+      algorithms: ['HS256'],
+      issuer: JWT_ISSUER,
+      audience: JWT_AUDIENCE,
+    });
+
+    const { email } = getAdminCredentials();
+    if (payload.email !== email) {
+      return null;
+    }
+
+    return payload as unknown as JWTPayload;
+  } catch {
     return null;
   }
 }
@@ -80,8 +117,8 @@ export function verifyToken(token: string): JWTPayload | null {
  * Extrait et vérifie le token depuis une requête Next.js
  * Retourne le payload du token si valide, null sinon
  */
-export function getTokenFromRequest(request: NextRequest): JWTPayload | null {
-  const token = request.cookies.get('admin_token')?.value;
+export async function getTokenFromRequest(request: NextRequest): Promise<JWTPayload | null> {
+  const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
 
   if (!token) {
     return null;
@@ -93,8 +130,8 @@ export function getTokenFromRequest(request: NextRequest): JWTPayload | null {
 /**
  * Vérifie si une requête est authentifiée
  */
-export function isAuthenticated(request: NextRequest): boolean {
-  const tokenPayload = getTokenFromRequest(request);
+export async function isAuthenticated(request: NextRequest): Promise<boolean> {
+  const tokenPayload = await getTokenFromRequest(request);
   return tokenPayload !== null;
 }
 

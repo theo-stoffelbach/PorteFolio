@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProjectById, updateProject, deleteProject } from '@/lib/dataManager';
-import { isAuthenticated } from '@/lib/auth';
+import {
+  apiErrorResponse,
+  enforceAdminMutation,
+  readJsonBody,
+} from '@/lib/apiSecurity';
+import { parseProjectUpdate } from '@/lib/validation';
 
 export async function GET(
   request: NextRequest,
@@ -30,14 +35,15 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!isAuthenticated(request)) {
-    return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-  }
+  const rejection = await enforceAdminMutation(request);
+  if (rejection) return rejection;
+
   try {
     const { id } = await params;
-    const body = await request.json();
-    
-    const updatedProject = await updateProject(id, body);
+    const body = await readJsonBody(request);
+    const project = parseProjectUpdate(body, id);
+
+    const updatedProject = await updateProject(id, project);
     
     if (!updatedProject) {
       return NextResponse.json(
@@ -48,10 +54,7 @@ export async function PUT(
     
     return NextResponse.json(updatedProject);
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to update project' },
-      { status: 500 }
-    );
+    return apiErrorResponse(error, 'Failed to update project');
   }
 }
 
@@ -59,9 +62,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!isAuthenticated(request)) {
-    return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-  }
+  const rejection = await enforceAdminMutation(request);
+  if (rejection) return rejection;
+
   try {
     const { id } = await params;
     const deleted = await deleteProject(id);
@@ -75,10 +78,6 @@ export async function DELETE(
     
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to delete project' },
-      { status: 500 }
-    );
+    return apiErrorResponse(error, 'Failed to delete project');
   }
 }
-
