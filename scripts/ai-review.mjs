@@ -25,7 +25,7 @@ const ALL_REVIEWERS = ['claude', 'kimi', 'gemini', 'codex'];
 const MAX_SOURCE_DIFF_BYTES = 400_000;
 const MAX_REVIEWER_CHUNK_BYTES =
   process.platform === 'win32' ? 24_000 : 70_000;
-const MAX_REVIEW_CHARS = 60_000;
+const MAX_GITHUB_COMMENT_BYTES = 60_000;
 const PROBE_TIMEOUT_MS = 30_000;
 const GH_TIMEOUT_MS = 60_000;
 const GIT_TIMEOUT_MS = 60_000;
@@ -671,10 +671,34 @@ function normalizeVerdict(review, truncated) {
   return `${withoutVerdict}\n\n_Review partielle : le diff source a été tronqué._\n\nVERDICT: ${verdict}`;
 }
 
-function clipReview(review) {
-  if (review.length <= MAX_REVIEW_CHARS) return review;
-  const keep = Math.floor((MAX_REVIEW_CHARS - 80) / 2);
-  return `${review.slice(0, keep)}\n\n_[…section centrale tronquée…]_\n\n${review.slice(-keep)}`;
+function utf8Prefix(value, maxBytes) {
+  const characters = [];
+  let bytes = 0;
+  for (const character of value) {
+    const characterBytes = Buffer.byteLength(character, 'utf8');
+    if (bytes + characterBytes > maxBytes) break;
+    characters.push(character);
+    bytes += characterBytes;
+  }
+  return characters.join('');
+}
+
+function clipReview(review, maxBytes) {
+  if (Buffer.byteLength(review, 'utf8') <= maxBytes) return review;
+
+  const verdictPattern =
+    /^VERDICT:\s*(APPROVE|REQUEST_CHANGES|COMMENT)\s*$/gim;
+  const verdicts = [...review.matchAll(verdictPattern)];
+  const verdict = verdicts.at(-1)?.[1]?.toUpperCase() ?? 'COMMENT';
+  const suffix =
+    `\n\n_[…review tronquée pour respecter la limite GitHub…]_` +
+    `\n\nVERDICT: ${verdict}`;
+  const content = review.replace(verdictPattern, '').trim();
+  const contentBudget = Math.max(
+    0,
+    maxBytes - Buffer.byteLength(suffix, 'utf8')
+  );
+  return `${utf8Prefix(content, contentBudget)}${suffix}`;
 }
 
 function postReview(prNumber, bodyFile) {
@@ -851,9 +875,9 @@ ${chunk}`;
       continue;
     }
 
-    review = clipReview(normalizeVerdict(review, truncated));
+    review = normalizeVerdict(review, truncated);
     const reviewedAt = new Date().toISOString();
-    const body = `## 🤖 Review automatique — ${reviewer}
+    const bodyHeader = `## 🤖 Review automatique — ${reviewer}
 
 - Reviewer utilisé : \`${reviewer}\`
 - Model : \`${reviewerModel}\`
@@ -862,10 +886,13 @@ ${chunk}`;
 - Date : \`${reviewedAt}\`
 - Diff tronqué : **${truncationLabel}**
 - Fichier individuel scindé : **${sectionSplit ? 'oui' : 'non'}**
-- Fichiers générés omis : ${generatedFilesLabel}
-
-${review}
-`;
+- Fichiers générés omis : ${generatedFilesLabel}`;
+    const bodyOverhead = Buffer.byteLength(`${bodyHeader}\n\n\n`, 'utf8');
+    review = clipReview(
+      review,
+      MAX_GITHUB_COMMENT_BYTES - bodyOverhead
+    );
+    const body = `${bodyHeader}\n\n${review}\n`;
     const bodyFile = join(tempDirectory, `review-${reviewer}.md`);
     writeFileSync(bodyFile, body, 'utf8');
     if (postReview(initialPr.number, bodyFile)) {

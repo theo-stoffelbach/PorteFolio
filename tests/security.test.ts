@@ -20,9 +20,15 @@ import {
   getLoginClientKey,
 } from '../lib/loginRateLimit';
 import { parseProjectBasicInput } from '../lib/projectForm';
-import { parseProjectCreate } from '../lib/validation';
+import {
+  parseProjectCreate,
+  parseProjectUpdate,
+} from '../lib/validation';
 import { parseProjectBasicInput as parseSourceProjectBasicInput } from '../source_code/lib/projectForm';
-import { parseProjectCreate as parseSourceProjectCreate } from '../source_code/lib/validation';
+import {
+  parseProjectCreate as parseSourceProjectCreate,
+  parseProjectUpdate as parseSourceProjectUpdate,
+} from '../source_code/lib/validation';
 
 if (!globalThis.crypto) {
   Object.defineProperty(globalThis, 'crypto', { value: webcrypto });
@@ -269,6 +275,44 @@ test('les deux validateurs refusent les calendriers de phases incohérents', () 
           { week: 2, phase: 'Déploiement' },
         ],
       }).phases?.map(({ week }) => week),
+      [1, 2]
+    );
+  }
+});
+
+test('les mises à jour vérifient le calendrier après fusion avec le projet existant', () => {
+  const currentProject = {
+    ...VALID_PROJECT,
+    weeks: [1],
+    phases: [{ week: 1, phase: 'Développement' }],
+  };
+
+  for (const parse of [parseProjectUpdate, parseSourceProjectUpdate]) {
+    assert.throws(
+      () => parse({ weeks: [2] }, currentProject.id, currentProject),
+      { status: 400 }
+    );
+    assert.throws(
+      () =>
+        parse(
+          { phases: [{ week: 2, phase: 'Déploiement' }] },
+          currentProject.id,
+          currentProject
+        ),
+      { status: 400 }
+    );
+    assert.deepEqual(
+      parse(
+        {
+          weeks: [1, 2],
+          phases: [
+            { week: 1, phase: 'Développement' },
+            { week: 2, phase: 'Déploiement' },
+          ],
+        },
+        currentProject.id,
+        currentProject
+      ).weeks,
       [1, 2]
     );
   }

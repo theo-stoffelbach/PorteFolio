@@ -428,9 +428,12 @@ export function parseProjectCreate(value: unknown): Project {
 
 export function parseProjectUpdate(
   value: unknown,
-  expectedId: string
+  expectedId: string,
+  currentProject: Project
 ): Partial<Project> {
-  return parseProject(value, true, expectedId) as Partial<Project>;
+  const update = parseProject(value, true, expectedId) as Partial<Project>;
+  validateProjectSchedule({ ...currentProject, ...update });
+  return update;
 }
 
 export function parseExperienceCreate(value: unknown): Experience {

@@ -41,17 +41,26 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await readJsonBody(request);
-    const project = parseProjectUpdate(body, id);
+    const currentProject = await getProjectById(id);
+
+    if (!currentProject) {
+      return NextResponse.json(
+        { error: 'Project not found' },
+        { status: 404 }
+      );
+    }
+
+    const project = parseProjectUpdate(body, id, currentProject);
 
     const updatedProject = await updateProject(id, project);
-    
+
     if (!updatedProject) {
       return NextResponse.json(
         { error: 'Project not found' },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json(updatedProject);
   } catch (error) {
     return apiErrorResponse(error, 'Failed to update project');

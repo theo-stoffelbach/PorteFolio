@@ -297,8 +297,14 @@ export function parseProjectCreate(value: unknown): Project {
   return parseProject(value, false) as Project;
 }
 
-export function parseProjectUpdate(value: unknown, id: string): Partial<Project> {
-  return parseProject(value, true, id) as Partial<Project>;
+export function parseProjectUpdate(
+  value: unknown,
+  id: string,
+  currentProject: Project
+): Partial<Project> {
+  const update = parseProject(value, true, id) as Partial<Project>;
+  validateProjectSchedule({ ...currentProject, ...update });
+  return update;
 }
 
 export function parseExperienceCreate(value: unknown): Experience {

@@ -125,3 +125,24 @@ aggregateChunkReviews;`
     /VERDICT: REQUEST_CHANGES$/
   );
 });
+
+test('les reviews multioctets respectent la limite GitHub et gardent le verdict', () => {
+  const functionStart = runner.indexOf('function utf8Prefix');
+  const functionEnd = runner.indexOf('\nfunction postReview', functionStart);
+  assert.notEqual(functionStart, -1);
+  assert.notEqual(functionEnd, -1);
+
+  const clipReview = runInNewContext(
+    `${runner.slice(functionStart, functionEnd)}
+clipReview;`,
+    { Buffer }
+  ) as (review: string, maxBytes: number) => string;
+  const clipped = clipReview(
+    `${'é'.repeat(40_000)}\nVERDICT: REQUEST_CHANGES`,
+    2_000
+  );
+
+  assert.ok(Buffer.byteLength(clipped, 'utf8') <= 2_000);
+  assert.match(clipped, /VERDICT: REQUEST_CHANGES$/);
+  assert.match(runner, /MAX_GITHUB_COMMENT_BYTES - bodyOverhead/);
+});
