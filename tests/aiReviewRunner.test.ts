@@ -6,7 +6,7 @@ import test from 'node:test';
 const ROOT = process.cwd();
 const runner = readFileSync(join(ROOT, 'scripts/ai-review.mjs'), 'utf8');
 const kimiAgent = readFileSync(
-  join(ROOT, 'scripts/reviewers/kimi-agent.yaml'),
+  join(ROOT, 'scripts/reviewers/kimi-agent.md'),
   'utf8'
 );
 const geminiAgent = readFileSync(
@@ -19,10 +19,19 @@ const reviewerImage = readFileSync(
 );
 
 test('les agents Kimi et Gemini n’exposent aucun outil', () => {
-  assert.match(kimiAgent, /^\s{2}tools: \[\]$/m);
+  assert.match(kimiAgent, /^tools: \[\]$/m);
+  assert.match(kimiAgent, /^subagents: \[\]$/m);
   assert.match(geminiAgent, /^tools: \[\]$/m);
   assert.match(geminiAgent, /^subagent: false$/m);
   assert.match(geminiAgent, /^mcpServers: \[\]$/m);
+});
+
+test('Kimi utilise son moteur v2 sans option obsolète', () => {
+  assert.match(runner, /kimi: \['kimi', 'kimi-cli'\]/);
+  assert.match(runner, /KIMI_CODE_EXPERIMENTAL_FLAG: '1'/);
+  assert.doesNotMatch(runner, /'--quiet'/);
+  assert.match(runner, /kimi-agent\.md/);
+  assert.match(runner, /replace\(\/\^•\\s\*\/, ''\)/);
 });
 
 test('Codex est isolé et ses outils sont désactivés', () => {
@@ -42,6 +51,24 @@ test('Codex est isolé et ses outils sont désactivés', () => {
     /@openai\/codex@\$\{CODEX_CLI_VERSION\}/
   );
   assert.doesNotMatch(reviewerImage, /gemini-cli/);
+});
+
+test('chaque review publie le modèle explicitement sélectionné', () => {
+  for (const [reviewer, model] of [
+    ['claude', 'claude-sonnet-4-6'],
+    ['kimi', 'kimi-code/k3'],
+    ['gemini', 'gemini-3.6-flash-high'],
+    ['codex', 'gpt-5.6-sol'],
+  ]) {
+    assert.match(
+      runner,
+      new RegExp(`${reviewer}: '${model.replaceAll('.', '\\.')}'`)
+    );
+  }
+
+  assert.match(runner, /'-{2}model'|'-{1}model'/);
+  assert.match(runner, /- Model : \$\{reviewerModel\}/);
+  assert.match(runner, /- Model : \\\`\$\{reviewerModel\}\\\`/);
 });
 
 test('le runner fragmente le diff sans transformer cela en troncature', () => {

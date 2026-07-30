@@ -35,8 +35,14 @@ const GENERATED_DIFF_PATHS = [
 ];
 const SCRIPT_DIRECTORY = dirname(fileURLToPath(import.meta.url));
 const REVIEWER_DIRECTORY = join(SCRIPT_DIRECTORY, 'reviewers');
-const KIMI_AGENT_FILE = join(REVIEWER_DIRECTORY, 'kimi-agent.yaml');
+const KIMI_AGENT_FILE = join(REVIEWER_DIRECTORY, 'kimi-agent.md');
 const GEMINI_AGENT_FILE = join(REVIEWER_DIRECTORY, 'gemini-agent.md');
+const REVIEWER_MODELS = Object.freeze({
+  claude: 'claude-sonnet-4-6',
+  kimi: 'kimi-code/k3',
+  gemini: 'gemini-3.6-flash-high',
+  codex: 'gpt-5.6-sol',
+});
 const REVIEWER_IMAGE = 'portefolio-ai-reviewers:codex-0.146.0';
 const REVIEWER_DOCKERFILE = join(REVIEWER_DIRECTORY, 'Dockerfile');
 const USER_HOME = homedir();
@@ -129,7 +135,7 @@ function resolveCommand(name) {
 
   const candidates = {
     claude: ['claude'],
-    kimi: ['kimi-cli', 'kimi'],
+    kimi: ['kimi', 'kimi-cli'],
     gemini: ['agy'],
     codex: ['docker'],
   }[name] ?? [];
@@ -196,10 +202,13 @@ function pickReviewers() {
 }
 
 function reviewerArgs(reviewer, payload) {
+  const model = REVIEWER_MODELS[reviewer];
   switch (reviewer) {
     case 'claude':
       return [
         '--print',
+        '--model',
+        model,
         '--safe-mode',
         '--permission-mode',
         'plan',
@@ -210,14 +219,17 @@ function reviewerArgs(reviewer, payload) {
       ];
     case 'kimi':
       return [
+        '--model',
+        model,
         '--agent-file',
         KIMI_AGENT_FILE,
-        '--quiet',
         '--prompt',
         payload,
       ];
     case 'gemini':
       return [
+        '--model',
+        model,
         '--agent',
         'portefolio-pr-reviewer',
         '--print',
@@ -343,6 +355,8 @@ function containerReviewerArgs(reviewer, isolatedDirectory) {
       `${profileRoot}:/review-home`,
       REVIEWER_IMAGE,
       'codex',
+      '--model',
+      REVIEWER_MODELS.codex,
       '--sandbox',
       'read-only',
       '--ask-for-approval',
@@ -474,7 +488,12 @@ function reviewWith(reviewer, payload, isolatedDirectory) {
     {
       cwd: isolatedDirectory,
       encoding: 'utf8',
-      env: reviewerEnvironment(),
+      env: {
+        ...reviewerEnvironment(),
+        ...(reviewer === 'kimi'
+          ? { KIMI_CODE_EXPERIMENTAL_FLAG: '1' }
+          : {}),
+      },
       shell: false,
       maxBuffer: 32 * 1024 * 1024,
       input: payload,
@@ -683,8 +702,9 @@ if (process.argv.includes('--smoke')) {
 N'utilise aucun outil. Réponds exactement : REVIEWER_SMOKE_OK`,
         smokeDirectory
       );
+      const smokeOutput = output?.trim().replace(/^•\s*/, '');
       if (
-        output?.trim() === 'REVIEWER_SMOKE_OK'
+        smokeOutput === 'REVIEWER_SMOKE_OK'
       ) {
         passed += 1;
         console.log(`✅ ${reviewer} authentifié ; garde-fous chargés.`);
@@ -760,6 +780,7 @@ if (omittedGeneratedFiles.length > 0) {
 
 try {
   for (const reviewer of reviewers) {
+    const reviewerModel = REVIEWER_MODELS[reviewer];
     const startedAt = new Date().toISOString();
     const { chunks, sectionSplit } = splitDiff(diff);
     const chunkReviews = [];
@@ -770,6 +791,7 @@ try {
 
 Métadonnées de la cible :
 - Reviewer : ${reviewer}
+- Model : ${reviewerModel}
 - Branche : ${branch}
 - Commit HEAD complet : ${headSha}
 - Date de début : ${startedAt}
@@ -829,6 +851,7 @@ ${chunk}`;
     const body = `## 🤖 Review automatique — ${reviewer}
 
 - Reviewer utilisé : \`${reviewer}\`
+- Model : \`${reviewerModel}\`
 - Branche analysée : \`${branch}\`
 - Commit : \`${headSha}\`
 - Date : \`${reviewedAt}\`
