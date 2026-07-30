@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import test from 'node:test';
+import { runInNewContext } from 'node:vm';
 
 const ROOT = process.cwd();
 const runner = readFileSync(join(ROOT, 'scripts/ai-review.mjs'), 'utf8');
@@ -73,7 +74,10 @@ test('chaque review publie le modèle explicitement sélectionné', () => {
 
 test('le runner fragmente le diff sans transformer cela en troncature', () => {
   assert.match(runner, /const MAX_SOURCE_DIFF_BYTES = 400_000/);
-  assert.match(runner, /const MAX_REVIEWER_CHUNK_BYTES = 70_000/);
+  assert.match(
+    runner,
+    /process\.platform === 'win32' \? 24_000 : 70_000/
+  );
   assert.match(runner, /function splitDiff\(diff\)/);
   assert.match(runner, /Fragment analysé : \$\{index \+ 1\}\/\$\{chunks\.length\}/);
   assert.match(runner, /if \(sectionParts\.length > 1\) sectionSplit = true/);
@@ -82,5 +86,42 @@ test('le runner fragmente le diff sans transformer cela en troncature', () => {
   assert.match(
     runner,
     /_Review partielle : le diff source a été tronqué\._\\n\\nVERDICT: \$\{verdict\}/
+  );
+});
+
+test('les verdicts sont validés séparément pour chaque fragment', () => {
+  const functionStart = runner.indexOf('function aggregateChunkReviews');
+  const functionEnd = runner.indexOf('\nfunction normalizeVerdict', functionStart);
+  assert.notEqual(functionStart, -1);
+  assert.notEqual(functionEnd, -1);
+
+  const aggregateChunkReviews = runInNewContext(
+    `${runner.slice(functionStart, functionEnd)}
+aggregateChunkReviews;`
+  ) as (reviews: string[], allowApproval: boolean) => string;
+
+  assert.match(
+    aggregateChunkReviews(
+      [
+        'Premier fragment\nVERDICT: APPROVE\nVERDICT: APPROVE',
+        'Second fragment sans verdict',
+      ],
+      true
+    ),
+    /VERDICT: COMMENT$/
+  );
+  assert.match(
+    aggregateChunkReviews(
+      ['Premier\nVERDICT: APPROVE', 'Second\nVERDICT: APPROVE'],
+      true
+    ),
+    /VERDICT: APPROVE$/
+  );
+  assert.match(
+    aggregateChunkReviews(
+      ['Premier\nVERDICT: APPROVE', 'Second\nVERDICT: REQUEST_CHANGES'],
+      true
+    ),
+    /VERDICT: REQUEST_CHANGES$/
   );
 });

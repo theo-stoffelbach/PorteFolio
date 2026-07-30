@@ -23,7 +23,8 @@ import { fileURLToPath } from 'node:url';
 
 const ALL_REVIEWERS = ['claude', 'kimi', 'gemini', 'codex'];
 const MAX_SOURCE_DIFF_BYTES = 400_000;
-const MAX_REVIEWER_CHUNK_BYTES = 70_000;
+const MAX_REVIEWER_CHUNK_BYTES =
+  process.platform === 'win32' ? 24_000 : 70_000;
 const MAX_REVIEW_CHARS = 60_000;
 const PROBE_TIMEOUT_MS = 30_000;
 const GH_TIMEOUT_MS = 60_000;
@@ -631,15 +632,19 @@ function splitDiff(diff) {
 function aggregateChunkReviews(reviews, allowApproval) {
   const verdictPattern =
     /^VERDICT:\s*(APPROVE|REQUEST_CHANGES|COMMENT)\s*$/gim;
-  const verdicts = reviews.flatMap((review) =>
+  const verdictsByReview = reviews.map((review) =>
     [...review.matchAll(verdictPattern)].map((match) =>
       match[1].toUpperCase()
     )
   );
-  let verdict = verdicts.includes('REQUEST_CHANGES')
+  let verdict = verdictsByReview.some((verdicts) =>
+    verdicts.includes('REQUEST_CHANGES')
+  )
     ? 'REQUEST_CHANGES'
-    : verdicts.length === reviews.length &&
-        verdicts.every((value) => value === 'APPROVE')
+    : verdictsByReview.every(
+          (verdicts) =>
+            verdicts.length === 1 && verdicts[0] === 'APPROVE'
+        )
       ? 'APPROVE'
       : 'COMMENT';
   if (!allowApproval && verdict === 'APPROVE') verdict = 'COMMENT';

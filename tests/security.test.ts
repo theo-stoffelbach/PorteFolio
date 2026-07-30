@@ -237,6 +237,43 @@ test('les deux validateurs acceptent sans image mais refusent une image distante
   }
 });
 
+test('les deux validateurs refusent les calendriers de phases incohérents', () => {
+  for (const parse of [parseProjectCreate, parseSourceProjectCreate]) {
+    assert.throws(
+      () =>
+        parse({
+          ...VALID_PROJECT,
+          weeks: [1],
+          phases: [{ week: 2, phase: 'Déploiement' }],
+        }),
+      { status: 400 }
+    );
+    assert.throws(
+      () =>
+        parse({
+          ...VALID_PROJECT,
+          weeks: [1],
+          phases: [
+            { week: 1, phase: 'Développement' },
+            { week: 1, phase: 'Déploiement' },
+          ],
+        }),
+      { status: 400 }
+    );
+    assert.deepEqual(
+      parse({
+        ...VALID_PROJECT,
+        weeks: [1, 2],
+        phases: [
+          { week: 1, phase: 'Développement' },
+          { week: 2, phase: 'Déploiement' },
+        ],
+      }).phases?.map(({ week }) => week),
+      [1, 2]
+    );
+  }
+});
+
 test('les deux formulaires convertissent year en entier', () => {
   assert.equal(parseProjectBasicInput('year', 'number', '2026', false), 2026);
   assert.equal(

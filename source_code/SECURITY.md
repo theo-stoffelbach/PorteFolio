@@ -87,7 +87,7 @@ NODE_ENV=production
 
 ```bash
 # Sur votre NAS ou serveur
-cd /volume1/Docker_data/portefolio
+cd /volume2/docker/portefolio/source_code
 
 # S'assurer que .env existe et est configuré
 cat .env  # Vérifier les variables
@@ -299,11 +299,12 @@ npm run create-admin
 
 ### Problème : Token expiré trop vite
 
-Augmenter `JWT_EXPIRES_IN` dans `.env` :
+`JWT_EXPIRES_IN` accepte une durée de 5 minutes à 7 jours. Pour utiliser la
+durée maximale, configurez `.env` ainsi :
 
 ```env
-# 30 jours au lieu de 7
-JWT_EXPIRES_IN=2592000
+# Valeur maximale autorisée : 7 jours
+JWT_EXPIRES_IN=604800
 ```
 
 ### Problème : Cookie non persistant

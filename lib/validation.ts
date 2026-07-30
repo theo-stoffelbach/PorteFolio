@@ -201,6 +201,21 @@ function phasesArray(record: UnknownRecord): ProjectPhase[] | undefined {
   });
 }
 
+function validateProjectSchedule(project: Partial<Project>): void {
+  if (project.phases === undefined) return;
+
+  const phaseWeeks = new Set<number>();
+  for (const phase of project.phases) {
+    if (phaseWeeks.has(phase.week)) {
+      invalid(`Une seule phase est autorisée pour la semaine ${phase.week}`);
+    }
+    phaseWeeks.add(phase.week);
+    if (project.weeks !== undefined && !project.weeks.includes(phase.week)) {
+      invalid(`La phase de la semaine ${phase.week} doit appartenir à weeks`);
+    }
+  }
+}
+
 const PROJECT_KEYS = [
   'id',
   'title',
@@ -263,6 +278,7 @@ function parseProject(
   if (record.featured !== undefined) {
     project.featured = booleanValue(record, 'featured');
   }
+  validateProjectSchedule(project);
 
   if (partial) {
     delete project.id;

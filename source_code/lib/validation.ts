@@ -142,6 +142,21 @@ function parsePhases(value: unknown): ProjectPhase[] {
   });
 }
 
+function validateProjectSchedule(project: Partial<Project>): void {
+  if (project.phases === undefined) return;
+
+  const phaseWeeks = new Set<number>();
+  for (const phase of project.phases) {
+    if (phaseWeeks.has(phase.week)) {
+      invalid(`Une seule phase est autorisée pour la semaine ${phase.week}`);
+    }
+    phaseWeeks.add(phase.week);
+    if (project.weeks !== undefined && !project.weeks.includes(phase.week)) {
+      invalid(`La phase de la semaine ${phase.week} doit appartenir à weeks`);
+    }
+  }
+}
+
 function parseWithSchema(
   value: unknown,
   schema: Record<string, Rule>,
@@ -220,6 +235,21 @@ function parseWithSchema(
   return result;
 }
 
+function parseProject(
+  value: unknown,
+  partial: boolean,
+  id?: string
+): Project | Partial<Project> {
+  const project = parseWithSchema(
+    value,
+    projectSchema,
+    partial,
+    id
+  ) as Partial<Project>;
+  validateProjectSchedule(project);
+  return project;
+}
+
 const projectSchema: Record<string, Rule> = {
   id: { kind: 'id', required: true },
   title: { kind: 'string', max: 200, required: true },
@@ -264,11 +294,11 @@ const formationSchema: Record<string, Rule> = {
 };
 
 export function parseProjectCreate(value: unknown): Project {
-  return parseWithSchema(value, projectSchema, false) as unknown as Project;
+  return parseProject(value, false) as Project;
 }
 
 export function parseProjectUpdate(value: unknown, id: string): Partial<Project> {
-  return parseWithSchema(value, projectSchema, true, id) as Partial<Project>;
+  return parseProject(value, true, id) as Partial<Project>;
 }
 
 export function parseExperienceCreate(value: unknown): Experience {
