@@ -36,7 +36,7 @@
     "framer-motion": "^12.23.24",
     "jose": "^5.9.6",
     "jsonwebtoken": "^9.0.2",
-    "next": "^16.2.6",
+    "next": "^16.2.11",
     "postcss": "^8.5.14",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
