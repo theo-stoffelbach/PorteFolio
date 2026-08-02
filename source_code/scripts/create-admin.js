@@ -67,7 +67,7 @@ async function generateAdminCredentials() {
     console.log('========================================');
     console.log('📋 VARIABLES D\'ENVIRONNEMENT À CONFIGURER');
     console.log('========================================\n');
-    console.log('Ajoutez ces variables dans votre fichier .env :\n');
+    console.log('Ajoutez ces variables dans votre fichier ../.env.runtime :\n');
 
     console.log('# Configuration Admin');
     console.log(`ADMIN_EMAIL=${email}`);
@@ -81,7 +81,8 @@ async function generateAdminCredentials() {
     console.log('');
     console.log('========================================\n');
     console.log('⚠️  SÉCURITÉ :');
-    console.log('   1. Ne JAMAIS commiter le fichier .env dans Git');
+    console.log('   1. Ne JAMAIS commiter le fichier ../.env.runtime dans Git');
+    console.log('      puis protégez-le avec : chmod 600 ../.env.runtime');
     console.log('   2. Gardez JWT_SECRET secret et unique par environnement');
     console.log('   3. Changez régulièrement vos mots de passe');
     console.log('   4. Utilisez des mots de passe forts (12+ caractères)\n');
