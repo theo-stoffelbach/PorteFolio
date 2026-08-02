@@ -927,12 +927,16 @@ ${chunk}`;
 - Diff tronqué : **${truncationLabel}**
 - Fichier individuel scindé : **${sectionSplit ? 'oui' : 'non'}**
 - Fichiers générés omis : ${generatedFilesLabel}`;
-    const bodyOverhead = Buffer.byteLength(`${bodyHeader}\n\n\n`, 'utf8');
+    const reviewerSignature = `— ${reviewer[0].toUpperCase()}${reviewer.slice(1)} (${reviewerModel})`;
+    const bodyOverhead = Buffer.byteLength(
+      `${bodyHeader}\n\n\n\n${reviewerSignature}\n`,
+      'utf8'
+    );
     review = clipReview(
       review,
       MAX_GITHUB_COMMENT_BYTES - bodyOverhead
     );
-    const body = `${bodyHeader}\n\n${review}\n`;
+    const body = `${bodyHeader}\n\n${review}\n\n${reviewerSignature}\n`;
     const bodyFile = join(tempDirectory, `review-${reviewer}.md`);
     writeFileSync(bodyFile, body, 'utf8');
     if (postReview(initialPr.number, bodyFile)) {

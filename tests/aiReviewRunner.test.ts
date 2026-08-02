@@ -70,6 +70,14 @@ test('chaque review publie le modèle explicitement sélectionné', () => {
   assert.match(runner, /'-{2}model'|'-{1}model'/);
   assert.match(runner, /- Model : \$\{reviewerModel\}/);
   assert.match(runner, /- Model : \\\`\$\{reviewerModel\}\\\`/);
+  assert.match(
+    runner,
+    /— \$\{reviewer\[0\]\.toUpperCase\(\)\}\$\{reviewer\.slice\(1\)\} \(\$\{reviewerModel\}\)/
+  );
+  assert.match(
+    runner,
+    /\$\{review\}\\n\\n\$\{reviewerSignature\}\\n/
+  );
 });
 
 test('le titre de review dérive dynamiquement le nom du modèle', () => {
