@@ -75,6 +75,45 @@ ou VERDICT: REQUEST_CHANGES
 ou VERDICT: COMMENT
 `;
 
+function formatModelTitle(model) {
+  const identifier = model.split('/').at(-1) || model;
+  const modelWithoutDate = identifier.replace(/-\d{8}$/, '');
+  const formatParts = (value) =>
+    value
+      .split('-')
+      .map((part) =>
+        /^[a-z]\d+(?:\.\d+)?$/i.test(part)
+          ? part.toUpperCase()
+          : `${part[0].toUpperCase()}${part.slice(1).toLowerCase()}`
+      )
+      .join(' ');
+  const claudeModel = modelWithoutDate.match(
+    /^claude-([a-z]+)-(\d+)(?:-(\d+))?$/i
+  );
+
+  if (claudeModel) {
+    const [, family, major, minor = '0'] = claudeModel;
+    return `${formatParts(family)} ${major}.${minor}`;
+  }
+
+  const geminiModel = modelWithoutDate.match(/^gemini-(.+)$/i);
+  if (geminiModel) return formatParts(geminiModel[1]);
+
+  const gptModel = modelWithoutDate.match(
+    /^gpt-(\d+(?:\.\d+)?)(?:-(.+))?$/i
+  );
+  if (gptModel) {
+    const [, version, variant] = gptModel;
+    return `GPT-${version}${variant ? ` ${formatParts(variant)}` : ''}`;
+  }
+
+  if (/^[a-z]\d+(?:\.\d+)?$/i.test(identifier)) {
+    return identifier.toUpperCase();
+  }
+
+  return model;
+}
+
 function fail(message) {
   console.error(`❌ ${message}`);
   process.exit(1);
@@ -810,6 +849,7 @@ if (omittedGeneratedFiles.length > 0) {
 try {
   for (const reviewer of reviewers) {
     const reviewerModel = REVIEWER_MODELS[reviewer];
+    const reviewerModelTitle = formatModelTitle(reviewerModel);
     const startedAt = new Date().toISOString();
     const { chunks, sectionSplit } = splitDiff(diff);
     const chunkReviews = [];
@@ -877,7 +917,7 @@ ${chunk}`;
 
     review = normalizeVerdict(review, truncated);
     const reviewedAt = new Date().toISOString();
-    const bodyHeader = `## 🤖 Review automatique — ${reviewer}
+    const bodyHeader = `## 🤖 Review automatique — ${reviewer} (${reviewerModelTitle})
 
 - Reviewer utilisé : \`${reviewer}\`
 - Model : \`${reviewerModel}\`

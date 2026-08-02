@@ -72,6 +72,35 @@ test('chaque review publie le modèle explicitement sélectionné', () => {
   assert.match(runner, /- Model : \\\`\$\{reviewerModel\}\\\`/);
 });
 
+test('le titre de review dérive dynamiquement le nom du modèle', () => {
+  const functionStart = runner.indexOf('function formatModelTitle');
+  const functionEnd = runner.indexOf('\nfunction fail', functionStart);
+  assert.notEqual(functionStart, -1);
+  assert.notEqual(functionEnd, -1);
+
+  const formatModelTitle = runInNewContext(
+    `${runner.slice(functionStart, functionEnd)}\nformatModelTitle;`
+  ) as (model: string) => string;
+
+  assert.equal(formatModelTitle('claude-opus-5'), 'Opus 5.0');
+  assert.equal(formatModelTitle('claude-sonnet-4-6'), 'Sonnet 4.6');
+  assert.equal(
+    formatModelTitle('claude-opus-5-1-20260802'),
+    'Opus 5.1'
+  );
+  assert.equal(formatModelTitle('kimi-code/k3'), 'K3');
+  assert.equal(
+    formatModelTitle('gemini-3.6-flash-high'),
+    '3.6 Flash High'
+  );
+  assert.equal(formatModelTitle('gpt-5.6-sol'), 'GPT-5.6 Sol');
+  assert.equal(formatModelTitle('vendor/custom-model'), 'vendor/custom-model');
+  assert.match(
+    runner,
+    /Review automatique — \$\{reviewer\} \(\$\{reviewerModelTitle\}\)/
+  );
+});
+
 test('le runner fragmente le diff sans transformer cela en troncature', () => {
   assert.match(runner, /const MAX_SOURCE_DIFF_BYTES = 400_000/);
   assert.match(
