@@ -38,13 +38,20 @@ const SCRIPT_DIRECTORY = dirname(fileURLToPath(import.meta.url));
 const REVIEWER_DIRECTORY = join(SCRIPT_DIRECTORY, 'reviewers');
 const KIMI_AGENT_FILE = join(REVIEWER_DIRECTORY, 'kimi-agent.md');
 const GEMINI_AGENT_FILE = join(REVIEWER_DIRECTORY, 'gemini-agent.md');
+const PROJECT_NAME = process.env.AI_REVIEW_PROJECT ||
+  runGit(['config', '--get', 'remote.origin.url'])
+    .replace(/\.git$/, '')
+    .split(/[/:]/)
+    .filter(Boolean)
+  .pop() || 'project';
+const AGENT_NAME = `${PROJECT_NAME}-pr-reviewer`;
 const REVIEWER_MODELS = Object.freeze({
-  claude: 'claude-opus-5',
-  kimi: 'kimi-code/k3',
-  gemini: 'gemini-3.6-flash-high',
-  codex: 'gpt-5.6-sol',
+  claude: process.env.AI_CLAUDE_MODEL || 'claude-sonnet-5',
+  kimi: process.env.AI_KIMI_MODEL || 'kimi-code/k3',
+  gemini: process.env.AI_GEMINI_MODEL || 'gemini-3.6-flash-high',
+  codex: process.env.AI_CODEX_MODEL || 'gpt-5.6-sol',
 });
-const REVIEWER_IMAGE = 'portefolio-ai-reviewers:codex-0.146.0';
+const REVIEWER_IMAGE = process.env.AI_REVIEWER_IMAGE || 'ai-pr-reviewers:latest';
 const REVIEWER_DOCKERFILE = join(REVIEWER_DIRECTORY, 'Dockerfile');
 const USER_HOME = homedir();
 const MANAGED_TEMP_DIRECTORIES = new Set();
@@ -607,10 +614,18 @@ function reviewWith(reviewer, payload, isolatedDirectory) {
       isolatedDirectory,
       '.agents',
       'agents',
-      'portefolio-pr-reviewer'
+      AGENT_NAME
     );
     mkdirSync(agentDirectory, { recursive: true, mode: 0o700 });
-    copyFileSync(GEMINI_AGENT_FILE, join(agentDirectory, 'agent.md'));
+    const agentFile = join(agentDirectory, 'agent.md');
+    writeFileSync(
+      agentFile,
+      readFileSync(GEMINI_AGENT_FILE, 'utf8').replace(
+        /name:\s*portefolio-pr-reviewer/g,
+        `name: ${AGENT_NAME}`
+      ),
+      { mode: 0o600 }
+    );
   }
   const containerArgs = reviewer === 'codex'
     ? containerReviewerArgs(reviewer, isolatedDirectory)
@@ -706,7 +721,7 @@ function buildDiff() {
   const changedPaths = runGit([
     'diff',
     '--name-only',
-    'origin/main...HEAD',
+    `${process.env.AI_REVIEW_BASE || 'origin/main'}...HEAD`,
   ]).split('\n');
   const omittedGeneratedFiles = GENERATED_DIFF_PATHS.filter((path) =>
     changedPaths.includes(path)
@@ -718,7 +733,7 @@ function buildDiff() {
     'diff',
     '--no-ext-diff',
     '--unified=80',
-    'origin/main...HEAD',
+    `${process.env.AI_REVIEW_BASE || 'origin/main'}...HEAD`,
     '--',
     ':/',
     ...exclusions,
