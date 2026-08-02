@@ -51,10 +51,9 @@ export function getLoginClientKey(headers: Headers): string {
   const realIp = headers.get('x-real-ip')?.trim();
   if (realIp) return realIp.slice(0, 128);
 
-  const forwardedFor = headers.get('x-forwarded-for');
-  const firstForwardedIp = forwardedFor?.split(',')[0]?.trim();
-  if (firstForwardedIp) return firstForwardedIp.slice(0, 128);
-
+  // X-Forwarded-For peut contenir une valeur fournie par le client. Sans
+  // X-Real-IP réécrit par NPM, partager un bucket est plus sûr que permettre
+  // la rotation arbitraire des clés.
   return 'unknown-client';
 }
 

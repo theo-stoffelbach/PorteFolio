@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { Project } from "@/lib/types";
-import { parseProjectBasicInput } from "@/lib/projectForm";
+import {
+  mergeActivePhaseEdits,
+  parseProjectBasicInput,
+  uniqueSortedPhaseWeeks,
+} from "@/lib/projectForm";
 import PhaseManager from "@/components/admin/PhaseManager";
 
 interface ProjectEditFormProps {
@@ -310,15 +314,21 @@ export default function ProjectEditForm({
         {activeTab === "phases" && (
           <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8">
             <PhaseManager
-              phases={project.phases}
+              phases={project.phases?.filter((phase) =>
+                project.weeks.includes(phase.week)
+              )}
               onPhasesChange={(phases) => {
                 // Synchroniser les semaines avec les phases
-                const weeksFromPhases = phases.map(p => p.week).sort((a, b) => a - b);
+                const weeksFromPhases = uniqueSortedPhaseWeeks(phases);
                 setWeeksInput(weeksFromPhases.join(", "));
 
                 setProject((prev) => ({
                   ...prev,
-                  phases,
+                  phases: mergeActivePhaseEdits(
+                    prev.phases || [],
+                    prev.weeks,
+                    phases
+                  ),
                   weeks: weeksFromPhases,
                 }));
               }}

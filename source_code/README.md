@@ -65,17 +65,22 @@ docker network create portfolio_public
 docker compose up -d --build
 ```
 
-Le portfolio sera accessible sur `http://localhost:3000`
+Le Compose ne publie volontairement aucun port hôte. Le portfolio est
+accessible via Nginx Proxy Manager, connecté au même réseau
+`portfolio_public`. Pour un accès direct en développement, utilisez plutôt
+`npm run dev` puis `http://localhost:3000`.
 
-### Déploiement sur NAS (Auto-mise à jour)
+### Déploiement sur NAS
 
-Le projet est configuré pour un déploiement automatique sur NAS avec GitHub Actions + Watchtower.
+GitHub Actions publie l'image dans GHCR. Sur le NAS, le Watchtower centralisé et
+sécurisé détecte le label du service Portfolio puis vérifie les mises à jour
+toutes les cinq minutes. Aucun socket Docker n'est monté dans ce Compose.
 
 **Workflow :**
 
-1. Push sur `V3_PorteFolio` → GitHub Actions build l'image
+1. Push sur `main` → GitHub Actions teste et construit l'image
 2. Image publiée sur GitHub Container Registry (GHCR)
-3. Watchtower détecte automatiquement la nouvelle image
+3. Le Watchtower centralisé détecte automatiquement la nouvelle image
 4. Portfolio mis à jour sur le NAS (toutes les 5 min)
 
 **Déploiement initial :**
@@ -92,7 +97,8 @@ Le projet est configuré pour un déploiement automatique sur NAS avec GitHub Ac
 
 ```bash
 ssh Theo@192.168.1.3
-cd /volume1/Docker_data/portefolio/PorteFolio
+cd /volume2/docker/portefolio/source_code
+docker network inspect portfolio_public >/dev/null 2>&1 || docker network create portfolio_public
 docker compose pull
 docker compose up -d
 ```
@@ -103,11 +109,11 @@ docker compose up -d
 
 Le fichier `docker-compose.yml` configure:
 
-- Port: 3000
+- Port interne exposé au seul réseau `portfolio_public` (aucun port hôte)
 - Volume pour persistance des données (`/data`)
 - Healthcheck automatique
 - Restart automatique
-- Watchtower pour auto-update (mode production)
+- Label opt-in pour le Watchtower centralisé du NAS
 
 ## API REST
 

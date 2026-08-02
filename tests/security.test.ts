@@ -8,15 +8,20 @@ import {
   isTrustedMutationOrigin,
   readJsonBody,
 } from '../lib/apiSecurity';
+import { readJsonBody as readSourceJsonBody } from '../source_code/lib/apiSecurity';
 import { POST as login } from '../app/api/auth/login/route';
 import { middleware } from '../middleware';
 import {
+  assertJwtConfiguration,
   generateToken,
   getJwtExpiresIn,
   hashPassword,
   verifyToken,
 } from '../lib/auth';
-import { verifyToken as verifySourceToken } from '../source_code/lib/jwt';
+import {
+  assertJwtConfiguration as assertSourceJwtConfiguration,
+  verifyToken as verifySourceToken,
+} from '../source_code/lib/jwt';
 import { buildContentSecurityPolicy } from '../lib/securityHeaders';
 import { buildContentSecurityPolicy as buildSourceContentSecurityPolicy } from '../source_code/lib/securityHeaders';
 import {
@@ -25,12 +30,20 @@ import {
   getLoginClientKey,
   LOGIN_RATE_LIMIT_MAX_BUCKETS,
 } from '../lib/loginRateLimit';
-import { parseProjectBasicInput } from '../lib/projectForm';
+import {
+  mergeActivePhaseEdits,
+  parseProjectBasicInput,
+  uniqueSortedPhaseWeeks,
+} from '../lib/projectForm';
 import {
   parseProjectCreate,
   parseProjectUpdate,
 } from '../lib/validation';
-import { parseProjectBasicInput as parseSourceProjectBasicInput } from '../source_code/lib/projectForm';
+import {
+  mergeActivePhaseEdits as mergeSourceActivePhaseEdits,
+  parseProjectBasicInput as parseSourceProjectBasicInput,
+  uniqueSortedPhaseWeeks as uniqueSortedSourcePhaseWeeks,
+} from '../source_code/lib/projectForm';
 import {
   parseProjectCreate as parseSourceProjectCreate,
   parseProjectUpdate as parseSourceProjectUpdate,
@@ -38,6 +51,7 @@ import {
 import {
   clearLoginAttempts as clearSourceLoginAttempts,
   consumeLoginAttempt as consumeSourceLoginAttempt,
+  getLoginClientKey as getSourceLoginClientKey,
   LOGIN_RATE_LIMIT_MAX_BUCKETS as SOURCE_LOGIN_RATE_LIMIT_MAX_BUCKETS,
 } from '../source_code/lib/loginRateLimit';
 
@@ -165,6 +179,22 @@ test('le lecteur JSON applique le type et la limite réelle du corps', async () 
     body: JSON.stringify({ value: 'x'.repeat(100) }),
   });
   await assert.rejects(readJsonBody(oversized, 32), { status: 413 });
+
+  for (const readBody of [readJsonBody, readSourceJsonBody]) {
+    const rejectingStream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(new Uint8Array([1, 2]));
+      },
+      cancel() {
+        throw new Error("l'annulation de la source a échoué");
+      },
+    });
+    const rejectingCancelRequest = {
+      headers: new Headers({ 'content-type': 'application/json' }),
+      body: rejectingStream,
+    } as NextRequest;
+    await assert.rejects(readBody(rejectingCancelRequest, 1), { status: 413 });
+  }
 });
 
 test('les erreurs JSON du login exposent encore le quota consommé', async (t) => {
@@ -248,6 +278,10 @@ test('les JWT vérifient secret, issuer, audience et compte admin', async (t) =>
   process.env.ADMIN_EMAIL = 'autre@example.com';
   assert.equal(await verifyToken(token), null);
   assert.equal(await verifySourceToken(token), null);
+
+  delete process.env.ADMIN_EMAIL;
+  assert.throws(assertJwtConfiguration, /ADMIN_EMAIL/);
+  assert.throws(assertSourceJwtConfiguration, /ADMIN_EMAIL/);
 });
 
 test('le middleware refuse les jetons absents ou mal configurés sans lever', async (t) => {
@@ -271,6 +305,7 @@ test('le middleware refuse les jetons absents ou mal configurés sans lever', as
     request('/api/projects', { method: 'POST' })
   );
   assert.equal(apiAnonymous.status, 401);
+  assert.equal(apiAnonymous.headers.get('cache-control'), 'no-store');
 
   delete process.env.JWT_SECRET;
   const misconfigured = await middleware(
@@ -399,12 +434,21 @@ test('le rate limiter évite le verrou global tout en préservant les quotas blo
   }
 });
 
-test('la clé client privilégie le X-Real-IP réécrit par NPM', () => {
+test('la clé client exige le X-Real-IP réécrit par NPM', () => {
   const headers = new Headers({
     'x-real-ip': '203.0.113.10',
     'x-forwarded-for': '198.51.100.1, 203.0.113.10',
   });
-  assert.equal(getLoginClientKey(headers), '203.0.113.10');
+  for (const getClientKey of [getLoginClientKey, getSourceLoginClientKey]) {
+    assert.equal(getClientKey(headers), '203.0.113.10');
+    assert.equal(
+      getClientKey(
+        new Headers({ 'x-forwarded-for': '198.51.100.1, 203.0.113.10' })
+      ),
+      'unknown-client',
+      'X-Forwarded-For seul ne doit pas permettre de choisir son quota'
+    );
+  }
 });
 
 test('les deux validateurs acceptent sans image mais refusent une image distante', () => {
@@ -547,4 +591,30 @@ test('les deux formulaires convertissent year en entier', () => {
     parseSourceProjectBasicInput('featured', 'checkbox', '', true),
     true
   );
+  assert.equal(parseProjectBasicInput('year', 'number', '2026abc', false), 0);
+  assert.equal(
+    parseSourceProjectBasicInput('year', 'number', '2026abc', false),
+    0
+  );
+});
+
+test('les formulaires masquent les phases retirées sans perdre leur brouillon', () => {
+  const previous = [
+    { week: 1, phase: 'Initiale', description: 'à modifier' },
+    { week: 2, phase: 'Conservée', description: 'brouillon précieux' },
+  ];
+  const edited = [
+    { week: 1, phase: 'Modifiée', description: 'nouvelle description' },
+  ];
+
+  for (const [uniqueWeeks, mergePhases] of [
+    [uniqueSortedPhaseWeeks, mergeActivePhaseEdits],
+    [uniqueSortedSourcePhaseWeeks, mergeSourceActivePhaseEdits],
+  ] as const) {
+    assert.deepEqual(
+      uniqueWeeks([{ week: 2 }, { week: 1 }, { week: 2 }]),
+      [1, 2]
+    );
+    assert.deepEqual(mergePhases(previous, [1], edited), [previous[1], edited[0]]);
+  }
 });

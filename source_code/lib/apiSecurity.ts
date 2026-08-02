@@ -130,7 +130,11 @@ export async function readJsonBody(
 
     totalBytes += value.byteLength;
     if (totalBytes > maxBytes) {
-      await reader.cancel();
+      try {
+        await reader.cancel();
+      } catch {
+        // Une source défaillante ne doit pas remplacer la réponse 413 attendue.
+      }
       throw new ApiRequestError('Corps de requête trop volumineux', 413);
     }
     chunks.push(value);

@@ -2,6 +2,8 @@ services:
   portfolio:
     image: ghcr.io/theo-stoffelbach/portefolio:latest
     container_name: portfolio
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     expose:
       - "3000"
     environment:
@@ -38,12 +40,10 @@ services:
       start_period: 40s
 
   # --------------------------------------------------------------------------
-  # WATCHTOWER SUPPRIMÉ - Vulnérabilité critique (docker.sock exposé)
+  # WATCHTOWER LOCAL SUPPRIMÉ - aucun docker.sock dans cette stack
   # --------------------------------------------------------------------------
-  # Alternative pour mettre à jour :
-  #   1. Manuellement : docker pull ghcr.io/theo-stoffelbach/portefolio:v1.0.0
-  #   2. Cron sur l'hôte : 0 4 * * * docker pull ... && docker-compose up -d
-  #   3. Ou utiliser un registry webhook
+  # Le label du service délègue les mises à jour au Watchtower centralisé,
+  # qui accède à Docker uniquement via le socket proxy sécurisé du NAS.
   # --------------------------------------------------------------------------
 
 networks:

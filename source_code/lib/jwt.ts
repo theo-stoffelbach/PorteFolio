@@ -55,6 +55,7 @@ export function getJwtExpiresIn(): number {
 export function assertJwtConfiguration(): void {
   getJwtSecret();
   getJwtExpiresIn();
+  getAdminEmail();
 }
 
 export async function generateToken(email: string): Promise<string> {
