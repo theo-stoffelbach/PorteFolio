@@ -39,7 +39,7 @@ const REVIEWER_DIRECTORY = join(SCRIPT_DIRECTORY, 'reviewers');
 const KIMI_AGENT_FILE = join(REVIEWER_DIRECTORY, 'kimi-agent.md');
 const GEMINI_AGENT_FILE = join(REVIEWER_DIRECTORY, 'gemini-agent.md');
 const REVIEWER_MODELS = Object.freeze({
-  claude: 'claude-sonnet-4-6',
+  claude: 'claude-opus-5',
   kimi: 'kimi-code/k3',
   gemini: 'gemini-3.6-flash-high',
   codex: 'gpt-5.6-sol',

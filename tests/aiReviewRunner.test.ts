@@ -56,7 +56,7 @@ test('Codex est isolé et ses outils sont désactivés', () => {
 
 test('chaque review publie le modèle explicitement sélectionné', () => {
   for (const [reviewer, model] of [
-    ['claude', 'claude-sonnet-4-6'],
+    ['claude', 'claude-opus-5'],
     ['kimi', 'kimi-code/k3'],
     ['gemini', 'gemini-3.6-flash-high'],
     ['codex', 'gpt-5.6-sol'],
