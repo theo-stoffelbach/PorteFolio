@@ -56,14 +56,16 @@ test('Codex est isolé et ses outils sont désactivés', () => {
 
 test('chaque review publie le modèle explicitement sélectionné', () => {
   for (const [reviewer, model] of [
-    ['claude', 'claude-opus-5'],
+    ['claude', 'claude-sonnet-5'],
     ['kimi', 'kimi-code/k3'],
     ['gemini', 'gemini-3.6-flash-high'],
     ['codex', 'gpt-5.6-sol'],
   ]) {
     assert.match(
       runner,
-      new RegExp(`${reviewer}: '${model.replaceAll('.', '\\.')}'`)
+      new RegExp(
+        `\\b${reviewer}: (?:process\\.env\\.AI_${reviewer.toUpperCase()}_MODEL \\|\\| )?'${model.replaceAll('.', '\\.')}'`
+      )
     );
   }
 
