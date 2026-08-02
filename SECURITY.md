@@ -174,9 +174,9 @@ docker-compose up -d
    ADMIN_PASSWORD_HASH=$2b$10$...nouveau_hash...
    ```
 
-3. Redémarrer le container :
+3. Recréer le conteneur pour recharger `.env.runtime` :
    ```bash
-   docker-compose restart portfolio
+   docker compose up -d --force-recreate portfolio
    ```
 
 ### Changer l'email admin
@@ -188,7 +188,7 @@ ADMIN_EMAIL=nouveau@email.com
 ```
 
 ```bash
-docker-compose restart portfolio
+docker compose up -d --force-recreate portfolio
 ```
 
 ### Révoquer tous les tokens (forcer déconnexion)
@@ -202,8 +202,8 @@ openssl rand -base64 32
 # Mettre à jour .env.runtime
 JWT_SECRET=nouveau_secret_genere
 
-# Redémarrer
-docker-compose restart portfolio
+# Recréer le conteneur pour charger le nouveau secret
+docker compose up -d --force-recreate portfolio
 ```
 
 Tous les utilisateurs devront se reconnecter.
@@ -296,8 +296,8 @@ test -s .env.runtime
 cd /volume2/docker/portefolio
 npm run create-admin
 
-# Redémarrer le container
-docker-compose restart portfolio
+# Recréer le conteneur pour recharger .env.runtime
+docker compose up -d --force-recreate portfolio
 ```
 
 ### Problème : "Email ou mot de passe incorrect"
