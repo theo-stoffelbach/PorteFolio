@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFormationById, updateFormation, deleteFormation } from '@/lib/dataManager';
+import {
+  apiErrorResponse,
+  enforceAdminMutation,
+  readJsonBody,
+} from '@/lib/apiSecurity';
+import { parseFormationUpdate } from '@/lib/validation';
 
 export async function GET(
   request: NextRequest,
@@ -29,11 +35,15 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rejection = await enforceAdminMutation(request);
+  if (rejection) return rejection;
+
   try {
     const { id } = await params;
-    const body = await request.json();
-    
-    const updatedFormation = await updateFormation(id, body);
+    const body = await readJsonBody(request);
+    const formation = parseFormationUpdate(body, id);
+
+    const updatedFormation = await updateFormation(id, formation);
     
     if (!updatedFormation) {
       return NextResponse.json(
@@ -44,10 +54,7 @@ export async function PUT(
     
     return NextResponse.json(updatedFormation);
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to update formation' },
-      { status: 500 }
-    );
+    return apiErrorResponse(error, 'Failed to update formation');
   }
 }
 
@@ -55,6 +62,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rejection = await enforceAdminMutation(request);
+  if (rejection) return rejection;
+
   try {
     const { id } = await params;
     const deleted = await deleteFormation(id);
@@ -68,10 +78,6 @@ export async function DELETE(
     
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to delete formation' },
-      { status: 500 }
-    );
+    return apiErrorResponse(error, 'Failed to delete formation');
   }
 }
-

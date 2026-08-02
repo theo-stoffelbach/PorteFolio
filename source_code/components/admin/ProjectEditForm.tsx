@@ -2,6 +2,11 @@
 
 import { useState } from "react";
 import { Project } from "@/lib/types";
+import {
+  mergeActivePhaseEdits,
+  parseProjectBasicInput,
+  uniqueSortedPhaseWeeks,
+} from "@/lib/projectForm";
 import PhaseManager from "@/components/admin/PhaseManager";
 
 interface ProjectEditFormProps {
@@ -16,6 +21,9 @@ export default function ProjectEditForm({
   saving,
 }: ProjectEditFormProps) {
   const [project, setProject] = useState<Project>(initialProject);
+  const [technologiesInput, setTechnologiesInput] = useState(
+    initialProject.technologies.join(", ")
+  );
   const [activeTab, setActiveTab] = useState<"basic" | "details" | "phases">(
     "basic"
   );
@@ -27,14 +35,25 @@ export default function ProjectEditForm({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value, type } = e.target as HTMLInputElement;
+    const parsedValue = parseProjectBasicInput(
+      name,
+      type,
+      value,
+      (e.target as HTMLInputElement).checked
+    );
     setProject((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+      [name]: parsedValue,
     }));
   };
 
   const handleTechnologiesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const technologies = e.target.value.split(",").map((tech) => tech.trim());
+    const inputValue = e.target.value;
+    setTechnologiesInput(inputValue);
+    const technologies = inputValue
+      .split(",")
+      .map((tech) => tech.trim())
+      .filter(Boolean);
     setProject((prev) => ({
       ...prev,
       technologies,
@@ -46,24 +65,27 @@ export default function ProjectEditForm({
     setWeeksInput(inputValue);
 
     // Parser les semaines depuis l'input
-    const weeks: number[] = [];
+    const parsedWeeks: number[] = [];
     if (inputValue.trim()) {
       const parts = inputValue.split(/[,;]/).map(p => p.trim()).filter(p => p);
       parts.forEach(part => {
         const num = parseInt(part);
         if (!isNaN(num)) {
-          weeks.push(num);
+          parsedWeeks.push(num);
         }
       });
     }
 
+    const weeks = [...new Set(parsedWeeks)].sort((a, b) => a - b);
+
     // Créer automatiquement les phases correspondantes aux semaines
     const existingWeeks = new Set(project.phases?.map(p => p.week) || []);
-    let newPhases = [...(project.phases || [])];
+    const newPhases = [...(project.phases || [])];
 
     // Ajouter les nouvelles phases pour les semaines qui n'existent pas
     weeks.forEach(week => {
       if (!existingWeeks.has(week)) {
+        existingWeeks.add(week);
         newPhases.push({
           week,
           phase: `Phase Semaine ${week}`,
@@ -72,19 +94,21 @@ export default function ProjectEditForm({
       }
     });
 
-    // Supprimer les phases dont la semaine n'est plus dans la liste
-    newPhases = newPhases.filter(phase => weeks.includes(phase.week));
-
     setProject((prev) => ({
       ...prev,
-      weeks: weeks.length > 0 ? weeks.sort((a, b) => a - b) : [],
+      weeks,
       phases: newPhases,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(project);
+    onSave({
+      ...project,
+      phases: project.phases?.filter((phase) =>
+        project.weeks.includes(phase.week)
+      ),
+    });
   };
 
   return (
@@ -220,7 +244,7 @@ export default function ProjectEditForm({
               </label>
               <input
                 type="text"
-                value={project.technologies.join(", ")}
+                value={technologiesInput}
                 onChange={handleTechnologiesChange}
                 className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
                 placeholder="React, Node.js, TypeScript"
@@ -289,15 +313,21 @@ export default function ProjectEditForm({
         {activeTab === "phases" && (
           <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8">
             <PhaseManager
-              phases={project.phases}
+              phases={project.phases?.filter((phase) =>
+                project.weeks.includes(phase.week)
+              )}
               onPhasesChange={(phases) => {
                 // Synchroniser les semaines avec les phases
-                const weeksFromPhases = phases.map(p => p.week).sort((a, b) => a - b);
+                const weeksFromPhases = uniqueSortedPhaseWeeks(phases);
                 setWeeksInput(weeksFromPhases.join(", "));
 
                 setProject((prev) => ({
                   ...prev,
-                  phases,
+                  phases: mergeActivePhaseEdits(
+                    prev.phases || [],
+                    prev.weeks,
+                    phases
+                  ),
                   weeks: weeksFromPhases,
                 }));
               }}

@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProjects, createProject } from '@/lib/dataManager';
-import { isAuthenticated } from '@/lib/auth';
-import { Project } from '@/lib/types';
+import {
+  apiErrorResponse,
+  enforceAdminMutation,
+  readJsonBody,
+} from '@/lib/apiSecurity';
+import { parseProjectCreate } from '@/lib/validation';
 
 export async function GET() {
   try {
@@ -16,20 +20,15 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  if (!isAuthenticated(request)) {
-    return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-  }
-  try {
-    const body = await request.json();
-    const project: Project = body;
+  const rejection = await enforceAdminMutation(request);
+  if (rejection) return rejection;
 
+  try {
+    const body = await readJsonBody(request);
+    const project = parseProjectCreate(body);
     const newProject = await createProject(project);
     return NextResponse.json(newProject, { status: 201 });
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to create project' },
-      { status: 500 }
-    );
+    return apiErrorResponse(error, 'Failed to create project');
   }
 }
-

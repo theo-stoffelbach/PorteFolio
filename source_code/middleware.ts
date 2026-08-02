@@ -1,28 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jwtVerify } from "jose";
-
-// Fonction de vérification JWT compatible Edge Runtime
-async function verifyTokenEdge(token: string): Promise<boolean> {
-  const jwtSecret = process.env.JWT_SECRET;
-  if (!jwtSecret) {
-    console.error("FATAL: JWT_SECRET non défini");
-    return false;
-  }
-  try {
-    const secret = new TextEncoder().encode(jwtSecret);
-    await jwtVerify(token, secret);
-    return true;
-  } catch {
-    return false;
-  }
-}
+import { ADMIN_COOKIE_NAME, verifyToken } from "@/lib/jwt";
 
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get("admin_token")?.value;
+  const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
   const pathname = request.nextUrl.pathname;
 
   // Vérifier la validité du token JWT (avec jose pour Edge Runtime)
-  const isValidToken = token ? await verifyTokenEdge(token) : false;
+  const isValidToken = token ? (await verifyToken(token)) !== null : false;
 
   // Protection de la route /admin
   if (pathname.startsWith("/admin")) {
@@ -49,7 +33,10 @@ export async function middleware(request: NextRequest) {
       if (!isValidToken) {
         return NextResponse.json(
           { message: "Non autorisé - Authentification requise" },
-          { status: 401 }
+          {
+            status: 401,
+            headers: { "Cache-Control": "no-store" },
+          }
         );
       }
     }

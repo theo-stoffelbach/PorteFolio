@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/lib/auth";
+import { ADMIN_COOKIE_NAME, verifyToken } from "@/lib/jwt";
 
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get("admin_token")?.value;
+  const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
   const pathname = request.nextUrl.pathname;
 
   // Vérifier la validité du token JWT
@@ -33,7 +33,10 @@ export async function middleware(request: NextRequest) {
       if (!isValidToken) {
         return NextResponse.json(
           { message: "Non autorisé - Authentification requise" },
-          { status: 401 }
+          {
+            status: 401,
+            headers: { "Cache-Control": "no-store" },
+          }
         );
       }
     }

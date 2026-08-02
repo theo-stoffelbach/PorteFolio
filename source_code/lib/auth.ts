@@ -1,38 +1,31 @@
 /**
- * Utilitaires d'authentification
+ * Utilitaires d'authentification côté serveur.
  *
- * Fournit les fonctions pour :
- * - Vérifier les mots de passe avec bcrypt
- * - Générer des tokens JWT
- * - Vérifier les tokens JWT
- * - Protéger les routes API
+ * La logique JWT compatible middleware vit dans `lib/jwt.ts` afin que le
+ * bundle Edge n'importe jamais bcrypt.
  */
 
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { NextRequest } from 'next/server';
+import {
+  ADMIN_COOKIE_NAME,
+  verifyToken,
+  type JWTPayload,
+} from '@/lib/jwt';
 
-// Configuration depuis les variables d'environnement
-const JWT_EXPIRES_IN = parseInt(process.env.JWT_EXPIRES_IN || '604800'); // 7 jours par défaut
+export {
+  ADMIN_COOKIE_NAME,
+  assertJwtConfiguration,
+  generateToken,
+  getJwtExpiresIn,
+  verifyToken,
+  type JWTPayload,
+} from '@/lib/jwt';
 
-function getJwtSecret(): string {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error('FATAL: JWT_SECRET doit être défini dans les variables d\'environnement.');
-  }
-  return secret;
-}
-
-export interface JWTPayload {
-  email: string;
-  iat?: number;
-  exp?: number;
-}
-
-/**
- * Vérifie si le mot de passe correspond au hash stocké
- */
-export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+export async function verifyPassword(
+  password: string,
+  hash: string
+): Promise<boolean> {
   try {
     return await bcrypt.compare(password, hash);
   } catch (error) {
@@ -41,76 +34,32 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   }
 }
 
-/**
- * Génère un hash bcrypt pour un mot de passe
- * Utile pour les migrations ou tests
- */
 export async function hashPassword(password: string): Promise<string> {
-  return await bcrypt.hash(password, 10);
+  return bcrypt.hash(password, 10);
 }
 
-/**
- * Génère un token JWT pour l'utilisateur authentifié
- */
-export function generateToken(email: string): string {
-  const payload: JWTPayload = {
-    email,
-  };
-
-  return jwt.sign(payload, getJwtSecret(), {
-    expiresIn: JWT_EXPIRES_IN,
-  });
+export async function getTokenFromRequest(
+  request: NextRequest
+): Promise<JWTPayload | null> {
+  const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
+  return token ? verifyToken(token) : null;
 }
 
-/**
- * Vérifie et décode un token JWT
- * Retourne null si le token est invalide ou expiré
- */
-export function verifyToken(token: string): JWTPayload | null {
-  try {
-    const decoded = jwt.verify(token, getJwtSecret()) as JWTPayload;
-    return decoded;
-  } catch (error) {
-    console.error('Token invalide:', error);
-    return null;
-  }
+export async function isAuthenticated(request: NextRequest): Promise<boolean> {
+  return (await getTokenFromRequest(request)) !== null;
 }
 
-/**
- * Extrait et vérifie le token depuis une requête Next.js
- * Retourne le payload du token si valide, null sinon
- */
-export function getTokenFromRequest(request: NextRequest): JWTPayload | null {
-  const token = request.cookies.get('admin_token')?.value;
-
-  if (!token) {
-    return null;
-  }
-
-  return verifyToken(token);
-}
-
-/**
- * Vérifie si une requête est authentifiée
- */
-export function isAuthenticated(request: NextRequest): boolean {
-  const tokenPayload = getTokenFromRequest(request);
-  return tokenPayload !== null;
-}
-
-/**
- * Récupère les credentials admin depuis les variables d'environnement
- * Lance une erreur si les variables ne sont pas configurées en production
- */
-export function getAdminCredentials(): { email: string; passwordHash: string } {
+export function getAdminCredentials(): {
+  email: string;
+  passwordHash: string;
+} {
   const email = process.env.ADMIN_EMAIL;
   const passwordHash = process.env.ADMIN_PASSWORD_HASH;
 
-  // Toujours exiger des credentials configurés
   if (!email || !passwordHash) {
     throw new Error(
       'ADMIN_EMAIL et ADMIN_PASSWORD_HASH doivent être configurés. ' +
-      'Utilisez "npm run create-admin" pour générer un compte.'
+        'Utilisez "npm run create-admin" pour générer un compte.'
     );
   }
 
