@@ -56,14 +56,16 @@ Le script vous demandera :
 Il générera automatiquement :
 - Hash bcrypt du mot de passe
 - Secret JWT aléatoire fort
-- Configuration complète à copier dans `.env`
+- Configuration complète à copier dans `.env.runtime`
 
-### 2. Créer le fichier .env
+### 2. Créer le fichier `.env.runtime`
 
-Copiez le fichier `.env.example` en `.env` :
+Le Compose racine charge explicitement `.env.runtime`. Créez ce fichier à
+partir de l'exemple, puis limitez immédiatement ses permissions :
 
 ```bash
-cp .env.example .env
+cp .env.example .env.runtime
+chmod 600 .env.runtime
 ```
 
 Puis remplacez les valeurs par celles générées par le script `create-admin` :
@@ -73,7 +75,7 @@ Puis remplacez les valeurs par celles générées par le script `create-admin` :
 ADMIN_EMAIL=votre@email.com
 ADMIN_PASSWORD_HASH=$2b$10$...votre_hash_bcrypt...
 
-# JWT Secret (TRÈS IMPORTANT - unique et secret)
+# JWT Secret (TRÈS IMPORTANT - unique, secret et 32 octets minimum)
 JWT_SECRET=votre_secret_jwt_aleatoire_genere
 
 # Durée de validité du token (en secondes)
@@ -83,14 +85,20 @@ JWT_EXPIRES_IN=604800  # 7 jours par défaut
 NODE_ENV=production
 ```
 
+> **Migration :** une ancienne version de cette documentation proposait
+> `2592000` (30 jours). Cette valeur n'est plus acceptée : avant déploiement,
+> ramenez `JWT_EXPIRES_IN` entre 300 et 604800 secondes. Une configuration hors
+> limites est journalisée et le login répond par une erreur de configuration.
+
 ### 3. Déployer avec Docker
 
 ```bash
 # Sur votre NAS ou serveur
 cd /volume2/docker/portefolio
 
-# S'assurer que .env existe et est configuré
-cat .env  # Vérifier les variables
+# Vérifier l'existence et les permissions sans afficher les secrets
+test -s .env.runtime
+stat -c '%a %n' .env.runtime  # attendu : 600 .env.runtime
 
 # Redémarrer le container pour charger les nouvelles variables
 docker-compose down
@@ -109,13 +117,13 @@ docker-compose up -d
    - Mot de passe : minimum 12 caractères, complexe
    - JWT_SECRET : généré automatiquement (32 bytes aléatoires)
 
-2. **Protéger le fichier .env**
+2. **Protéger le fichier `.env.runtime`**
    ```bash
    # Permissions restrictives (uniquement propriétaire)
-   chmod 600 .env
+   chmod 600 .env.runtime
 
    # Vérifier qu'il est ignoré par Git
-   git check-ignore .env  # Doit retourner ".env"
+   git check-ignore .env.runtime  # Doit retourner ".env.runtime"
    ```
 
 3. **Changer régulièrement**
@@ -133,7 +141,7 @@ docker-compose up -d
 
 ### ❌ À NE JAMAIS FAIRE
 
-1. **JAMAIS commiter le fichier .env**
+1. **JAMAIS commiter le fichier `.env.runtime`**
    - Le `.gitignore` le bloque déjà
    - Vérifier avant chaque commit : `git status`
 
@@ -161,7 +169,7 @@ docker-compose up -d
    npm run create-admin
    ```
 
-2. Mettre à jour `.env` avec le nouveau hash :
+2. Mettre à jour `.env.runtime` avec le nouveau hash :
    ```env
    ADMIN_PASSWORD_HASH=$2b$10$...nouveau_hash...
    ```
@@ -173,7 +181,7 @@ docker-compose up -d
 
 ### Changer l'email admin
 
-Modifier directement dans `.env` puis redémarrer :
+Modifier directement dans `.env.runtime` puis redémarrer :
 
 ```env
 ADMIN_EMAIL=nouveau@email.com
@@ -191,7 +199,7 @@ Changer le `JWT_SECRET` invalide tous les tokens existants :
 # Générer un nouveau secret
 openssl rand -base64 32
 
-# Mettre à jour .env
+# Mettre à jour .env.runtime
 JWT_SECRET=nouveau_secret_genere
 
 # Redémarrer
@@ -269,7 +277,7 @@ chaud.
 | `app/api/auth/login/route.ts` | Endpoint de connexion |
 | `app/api/auth/logout/route.ts` | Endpoint de déconnexion |
 | `scripts/create-admin.js` | Générateur de credentials |
-| `.env` | Configuration secrète (JAMAIS commité) |
+| `.env.runtime` | Configuration secrète chargée par Compose (JAMAIS commitée) |
 
 ---
 
@@ -281,8 +289,8 @@ chaud.
 
 **Solution** :
 ```bash
-# Vérifier que .env existe et contient les variables
-cat .env | grep ADMIN
+# Vérifier que .env.runtime existe sans afficher ses secrets
+test -s .env.runtime
 
 # Recréer les credentials si nécessaire
 cd /volume2/docker/portefolio
@@ -297,7 +305,7 @@ docker-compose restart portfolio
 **Vérifications** :
 1. Email exact (sensible à la casse)
 2. Mot de passe correct (pas de fautes de frappe)
-3. Hash bcrypt valide dans .env
+3. Hash bcrypt valide dans `.env.runtime`
 
 ```bash
 # Vérifier l'email configuré
@@ -311,7 +319,7 @@ npm run create-admin
 ### Problème : Token expiré trop vite
 
 `JWT_EXPIRES_IN` accepte une durée de 5 minutes à 7 jours. Pour utiliser la
-durée maximale, configurez `.env` ainsi :
+durée maximale, configurez `.env.runtime` ainsi :
 
 ```env
 # Valeur maximale autorisée : 7 jours
@@ -327,7 +335,7 @@ JWT_EXPIRES_IN=604800
 # Vérifier les certificats SSL
 docker exec nginx_reverse_proxy nginx -t
 
-# Forcer HTTPS dans .env
+# Forcer HTTPS dans .env.runtime
 NODE_ENV=production
 ```
 

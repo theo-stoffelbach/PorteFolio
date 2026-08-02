@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isAuthenticated } from '@/lib/auth';
 
-const DEFAULT_MAX_JSON_BYTES = 64 * 1024;
+const DEFAULT_MAX_JSON_BYTES = 256 * 1024;
 
 export class ApiRequestError extends Error {
   constructor(
@@ -51,7 +51,6 @@ function getExpectedOrigins(request: NextRequest): Set<string> {
     }
   }
 
-  origins.add(request.nextUrl.origin);
   return origins;
 }
 

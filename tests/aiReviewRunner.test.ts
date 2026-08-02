@@ -33,6 +33,10 @@ test('les reviewers hôte utilisent des profils jetables minimaux', () => {
   assert.match(runner, /USERPROFILE: hostProfileRoot/);
   assert.match(runner, /XDG_CONFIG_HOME: join\(hostProfileRoot, '\.config'\)/);
   assert.match(runner, /'--safe-mode'/);
+  assert.match(runner, /process\.once\('exit', cleanupManagedTempDirectories\)/);
+  assert.match(runner, /\['SIGINT', 130\]/);
+  assert.match(runner, /\['SIGTERM', 143\]/);
+  assert.match(runner, /removeManagedTempDirectory\(tempDirectory\)/);
   assert.doesNotMatch(runner, /settings\.json', '.*settings\.json/);
   for (const reviewer of ['claude', 'kimi', 'gemini', 'codex']) {
     assert.match(runner, new RegExp(`${reviewer}: \\[`));
@@ -137,6 +141,7 @@ test('le runner fragmente le diff sans transformer cela en troncature', () => {
   assert.match(runner, /Fragment analysé : \$\{index \+ 1\}\/\$\{chunks\.length\}/);
   assert.match(runner, /if \(sectionParts\.length > 1\) sectionSplit = true/);
   assert.match(runner, /!truncated && !sectionSplit/);
+  assert.match(runner, /chunks\.length === 1/);
   assert.match(runner, /chunkReviews\.length !== chunks\.length/);
   assert.match(
     runner,

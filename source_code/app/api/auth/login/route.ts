@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   ADMIN_COOKIE_NAME,
+  assertJwtConfiguration,
   generateToken,
   getAdminCredentials,
   getJwtExpiresIn,
@@ -84,6 +85,7 @@ export async function POST(request: NextRequest) {
 
     let adminCredentials;
     try {
+      assertJwtConfiguration();
       adminCredentials = getAdminCredentials();
     } catch (error) {
       console.error("Erreur configuration admin:", error);
@@ -91,7 +93,7 @@ export async function POST(request: NextRequest) {
         { message: "Erreur de configuration du serveur" },
         {
           status: 500,
-          headers: { "Cache-Control": "no-store" },
+          headers: rateLimitHeaders(rateLimit),
         }
       );
     }

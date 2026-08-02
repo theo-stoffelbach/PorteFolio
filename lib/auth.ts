@@ -15,6 +15,7 @@ import {
 
 export {
   ADMIN_COOKIE_NAME,
+  assertJwtConfiguration,
   generateToken,
   getJwtExpiresIn,
   verifyToken,

@@ -1,20 +1,8 @@
 import type { NextConfig } from 'next'
+import { buildContentSecurityPolicy } from './lib/securityHeaders'
 
 const isProduction = process.env.NODE_ENV === 'production'
-const contentSecurityPolicy = [
-  "default-src 'self'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "frame-ancestors 'self'",
-  "object-src 'none'",
-  "script-src 'self' 'unsafe-inline'",
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: https:",
-  "font-src 'self' data:",
-  isProduction ? "connect-src 'self'" : "connect-src 'self' ws: wss:",
-  "media-src 'self'",
-  ...(isProduction ? ['upgrade-insecure-requests'] : []),
-].join('; ')
+const contentSecurityPolicy = buildContentSecurityPolicy(isProduction)
 
 const nextConfig: NextConfig = {
   output: 'standalone',

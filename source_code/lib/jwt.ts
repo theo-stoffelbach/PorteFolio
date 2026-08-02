@@ -52,6 +52,11 @@ export function getJwtExpiresIn(): number {
   return value;
 }
 
+export function assertJwtConfiguration(): void {
+  getJwtSecret();
+  getJwtExpiresIn();
+}
+
 export async function generateToken(email: string): Promise<string> {
   return new SignJWT({ email })
     .setProtectedHeader({ alg: 'HS256' })

@@ -163,7 +163,9 @@ function parseWithSchema(
   expectedId?: string
 ): UnknownRecord {
   const source = asRecord(value);
-  const unknown = Object.keys(source).find((key) => !schema[key]);
+  const unknown = Object.keys(source).find(
+    (key) => !Object.prototype.hasOwnProperty.call(schema, key)
+  );
   if (unknown) invalid(`Champ non autorisé: ${unknown}`);
 
   const result: UnknownRecord = {};

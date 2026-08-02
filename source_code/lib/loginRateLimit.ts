@@ -28,6 +28,22 @@ function cleanupExpiredBuckets(now: number): void {
   }
 }
 
+function evictLeastRiskyBucket(): void {
+  let candidateKey: string | undefined;
+  let candidateCount = Number.POSITIVE_INFINITY;
+
+  // Préserver en priorité les IP proches du blocage. À nombre d'essais égal,
+  // l'ordre d'insertion de Map sélectionne la plus ancienne (FIFO).
+  for (const [key, bucket] of buckets) {
+    if (bucket.count < candidateCount) {
+      candidateKey = key;
+      candidateCount = bucket.count;
+    }
+  }
+
+  if (candidateKey) buckets.delete(candidateKey);
+}
+
 export function getLoginClientKey(headers: Headers): string {
   // Frontière de confiance du déploiement : le conteneur n'a aucun port
   // publié et NPM remplace X-Real-IP par $remote_addr avant de transmettre
@@ -50,19 +66,7 @@ export function consumeLoginAttempt(
 
   const existing = buckets.get(clientKey);
   if (!existing && buckets.size >= LOGIN_RATE_LIMIT_MAX_BUCKETS) {
-    // Ne jamais évincer un bucket actif : une rafale de nouvelles clés ne doit
-    // pas pouvoir remettre à zéro le quota d'un attaquant déjà bloqué.
-    let resetAt = now + LOGIN_WINDOW_MS;
-    for (const bucket of buckets.values()) {
-      resetAt = Math.min(resetAt, bucket.resetAt);
-    }
-    return {
-      allowed: false,
-      limit: LOGIN_MAX_ATTEMPTS,
-      remaining: 0,
-      resetAt,
-      retryAfter: Math.max(1, Math.ceil((resetAt - now) / 1000)),
-    };
+    evictLeastRiskyBucket();
   }
   const bucket =
     existing && existing.resetAt > now

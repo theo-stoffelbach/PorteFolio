@@ -91,8 +91,9 @@ reste du diff dépasse la taille sûre d'un appel CLI, le runner le découpe aux
 frontières de fichiers et exige une réponse sur chaque fragment avant de
 publier la synthèse. `Diff tronqué` ne vaut `oui` que si la limite globale de
 contexte est dépassée ; dans ce cas, le runner interdit automatiquement un
-verdict `APPROVE`. Il interdit également une approbation automatique si un
-fichier individuel a dû être scindé au milieu de son diff.
+verdict `APPROVE`. Il interdit également une approbation automatique dès que
+l'analyse nécessite plusieurs fragments, même si chaque fichier reste entier :
+seul un reviewer ayant reçu le diff complet en un appel peut approuver.
 
 ## Boucle de finalisation
 

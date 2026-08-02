@@ -9,12 +9,16 @@ import {
   readJsonBody,
 } from '../lib/apiSecurity';
 import { POST as login } from '../app/api/auth/login/route';
+import { middleware } from '../middleware';
 import {
   generateToken,
   getJwtExpiresIn,
   hashPassword,
   verifyToken,
 } from '../lib/auth';
+import { verifyToken as verifySourceToken } from '../source_code/lib/jwt';
+import { buildContentSecurityPolicy } from '../lib/securityHeaders';
+import { buildContentSecurityPolicy as buildSourceContentSecurityPolicy } from '../source_code/lib/securityHeaders';
 import {
   clearLoginAttempts,
   consumeLoginAttempt,
@@ -199,7 +203,9 @@ test('les JWT vérifient secret, issuer, audience et compte admin', async (t) =>
   process.env.JWT_EXPIRES_IN = '3600';
 
   const token = await generateToken(process.env.ADMIN_EMAIL);
-  assert.equal((await verifyToken(token))?.email, process.env.ADMIN_EMAIL);
+  for (const verify of [verifyToken, verifySourceToken]) {
+    assert.equal((await verify(token))?.email, process.env.ADMIN_EMAIL);
+  }
 
   const signTestToken = (
     secret: string,
@@ -214,34 +220,98 @@ test('les JWT vérifient secret, issuer, audience et compte admin', async (t) =>
       .setExpirationTime(Math.floor(Date.now() / 1000) + 3600)
       .sign(new TextEncoder().encode(secret));
 
-  assert.equal(
-    await verifyToken(
-      await signTestToken('abcdef0123456789abcdef0123456789')
-    ),
-    null,
-    'un token signé avec un autre secret doit être rejeté'
-  );
-  assert.equal(
-    await verifyToken(
-      await signTestToken(process.env.JWT_SECRET, 'wrong-issuer')
-    ),
-    null,
-    'un issuer inattendu doit être rejeté'
-  );
-  assert.equal(
-    await verifyToken(
+  const invalidTokens = [
+    [
+      await signTestToken('abcdef0123456789abcdef0123456789'),
+      'un autre secret',
+    ],
+    [
+      await signTestToken(process.env.JWT_SECRET, 'wrong-issuer'),
+      'un issuer inattendu',
+    ],
+    [
       await signTestToken(
         process.env.JWT_SECRET,
         'portefolio-admin',
         'wrong-audience'
-      )
-    ),
-    null,
-    'une audience inattendue doit être rejetée'
-  );
+      ),
+      'une audience inattendue',
+    ],
+  ] as const;
+
+  for (const verify of [verifyToken, verifySourceToken]) {
+    for (const [invalidToken, reason] of invalidTokens) {
+      assert.equal(await verify(invalidToken), null, `${reason} doit être rejeté`);
+    }
+  }
 
   process.env.ADMIN_EMAIL = 'autre@example.com';
   assert.equal(await verifyToken(token), null);
+  assert.equal(await verifySourceToken(token), null);
+});
+
+test('le middleware refuse les jetons absents ou mal configurés sans lever', async (t) => {
+  preserveAuthEnvironment(t);
+  process.env.JWT_SECRET = '0123456789abcdef0123456789abcdef';
+  process.env.JWT_EXPIRES_IN = '3600';
+  process.env.ADMIN_EMAIL = 'admin@example.com';
+  process.env.ADMIN_PASSWORD_HASH = await hashPassword('mot-de-passe-test');
+  const token = await generateToken(process.env.ADMIN_EMAIL);
+
+  const authenticated = await middleware(
+    request('/admin', { headers: { cookie: `admin_token=${token}` } })
+  );
+  assert.equal(authenticated.headers.get('x-middleware-next'), '1');
+
+  const anonymous = await middleware(request('/admin'));
+  assert.equal(anonymous.status, 307);
+  assert.equal(anonymous.headers.get('location'), `${BASE_URL}/login`);
+
+  const apiAnonymous = await middleware(
+    request('/api/projects', { method: 'POST' })
+  );
+  assert.equal(apiAnonymous.status, 401);
+
+  delete process.env.JWT_SECRET;
+  const misconfigured = await middleware(
+    request('/admin', { headers: { cookie: `admin_token=${token}` } })
+  );
+  assert.equal(misconfigured.status, 307);
+  assert.equal(misconfigured.headers.get('location'), `${BASE_URL}/login`);
+});
+
+test('le login signale une configuration JWT incompatible', async (t) => {
+  preserveAuthEnvironment(t);
+  const clientKey = `test-config-${Date.now()}`;
+  t.after(() => clearLoginAttempts(clientKey));
+  process.env.JWT_SECRET = 'secret-trop-court';
+  process.env.JWT_EXPIRES_IN = '2592000';
+  process.env.ADMIN_EMAIL = 'admin@example.com';
+  process.env.ADMIN_PASSWORD_HASH = await hashPassword('mot-de-passe-test');
+
+  const response = await login(
+    request('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        origin: BASE_URL,
+        host: 'theo-stoffelbach.fr',
+        'x-forwarded-proto': 'https',
+        'x-real-ip': clientKey,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: 'admin@example.com',
+        password: 'mot-de-passe-test',
+      }),
+    })
+  );
+
+  assert.equal(response.status, 500);
+  assert.equal(response.headers.get('cache-control'), 'no-store');
+  assert.equal(response.headers.get('x-ratelimit-limit'), '5');
+  assert.deepEqual(await response.json(), {
+    message: 'Erreur de configuration du serveur',
+  });
 });
 
 test('une mutation authentifiée rejette toujours une origine étrangère', async (t) => {
@@ -278,7 +348,7 @@ test('le rate limiter bloque la sixième tentative et se réinitialise', () => {
   clearLoginAttempts(key);
 });
 
-test('le rate limiter n’évince pas un quota actif quand sa capacité est pleine', () => {
+test('le rate limiter évite le verrou global tout en préservant les quotas bloqués', () => {
   for (const [name, consume, clear, capacity] of [
     [
       'racine',
@@ -304,19 +374,23 @@ test('le rate limiter n’évince pas un quota actif quand sa capacité est plei
       for (const key of keys) {
         assert.equal(consume(key, now).allowed, true);
       }
-      assert.equal(
-        consume(`${prefix}overflow`, now).allowed,
-        false,
-        `${name}: une nouvelle clé doit échouer en mode fail-closed`
-      );
-
       for (let attempt = 1; attempt < 5; attempt += 1) {
         assert.equal(consume(keys[0], now).allowed, true);
       }
       assert.equal(
         consume(keys[0], now).allowed,
         false,
-        `${name}: le bucket le plus ancien ne doit pas avoir été évincé`
+        `${name}: la clé de référence doit être bloquée`
+      );
+      assert.equal(
+        consume(`${prefix}overflow`, now).allowed,
+        true,
+        `${name}: la capacité mémoire ne doit pas verrouiller les nouveaux clients`
+      );
+      assert.equal(
+        consume(keys[0], now).allowed,
+        false,
+        `${name}: un bucket bloqué doit être préféré aux buckets peu sollicités`
       );
     } finally {
       for (const key of keys) clear(key);
@@ -356,6 +430,10 @@ test('les deux validateurs acceptent sans image mais refusent une image distante
       status: 400,
     });
     assert.throws(
+      () => parse({ ...VALID_PROJECT, toString: 'champ-hérité' }),
+      { status: 400 }
+    );
+    assert.throws(
       () => parse({ ...VALID_PROJECT, technologies: ['TypeScript', '   '] }),
       { status: 400 }
     );
@@ -363,6 +441,23 @@ test('les deux validateurs acceptent sans image mais refusent une image distante
       parse({ ...VALID_PROJECT, technologies: [] }).technologies,
       []
     );
+  }
+});
+
+test('les CSP de production et développement restent distinctes', () => {
+  for (const buildPolicy of [
+    buildContentSecurityPolicy,
+    buildSourceContentSecurityPolicy,
+  ]) {
+    const production = buildPolicy(true);
+    assert.match(production, /upgrade-insecure-requests/);
+    assert.doesNotMatch(production, /unsafe-eval/);
+    assert.doesNotMatch(production, /connect-src[^;]*\bws:/);
+
+    const development = buildPolicy(false);
+    assert.match(development, /unsafe-eval/);
+    assert.match(development, /connect-src 'self' ws: wss:/);
+    assert.doesNotMatch(development, /upgrade-insecure-requests/);
   }
 });
 

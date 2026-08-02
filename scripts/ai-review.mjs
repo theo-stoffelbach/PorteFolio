@@ -47,6 +47,36 @@ const REVIEWER_MODELS = Object.freeze({
 const REVIEWER_IMAGE = 'portefolio-ai-reviewers:codex-0.146.0';
 const REVIEWER_DOCKERFILE = join(REVIEWER_DIRECTORY, 'Dockerfile');
 const USER_HOME = homedir();
+const MANAGED_TEMP_DIRECTORIES = new Set();
+
+function createManagedTempDirectory(prefix) {
+  const directory = mkdtempSync(join(tmpdir(), prefix));
+  MANAGED_TEMP_DIRECTORIES.add(directory);
+  return directory;
+}
+
+function removeManagedTempDirectory(directory) {
+  rmSync(directory, { recursive: true, force: true });
+  MANAGED_TEMP_DIRECTORIES.delete(directory);
+}
+
+function cleanupManagedTempDirectories() {
+  for (const directory of MANAGED_TEMP_DIRECTORIES) {
+    rmSync(directory, { recursive: true, force: true });
+  }
+  MANAGED_TEMP_DIRECTORIES.clear();
+}
+
+process.once('exit', cleanupManagedTempDirectories);
+for (const [signal, exitCode] of [
+  ['SIGINT', 130],
+  ['SIGTERM', 143],
+]) {
+  process.once(signal, () => {
+    cleanupManagedTempDirectories();
+    process.exit(exitCode);
+  });
+}
 
 const REVIEW_INSTRUCTIONS = `Tu es un reviewer senior indépendant.
 
@@ -862,7 +892,7 @@ if (process.env.CI) fail('Ce runner est réservé à un usage local.');
 
 if (process.argv.includes('--smoke')) {
   const reviewers = pickReviewers();
-  const smokeDirectory = mkdtempSync(join(tmpdir(), 'ai-review-smoke-'));
+  const smokeDirectory = createManagedTempDirectory('ai-review-smoke-');
   let passed = 0;
   try {
     for (const reviewer of reviewers) {
@@ -888,7 +918,7 @@ N'utilise aucun outil. Réponds exactement : REVIEWER_SMOKE_OK`,
       }
     }
   } finally {
-    rmSync(smokeDirectory, { recursive: true, force: true });
+    removeManagedTempDirectory(smokeDirectory);
   }
   if (passed !== reviewers.length) {
     fail(`${passed}/${reviewers.length} reviewer(s) ont passé le smoke test.`);
@@ -939,7 +969,7 @@ const generatedFilesLabel =
     : 'aucun';
 const reviewers = pickReviewers();
 const { chunks, sectionSplit } = splitDiff(diff);
-const tempDirectory = mkdtempSync(join(tmpdir(), 'ai-review-'));
+const tempDirectory = createManagedTempDirectory('ai-review-');
 let posted = 0;
 
 console.log(`Reviewers disponibles : ${reviewers.join(', ')}`);
@@ -996,7 +1026,7 @@ ${chunk}`;
     if (!completed || chunkReviews.length !== chunks.length) continue;
     let review = aggregateChunkReviews(
       chunkReviews,
-      !truncated && !sectionSplit
+      !truncated && !sectionSplit && chunks.length === 1
     );
 
     const currentSha = runGit(['rev-parse', 'HEAD']);
@@ -1049,7 +1079,7 @@ ${chunk}`;
     }
   }
 } finally {
-  rmSync(tempDirectory, { recursive: true, force: true });
+  removeManagedTempDirectory(tempDirectory);
 }
 
 if (posted === 0) fail("Aucun reviewer n'a produit une review publiable.");
