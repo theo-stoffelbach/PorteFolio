@@ -1,6 +1,6 @@
 const LOGIN_WINDOW_MS = 15 * 60 * 1000;
 const LOGIN_MAX_ATTEMPTS = 5;
-const MAX_BUCKETS = 5000;
+export const LOGIN_RATE_LIMIT_MAX_BUCKETS = 5000;
 
 interface LoginBucket {
   count: number;
@@ -26,12 +26,6 @@ function cleanupExpiredBuckets(now: number): void {
       buckets.delete(key);
     }
   }
-
-  while (buckets.size >= MAX_BUCKETS) {
-    const oldestKey = buckets.keys().next().value as string | undefined;
-    if (!oldestKey) break;
-    buckets.delete(oldestKey);
-  }
 }
 
 export function getLoginClientKey(headers: Headers): string {
@@ -55,6 +49,21 @@ export function consumeLoginAttempt(
   cleanupExpiredBuckets(now);
 
   const existing = buckets.get(clientKey);
+  if (!existing && buckets.size >= LOGIN_RATE_LIMIT_MAX_BUCKETS) {
+    // Ne jamais évincer un bucket actif : une rafale de nouvelles clés ne doit
+    // pas pouvoir remettre à zéro le quota d'un attaquant déjà bloqué.
+    let resetAt = now + LOGIN_WINDOW_MS;
+    for (const bucket of buckets.values()) {
+      resetAt = Math.min(resetAt, bucket.resetAt);
+    }
+    return {
+      allowed: false,
+      limit: LOGIN_MAX_ATTEMPTS,
+      remaining: 0,
+      resetAt,
+      retryAfter: Math.max(1, Math.ceil((resetAt - now) / 1000)),
+    };
+  }
   const bucket =
     existing && existing.resetAt > now
       ? existing

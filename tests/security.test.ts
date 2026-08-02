@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { webcrypto } from 'node:crypto';
-import test from 'node:test';
+import test, { type TestContext } from 'node:test';
+import { SignJWT } from 'jose';
 import { NextRequest } from 'next/server';
 import {
   enforceAdminMutation,
@@ -18,6 +19,7 @@ import {
   clearLoginAttempts,
   consumeLoginAttempt,
   getLoginClientKey,
+  LOGIN_RATE_LIMIT_MAX_BUCKETS,
 } from '../lib/loginRateLimit';
 import { parseProjectBasicInput } from '../lib/projectForm';
 import {
@@ -29,12 +31,23 @@ import {
   parseProjectCreate as parseSourceProjectCreate,
   parseProjectUpdate as parseSourceProjectUpdate,
 } from '../source_code/lib/validation';
+import {
+  clearLoginAttempts as clearSourceLoginAttempts,
+  consumeLoginAttempt as consumeSourceLoginAttempt,
+  LOGIN_RATE_LIMIT_MAX_BUCKETS as SOURCE_LOGIN_RATE_LIMIT_MAX_BUCKETS,
+} from '../source_code/lib/loginRateLimit';
 
 if (!globalThis.crypto) {
   Object.defineProperty(globalThis, 'crypto', { value: webcrypto });
 }
 
 const BASE_URL = 'https://theo-stoffelbach.fr';
+const AUTH_ENVIRONMENT_KEYS = [
+  'JWT_SECRET',
+  'JWT_EXPIRES_IN',
+  'ADMIN_EMAIL',
+  'ADMIN_PASSWORD_HASH',
+] as const;
 const VALID_PROJECT = {
   id: 'review-test',
   title: 'Projet test',
@@ -53,6 +66,18 @@ function request(
   init: ConstructorParameters<typeof NextRequest>[1] = {}
 ): NextRequest {
   return new NextRequest(`${BASE_URL}${path}`, init);
+}
+
+function preserveAuthEnvironment(context: TestContext): void {
+  const previousValues = new Map(
+    AUTH_ENVIRONMENT_KEYS.map((key) => [key, process.env[key]])
+  );
+  context.after(() => {
+    for (const [key, value] of previousValues) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  });
 }
 
 test('les mutations n’acceptent que l’origine same-origin transmise par NPM', () => {
@@ -138,7 +163,9 @@ test('le lecteur JSON applique le type et la limite réelle du corps', async () 
   await assert.rejects(readJsonBody(oversized, 32), { status: 413 });
 });
 
-test('les erreurs JSON du login exposent encore le quota consommé', async () => {
+test('les erreurs JSON du login exposent encore le quota consommé', async (t) => {
+  const clientKey = `test-malformed-${Date.now()}`;
+  t.after(() => clearLoginAttempts(clientKey));
   const response = await login(
     request('/api/auth/login', {
       method: 'POST',
@@ -146,7 +173,7 @@ test('les erreurs JSON du login exposent encore le quota consommé', async () =>
         origin: BASE_URL,
         host: 'theo-stoffelbach.fr',
         'x-forwarded-proto': 'https',
-        'x-real-ip': `test-malformed-${Date.now()}`,
+        'x-real-ip': clientKey,
         'content-type': 'text/plain',
       },
       body: '{}',
@@ -160,7 +187,8 @@ test('les erreurs JSON du login exposent encore le quota consommé', async () =>
   assert.ok(response.headers.get('x-ratelimit-reset'));
 });
 
-test('les JWT vérifient secret, issuer, audience et compte admin', async () => {
+test('les JWT vérifient secret, issuer, audience et compte admin', async (t) => {
+  preserveAuthEnvironment(t);
   process.env.JWT_SECRET = '0123456789abcdef0123456789abcdef';
   process.env.JWT_EXPIRES_IN = '3600';
   process.env.ADMIN_EMAIL = 'admin@example.com';
@@ -173,11 +201,51 @@ test('les JWT vérifient secret, issuer, audience et compte admin', async () => 
   const token = await generateToken(process.env.ADMIN_EMAIL);
   assert.equal((await verifyToken(token))?.email, process.env.ADMIN_EMAIL);
 
+  const signTestToken = (
+    secret: string,
+    issuer = 'portefolio-admin',
+    audience = 'portefolio-admin-ui'
+  ) =>
+    new SignJWT({ email: 'admin@example.com' })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuer(issuer)
+      .setAudience(audience)
+      .setIssuedAt()
+      .setExpirationTime(Math.floor(Date.now() / 1000) + 3600)
+      .sign(new TextEncoder().encode(secret));
+
+  assert.equal(
+    await verifyToken(
+      await signTestToken('abcdef0123456789abcdef0123456789')
+    ),
+    null,
+    'un token signé avec un autre secret doit être rejeté'
+  );
+  assert.equal(
+    await verifyToken(
+      await signTestToken(process.env.JWT_SECRET, 'wrong-issuer')
+    ),
+    null,
+    'un issuer inattendu doit être rejeté'
+  );
+  assert.equal(
+    await verifyToken(
+      await signTestToken(
+        process.env.JWT_SECRET,
+        'portefolio-admin',
+        'wrong-audience'
+      )
+    ),
+    null,
+    'une audience inattendue doit être rejetée'
+  );
+
   process.env.ADMIN_EMAIL = 'autre@example.com';
   assert.equal(await verifyToken(token), null);
 });
 
-test('une mutation authentifiée rejette toujours une origine étrangère', async () => {
+test('une mutation authentifiée rejette toujours une origine étrangère', async (t) => {
+  preserveAuthEnvironment(t);
   process.env.JWT_SECRET = '0123456789abcdef0123456789abcdef';
   process.env.JWT_EXPIRES_IN = '3600';
   process.env.ADMIN_EMAIL = 'admin@example.com';
@@ -210,6 +278,53 @@ test('le rate limiter bloque la sixième tentative et se réinitialise', () => {
   clearLoginAttempts(key);
 });
 
+test('le rate limiter n’évince pas un quota actif quand sa capacité est pleine', () => {
+  for (const [name, consume, clear, capacity] of [
+    [
+      'racine',
+      consumeLoginAttempt,
+      clearLoginAttempts,
+      LOGIN_RATE_LIMIT_MAX_BUCKETS,
+    ],
+    [
+      'source_code',
+      consumeSourceLoginAttempt,
+      clearSourceLoginAttempts,
+      SOURCE_LOGIN_RATE_LIMIT_MAX_BUCKETS,
+    ],
+  ] as const) {
+    const now = 2_000_000;
+    const prefix = `capacity-${name}-`;
+    const keys = Array.from(
+      { length: capacity },
+      (_, index) => `${prefix}${index}`
+    );
+
+    try {
+      for (const key of keys) {
+        assert.equal(consume(key, now).allowed, true);
+      }
+      assert.equal(
+        consume(`${prefix}overflow`, now).allowed,
+        false,
+        `${name}: une nouvelle clé doit échouer en mode fail-closed`
+      );
+
+      for (let attempt = 1; attempt < 5; attempt += 1) {
+        assert.equal(consume(keys[0], now).allowed, true);
+      }
+      assert.equal(
+        consume(keys[0], now).allowed,
+        false,
+        `${name}: le bucket le plus ancien ne doit pas avoir été évincé`
+      );
+    } finally {
+      for (const key of keys) clear(key);
+      clear(`${prefix}overflow`);
+    }
+  }
+});
+
 test('la clé client privilégie le X-Real-IP réécrit par NPM', () => {
   const headers = new Headers({
     'x-real-ip': '203.0.113.10',
@@ -240,6 +355,14 @@ test('les deux validateurs acceptent sans image mais refusent une image distante
     assert.throws(() => parse({ ...VALID_PROJECT, year: '2026' }), {
       status: 400,
     });
+    assert.throws(
+      () => parse({ ...VALID_PROJECT, technologies: ['TypeScript', '   '] }),
+      { status: 400 }
+    );
+    assert.deepEqual(
+      parse({ ...VALID_PROJECT, technologies: [] }).technologies,
+      []
+    );
   }
 });
 
@@ -325,4 +448,8 @@ test('les deux formulaires convertissent year en entier', () => {
     2026
   );
   assert.equal(parseProjectBasicInput('featured', 'checkbox', '', true), true);
+  assert.equal(
+    parseSourceProjectBasicInput('featured', 'checkbox', '', true),
+    true
+  );
 });

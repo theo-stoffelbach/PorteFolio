@@ -193,12 +193,9 @@ function resolveCommand(name) {
 }
 
 function reviewerAuthAvailable(reviewer) {
-  switch (reviewer) {
-    case 'codex':
-      return existsSync(join(USER_HOME, '.codex', 'auth.json'));
-    default:
-      return true;
-  }
+  return reviewerProfileFiles(reviewer).some(({ source }) =>
+    existsSync(source)
+  );
 }
 
 function pickReviewers() {
@@ -361,9 +358,85 @@ function ensureReviewerImage() {
 
 function copyPrivateFile(source, destination) {
   if (!existsSync(source)) return false;
+  mkdirSync(dirname(destination), { recursive: true, mode: 0o700 });
   copyFileSync(source, destination);
   chmodSync(destination, 0o600);
   return true;
+}
+
+function reviewerProfileFiles(reviewer) {
+  const files = {
+    claude: [
+      ['.claude/.credentials.json', '.claude/.credentials.json'],
+    ],
+    kimi: [
+      [
+        '.kimi/credentials/kimi-code.json',
+        '.kimi/credentials/kimi-code.json',
+      ],
+      ['.kimi/device_id', '.kimi/device_id'],
+      [
+        '.kimi-code/credentials/kimi-code.json',
+        '.kimi-code/credentials/kimi-code.json',
+      ],
+      ['.kimi-code/device_id', '.kimi-code/device_id'],
+      ['.kimi-code/oauth/kimi-code', '.kimi-code/oauth/kimi-code'],
+    ],
+    gemini: [
+      ['.gemini/oauth_creds.json', '.gemini/oauth_creds.json'],
+      [
+        '.gemini/antigravity-cli/antigravity-oauth-token',
+        '.gemini/antigravity-cli/antigravity-oauth-token',
+      ],
+    ],
+    codex: [['.codex/auth.json', '.codex/auth.json']],
+  }[reviewer] ?? [];
+
+  return files.map(([source, destination]) => ({
+    source: join(USER_HOME, source),
+    destination,
+  }));
+}
+
+function prepareHostReviewerProfile(reviewer, isolatedDirectory) {
+  const profileRoot = join(isolatedDirectory, `${reviewer}-home`);
+  mkdirSync(profileRoot, { recursive: true, mode: 0o700 });
+  let copied = false;
+  for (const file of reviewerProfileFiles(reviewer)) {
+    copied =
+      copyPrivateFile(
+        file.source,
+        join(profileRoot, file.destination)
+      ) || copied;
+  }
+  if (reviewer === 'kimi' && copied) {
+    const configPath = join(profileRoot, '.kimi-code', 'config.toml');
+    mkdirSync(dirname(configPath), { recursive: true, mode: 0o700 });
+    writeFileSync(
+      configPath,
+      `default_model = "kimi-code/k3"
+
+[providers."managed:kimi-code"]
+type = "kimi"
+base_url = "https://api.kimi.com/coding/v1"
+
+[providers."managed:kimi-code".oauth]
+storage = "file"
+key = "oauth/kimi-code"
+
+[models."kimi-code/k3"]
+provider = "managed:kimi-code"
+model = "k3"
+max_context_size = 1048576
+capabilities = ["thinking", "always_thinking", "tool_use"]
+display_name = "K3"
+support_efforts = ["low", "high", "max"]
+default_effort = "high"
+`,
+      { encoding: 'utf8', mode: 0o600 }
+    );
+  }
+  return copied ? profileRoot : null;
 }
 
 function prepareCodexProfile(isolatedDirectory) {
@@ -479,19 +552,16 @@ function flattenPrivateValues(value, values = []) {
 }
 
 function reviewerPrivateValues(reviewer) {
-  const files = {
-    codex: [join(USER_HOME, '.codex', 'auth.json')],
-    kimi: [
-      join(USER_HOME, '.kimi', 'credentials', 'kimi-code.json'),
-      join(USER_HOME, '.kimi-code', 'credentials', 'kimi-code.json'),
-    ],
-  }[reviewer] ?? [];
-
   const values = [];
-  for (const file of files) {
-    if (!existsSync(file)) continue;
+  for (const { source } of reviewerProfileFiles(reviewer)) {
+    if (!existsSync(source)) continue;
     try {
-      flattenPrivateValues(JSON.parse(readFileSync(file, 'utf8')), values);
+      const content = readFileSync(source, 'utf8').trim();
+      try {
+        flattenPrivateValues(JSON.parse(content), values);
+      } catch {
+        if (content.length >= 16) values.push(content);
+      }
     } catch {
       // Un profil illisible ne doit pas empêcher les autres reviewers.
     }
@@ -515,9 +585,18 @@ function reviewWith(reviewer, payload, isolatedDirectory) {
   const containerArgs = reviewer === 'codex'
     ? containerReviewerArgs(reviewer, isolatedDirectory)
     : null;
+  const hostProfileRoot = reviewer === 'codex'
+    ? null
+    : prepareHostReviewerProfile(reviewer, isolatedDirectory);
   if (reviewer === 'codex' && !containerArgs) {
     console.warn(
       `⚠️  ${reviewer} indisponible : profil ou image isolée manquante.`
+    );
+    return null;
+  }
+  if (reviewer !== 'codex' && !hostProfileRoot) {
+    console.warn(
+      `⚠️  ${reviewer} indisponible : profil temporaire minimal impossible à préparer.`
     );
     return null;
   }
@@ -530,13 +609,20 @@ function reviewWith(reviewer, payload, isolatedDirectory) {
       encoding: 'utf8',
       env: {
         ...reviewerEnvironment(),
+        ...(hostProfileRoot
+          ? {
+              HOME: hostProfileRoot,
+              USERPROFILE: hostProfileRoot,
+              XDG_CONFIG_HOME: join(hostProfileRoot, '.config'),
+            }
+          : {}),
         ...(reviewer === 'kimi'
           ? { KIMI_CODE_EXPERIMENTAL_FLAG: '1' }
           : {}),
       },
       shell: false,
       maxBuffer: 32 * 1024 * 1024,
-      input: payload,
+      input: reviewer === 'codex' ? payload : undefined,
       timeout: REVIEWER_TIMEOUT_MS,
     }
   );
@@ -604,13 +690,13 @@ function buildDiff() {
     '--unified=80',
     'origin/main...HEAD',
     '--',
-    '.',
+    ':/',
     ...exclusions,
   ]);
   let truncated = false;
   const encodedDiff = Buffer.from(diff, 'utf8');
   if (encodedDiff.byteLength > MAX_SOURCE_DIFF_BYTES) {
-    diff = encodedDiff.subarray(0, MAX_SOURCE_DIFF_BYTES).toString('utf8');
+    diff = utf8Prefix(diff, MAX_SOURCE_DIFF_BYTES);
     truncated = true;
   }
   return { diff, omittedGeneratedFiles, truncated };
@@ -669,10 +755,10 @@ function splitDiff(diff) {
 }
 
 function aggregateChunkReviews(reviews, allowApproval) {
-  const verdictPattern =
-    /^VERDICT:\s*(APPROVE|REQUEST_CHANGES|COMMENT)\s*$/gim;
   const verdictsByReview = reviews.map((review) =>
-    [...review.matchAll(verdictPattern)].map((match) =>
+    [...review.matchAll(
+      /^VERDICT:\s*(APPROVE|REQUEST_CHANGES|COMMENT)\s*$/gim
+    )].map((match) =>
       match[1].toUpperCase()
     )
   );
@@ -688,7 +774,12 @@ function aggregateChunkReviews(reviews, allowApproval) {
       : 'COMMENT';
   if (!allowApproval && verdict === 'APPROVE') verdict = 'COMMENT';
   const bodies = reviews.map((review, index) => {
-    const content = review.replace(verdictPattern, '').trim();
+    const content = review
+      .replace(
+        /^VERDICT:\s*(APPROVE|REQUEST_CHANGES|COMMENT)\s*$/gim,
+        ''
+      )
+      .trim();
     return reviews.length === 1
       ? content
       : `### Fragment ${index + 1}/${reviews.length}\n\n${content}`;
@@ -725,19 +816,31 @@ function utf8Prefix(value, maxBytes) {
 function clipReview(review, maxBytes) {
   if (Buffer.byteLength(review, 'utf8') <= maxBytes) return review;
 
-  const verdictPattern =
-    /^VERDICT:\s*(APPROVE|REQUEST_CHANGES|COMMENT)\s*$/gim;
-  const verdicts = [...review.matchAll(verdictPattern)];
+  const verdicts = [...review.matchAll(
+    /^VERDICT:\s*(APPROVE|REQUEST_CHANGES|COMMENT)\s*$/gim
+  )];
   const verdict = verdicts.at(-1)?.[1]?.toUpperCase() ?? 'COMMENT';
   const suffix =
     `\n\n_[…review tronquée pour respecter la limite GitHub…]_` +
     `\n\nVERDICT: ${verdict}`;
-  const content = review.replace(verdictPattern, '').trim();
+  const content = review
+    .replace(
+      /^VERDICT:\s*(APPROVE|REQUEST_CHANGES|COMMENT)\s*$/gim,
+      ''
+    )
+    .trim();
   const contentBudget = Math.max(
     0,
     maxBytes - Buffer.byteLength(suffix, 'utf8')
   );
   return `${utf8Prefix(content, contentBudget)}${suffix}`;
+}
+
+function neutralizeGitHubMentions(value) {
+  return value.replace(
+    /(^|[\s([{>])@(?=[a-z0-9])/gim,
+    '$1@\u200b'
+  );
 }
 
 function postReview(prNumber, bodyFile) {
@@ -835,6 +938,7 @@ const generatedFilesLabel =
     ? omittedGeneratedFiles.map((path) => `\`${path}\``).join(', ')
     : 'aucun';
 const reviewers = pickReviewers();
+const { chunks, sectionSplit } = splitDiff(diff);
 const tempDirectory = mkdtempSync(join(tmpdir(), 'ai-review-'));
 let posted = 0;
 
@@ -851,7 +955,6 @@ try {
     const reviewerModel = REVIEWER_MODELS[reviewer];
     const reviewerModelTitle = formatModelTitle(reviewerModel);
     const startedAt = new Date().toISOString();
-    const { chunks, sectionSplit } = splitDiff(diff);
     const chunkReviews = [];
     let completed = true;
 
@@ -916,6 +1019,7 @@ ${chunk}`;
     }
 
     review = normalizeVerdict(review, truncated);
+    review = neutralizeGitHubMentions(review);
     const reviewedAt = new Date().toISOString();
     const bodyHeader = `## 🤖 Review automatique — ${reviewer} (${reviewerModelTitle})
 

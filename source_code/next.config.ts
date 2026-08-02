@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next'
 
+const isProduction = process.env.NODE_ENV === 'production'
 const contentSecurityPolicy = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -10,9 +11,9 @@ const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https:",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  isProduction ? "connect-src 'self'" : "connect-src 'self' ws: wss:",
   "media-src 'self'",
-  'upgrade-insecure-requests',
+  ...(isProduction ? ['upgrade-insecure-requests'] : []),
 ].join('; ')
 
 const nextConfig: NextConfig = {
@@ -21,7 +22,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [],
   },
-  serverExternalPackages: ['bcryptjs', 'jose'],
+  serverExternalPackages: ['bcryptjs'],
   async headers() {
     return [
       {
@@ -47,10 +48,12 @@ const nextConfig: NextConfig = {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=31536000; includeSubDomains',
-          },
+          ...(isProduction
+            ? [{
+                key: 'Strict-Transport-Security',
+                value: 'max-age=31536000; includeSubDomains',
+              }]
+            : []),
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',

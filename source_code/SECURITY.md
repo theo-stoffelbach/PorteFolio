@@ -249,11 +249,22 @@ Le middleware (`middleware.ts`) intercepte **toutes les requêtes** vers :
 
 Les requêtes GET restent publiques.
 
+### Limite CSP connue
+
+La CSP conserve temporairement `script-src 'unsafe-inline'` pour la
+compatibilité avec les scripts injectés par Next.js App Router. Les autres
+directives restent restrictives et les entrées applicatives sont validées,
+mais ce compromis ne remplace pas une migration future vers des nonces par
+requête. En développement, HSTS et `upgrade-insecure-requests` sont désactivés
+et les WebSockets locaux sont autorisés afin de préserver le rechargement à
+chaud.
+
 ### Fichiers clés
 
 | Fichier | Rôle |
 |---------|------|
-| `lib/auth.ts` | Utilitaires crypto (bcrypt, JWT) |
+| `lib/auth.ts` | Authentification serveur et bcrypt |
+| `lib/jwt.ts` | Signature et vérification JWT compatible middleware |
 | `middleware.ts` | Protection des routes (Next.js Edge) |
 | `app/api/auth/login/route.ts` | Endpoint de connexion |
 | `app/api/auth/logout/route.ts` | Endpoint de déconnexion |
@@ -325,7 +336,7 @@ NODE_ENV=production
 ## 📚 Références
 
 - [bcryptjs](https://github.com/dcodeIO/bcrypt.js) - Hashing de mots de passe
-- [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) - JWT pour Node.js
+- [jose](https://github.com/panva/jose) - JWT compatible Web/Edge Runtime
 - [Next.js Middleware](https://nextjs.org/docs/app/building-your-application/routing/middleware) - Documentation officielle
 - [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
 

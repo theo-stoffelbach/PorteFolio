@@ -81,20 +81,19 @@ function stringArray(
     invalid(`${key} doit être un tableau de ${maxItems} éléments maximum`);
   }
 
-  const result = value
-    .map((item) => {
+  return value.map((item) => {
       if (typeof item !== 'string') {
         invalid(`${key} doit contenir uniquement des chaînes`);
       }
       const trimmed = item.trim();
+      if (!trimmed) {
+        invalid(`${key} ne doit pas contenir d'élément vide`);
+      }
       if (trimmed.length > maxItemLength) {
         invalid(`Un élément de ${key} dépasse ${maxItemLength} caractères`);
       }
       return trimmed;
-    })
-    .filter(Boolean);
-
-  return result;
+    });
 }
 
 function integer(

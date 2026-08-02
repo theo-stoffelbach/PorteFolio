@@ -1,10 +1,10 @@
 # Portfolio Théo Stoffelbach
 
-Portfolio professionnel inspiré du design GitHub, développé avec Next.js 15, TypeScript, et Tailwind CSS.
+Portfolio professionnel inspiré du design GitHub, développé avec Next.js 16, TypeScript, et Tailwind CSS.
 
 ## Technologies
 
-- **Next.js 15** (App Router)
+- **Next.js 16** (App Router)
 - **TypeScript**
 - **Tailwind CSS** + **Primer CSS**
 - **Framer Motion** (animations)
@@ -29,7 +29,7 @@ Portfolio professionnel inspiré du design GitHub, développé avec Next.js 15, 
 
 ### Prérequis
 
-- Node.js 20+
+- Node.js 22+
 - npm ou yarn
 
 ### Installation
@@ -57,7 +57,11 @@ npm start
 
 ### Déploiement Local
 
+Le réseau externe est partagé avec Nginx Proxy Manager. Il doit être créé une
+seule fois sur l'hôte avant le premier démarrage :
+
 ```bash
+docker network create portfolio_public
 docker compose up -d --build
 ```
 

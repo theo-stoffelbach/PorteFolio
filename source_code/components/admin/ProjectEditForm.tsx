@@ -41,7 +41,10 @@ export default function ProjectEditForm({
   };
 
   const handleTechnologiesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const technologies = e.target.value.split(",").map((tech) => tech.trim());
+    const technologies = e.target.value
+      .split(",")
+      .map((tech) => tech.trim())
+      .filter(Boolean);
     setProject((prev) => ({
       ...prev,
       technologies,

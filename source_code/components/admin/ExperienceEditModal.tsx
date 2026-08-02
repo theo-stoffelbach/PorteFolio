@@ -28,7 +28,10 @@ export default function ExperienceEditModal({
   };
 
   const handleTechnologiesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const technologies = e.target.value.split(",").map((tech) => tech.trim());
+    const technologies = e.target.value
+      .split(",")
+      .map((tech) => tech.trim())
+      .filter(Boolean);
     setFormData((prev) => ({
       ...prev,
       technologies,

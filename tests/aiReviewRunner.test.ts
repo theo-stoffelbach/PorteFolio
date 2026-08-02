@@ -27,6 +27,18 @@ test('les agents Kimi et Gemini n’exposent aucun outil', () => {
   assert.match(geminiAgent, /^mcpServers: \[\]$/m);
 });
 
+test('les reviewers hôte utilisent des profils jetables minimaux', () => {
+  assert.match(runner, /function prepareHostReviewerProfile/);
+  assert.match(runner, /HOME: hostProfileRoot/);
+  assert.match(runner, /USERPROFILE: hostProfileRoot/);
+  assert.match(runner, /XDG_CONFIG_HOME: join\(hostProfileRoot, '\.config'\)/);
+  assert.match(runner, /'--safe-mode'/);
+  assert.doesNotMatch(runner, /settings\.json', '.*settings\.json/);
+  for (const reviewer of ['claude', 'kimi', 'gemini', 'codex']) {
+    assert.match(runner, new RegExp(`${reviewer}: \\[`));
+  }
+});
+
 test('Kimi utilise son moteur v2 sans option obsolète', () => {
   assert.match(runner, /kimi: \['kimi', 'kimi-cli'\]/);
   assert.match(runner, /KIMI_CODE_EXPERIMENTAL_FLAG: '1'/);
@@ -116,6 +128,12 @@ test('le runner fragmente le diff sans transformer cela en troncature', () => {
     /process\.platform === 'win32' \? 24_000 : 70_000/
   );
   assert.match(runner, /function splitDiff\(diff\)/);
+  assert.equal(
+    runner.match(/const \{ chunks, sectionSplit \} = splitDiff\(diff\);/g)
+      ?.length,
+    1,
+    'le découpage commun ne doit être calculé qu’une fois'
+  );
   assert.match(runner, /Fragment analysé : \$\{index \+ 1\}\/\$\{chunks\.length\}/);
   assert.match(runner, /if \(sectionParts\.length > 1\) sectionSplit = true/);
   assert.match(runner, /!truncated && !sectionSplit/);
@@ -123,6 +141,15 @@ test('le runner fragmente le diff sans transformer cela en troncature', () => {
   assert.match(
     runner,
     /_Review partielle : le diff source a été tronqué\._\\n\\nVERDICT: \$\{verdict\}/
+  );
+});
+
+test('le diff complet et sa troncature restent sûrs quel que soit le cwd', () => {
+  assert.match(runner, /'\:\/'/);
+  assert.match(runner, /diff = utf8Prefix\(diff, MAX_SOURCE_DIFF_BYTES\)/);
+  assert.doesNotMatch(
+    runner,
+    /encodedDiff\.subarray\(0, MAX_SOURCE_DIFF_BYTES\)/
   );
 });
 
@@ -182,4 +209,24 @@ clipReview;`,
   assert.ok(Buffer.byteLength(clipped, 'utf8') <= 2_000);
   assert.match(clipped, /VERDICT: REQUEST_CHANGES$/);
   assert.match(runner, /MAX_GITHUB_COMMENT_BYTES - bodyOverhead/);
+});
+
+test('les mentions GitHub produites par un modèle sont neutralisées', () => {
+  const functionStart = runner.indexOf('function neutralizeGitHubMentions');
+  const functionEnd = runner.indexOf('\nfunction postReview', functionStart);
+  assert.notEqual(functionStart, -1);
+  assert.notEqual(functionEnd, -1);
+
+  const neutralizeGitHubMentions = runInNewContext(
+    `${runner.slice(functionStart, functionEnd)}
+neutralizeGitHubMentions;`
+  ) as (value: string) => string;
+  const result = neutralizeGitHubMentions(
+    'Notifier @org/team, garder @/lib/auth et user@example.com.'
+  );
+
+  assert.ok(result.includes('@\u200borg/team'));
+  assert.ok(result.includes('@/lib/auth'));
+  assert.ok(result.includes('user@example.com'));
+  assert.match(runner, /review = neutralizeGitHubMentions\(review\)/);
 });

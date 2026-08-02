@@ -57,16 +57,15 @@ function parseStrings(
   if (!Array.isArray(value) || value.length > maxItems) {
     invalid(`${key} doit être un tableau de ${maxItems} éléments maximum`);
   }
-  return value
-    .map((item) => {
+  return value.map((item) => {
       if (typeof item !== 'string') invalid(`${key} doit contenir des chaînes`);
       const result = item.trim();
+      if (!result) invalid(`${key} ne doit pas contenir d'élément vide`);
       if (result.length > maxLength) {
         invalid(`Un élément de ${key} dépasse ${maxLength} caractères`);
       }
       return result;
-    })
-    .filter(Boolean);
+    });
 }
 
 function parseUrl(

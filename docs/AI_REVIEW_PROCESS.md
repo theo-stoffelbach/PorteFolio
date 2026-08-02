@@ -38,9 +38,12 @@ Pour une contribution externe non fiable, ne jamais exécuter le script contenu
 dans la PR : utiliser une copie approuvée provenant de la branche protégée.
 
 Les reviewers travaillent dans un répertoire temporaire sans checkout et ne
-reçoivent que le prompt textuel :
+reçoivent que le prompt textuel. Claude, Kimi et Gemini utilisent chacun un
+`HOME` jetable qui ne contient que la copie privée des credentials nécessaires :
+aucun réglage global, hook, plugin, historique ou configuration MCP de l'hôte
+n'est chargé.
 
-- Claude reçoit `--tools ""` et ne persiste pas de session ;
+- Claude reçoit `--safe-mode`, `--tools ""` et ne persiste pas de session ;
 - Kimi charge un agent personnalisé dont la liste `tools` est vide ;
 - Gemini charge un agent Antigravity local dont `tools: []`, sans MCP, skill,
   plugin ni sous-agent ;
@@ -52,8 +55,9 @@ reçoivent que le prompt textuel :
 
 Seules les variables d'environnement indispensables à l'exécution et à
 l'authentification locale sont transmises. Le runner vérifie aussi que l'état
-complet du worktree n'a pas changé pendant chaque analyse et refuse une sortie
-qui reproduirait une valeur privée connue.
+complet du worktree n'a pas changé pendant chaque analyse, refuse une sortie
+qui reproduirait une valeur privée connue de chacun des quatre profils et
+neutralise les `@mentions` avant publication sur GitHub.
 
 Après une installation ou une mise à jour des CLI, vérifier l'authentification
 et l'absence d'outils avant toute publication :
