@@ -616,5 +616,15 @@ test('les formulaires masquent les phases retirées sans perdre leur brouillon',
       [1, 2]
     );
     assert.deepEqual(mergePhases(previous, [1], edited), [previous[1], edited[0]]);
+    const replacementForInactiveWeek = {
+      week: 2,
+      phase: 'Nouvelle phase',
+      description: 'remplace le brouillon masqué',
+    };
+    assert.deepEqual(
+      mergePhases(previous, [1], [edited[0], replacementForInactiveWeek]),
+      [edited[0], replacementForInactiveWeek],
+      'une phase recréée doit remplacer le brouillon inactif de la même semaine'
+    );
   }
 });

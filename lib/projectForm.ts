@@ -26,8 +26,12 @@ export function mergeActivePhaseEdits<T extends { week: number }>(
   editedActivePhases: readonly T[]
 ): T[] {
   const activeWeeks = new Set(previouslyActiveWeeks);
+  const editedWeeks = new Set(
+    editedActivePhases.map((phase) => phase.week)
+  );
   const preservedInactivePhases = previousPhases.filter(
-    (phase) => !activeWeeks.has(phase.week)
+    (phase) =>
+      !activeWeeks.has(phase.week) && !editedWeeks.has(phase.week)
   );
   return [...preservedInactivePhases, ...editedActivePhases];
 }
