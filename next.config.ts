@@ -11,6 +11,16 @@ const nextConfig: NextConfig = {
     remotePatterns: [],
   },
   serverExternalPackages: ['bcryptjs'],
+  // Anciennes pages publiques : tout vit désormais sur l'accueil (console + notice).
+  async redirects() {
+    return [
+      { source: '/projets', destination: '/#ludotheque', permanent: true },
+      { source: '/experiences', destination: '/#niveaux', permanent: true },
+      { source: '/experiences/:id', destination: '/#niveaux', permanent: true },
+      { source: '/formation', destination: '/#niveaux', permanent: true },
+      { source: '/contact', destination: '/#contact', permanent: true },
+    ]
+  },
   async headers() {
     return [
       {
