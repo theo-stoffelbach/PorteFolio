@@ -64,13 +64,3 @@ export interface Formation {
   skills: string[];
 }
 
-export interface ActivityWeek {
-  week: number;
-  projects: string[];
-}
-
-export interface ActivityYear {
-  year: number;
-  weeks: ActivityWeek[];
-}
-
