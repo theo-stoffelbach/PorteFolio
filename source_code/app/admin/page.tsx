@@ -46,8 +46,8 @@ export default function AdminPage() {
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           {[1, 2, 3, 4].map(i => (
             <div key={i} className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-4 sm:p-6">
-              <div className="h-12 sm:h-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-3 sm:mb-4"></div>
-              <div className="h-3 sm:h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4"></div>
+              <div className="h-12 sm:h-20 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse mb-3 sm:mb-4"></div>
+              <div className="h-3 sm:h-4 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-3/4"></div>
             </div>
           ))}
         </div>
@@ -225,7 +225,7 @@ export default function AdminPage() {
 
       {/* Position actuelle */}
       {stats.experiences.currentPosition && (
-        <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 sm:p-6">
+        <div className="bg-linear-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 sm:p-6">
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-pulse"></div>
             <span className="text-xs sm:text-sm text-green-700 dark:text-green-400">Actuellement</span>

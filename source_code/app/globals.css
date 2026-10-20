@@ -1,38 +1,86 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* Mode sombre piloté par la classe `.dark` posée sur <html> (ancien darkMode: 'class') */
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-github-gray-dark: #24292e;
+  --color-github-gray: #586069;
+  --color-github-gray-light: #f6f8fa;
+
+  --color-github-blue: #0366d6;
+  --color-github-green: #28a745;
+  --color-github-border: #e1e4e8;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
+/*
+  Compatibilité Tailwind 3 → 4 : la v4 a changé plusieurs valeurs par défaut
+  de Preflight. On rétablit celles dont dépendent les composants :
+  - couleur de bordure par défaut (currentcolor en v4, gray-200 en v3) ;
+  - couleur des placeholders (gray-400 en v3) ;
+  - curseur main sur les boutons (cursor: default en v4).
+  Pour retirer ces règles, il faudra ajouter les utilitaires explicites
+  (border-gray-200, placeholder-gray-400, cursor-pointer) aux éléments concernés.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
 
-body {
-  color: #24292e;
-  background: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
-}
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-gray-400);
+  }
 
-.dark body {
-  color: #e5e7eb;
-  background: #111827;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
   }
 }
 
+/*
+  Styles globaux du site. Ils restent dans la couche `base` : en v4 les
+  utilitaires vivent dans une couche CSS, et des règles hors couche (ou dans
+  `utilities`, après eux) écraseraient par exemple les marges de `space-y-*`,
+  dont le sélecteur `:where(...)` a une spécificité nulle.
+*/
+@layer base {
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  html,
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  body {
+    color: #24292e;
+    background: #ffffff;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
+  }
+
+  .dark body {
+    color: #e5e7eb;
+    background: #111827;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}

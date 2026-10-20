@@ -10,7 +10,7 @@ export default function ContactPage() {
 
         <ContactSection />
 
-        <div className="mt-12 bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8 shadow-sm">
+        <div className="mt-12 bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8 shadow-xs">
           <h2 className="text-xl font-semibold text-github-gray-dark dark:text-white mb-4">
             Autres moyens de contact
           </h2>

@@ -31,10 +31,10 @@ export default async function FormationPage() {
           {formations.map((formation, index) => (
             <div
               key={formation.id}
-              className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8 shadow-sm"
+              className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8 shadow-xs"
             >
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-github-green dark:bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                <div className="shrink-0 w-12 h-12 bg-github-green dark:bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
                   🎓
                 </div>
 

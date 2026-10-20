@@ -8,7 +8,7 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg overflow-hidden shadow-xs hover:shadow-md transition-shadow">
       <Link href={`/projets/${project.id}`} className="block">
         <div className="relative w-full h-48 bg-github-gray-light dark:bg-gray-700 flex items-center justify-center">
           {project.imageUrl ? (

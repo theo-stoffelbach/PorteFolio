@@ -89,13 +89,13 @@ export default function Timeline() {
                 {/* Version Mobile - toujours à droite de la ligne */}
                 <div className="sm:hidden flex items-start">
                   {/* Point sur la ligne */}
-                  <div className="relative z-10 flex-shrink-0">
+                  <div className="relative z-10 shrink-0">
                     <div className="w-3 h-3 bg-github-blue dark:bg-blue-500 rounded-full border-2 border-white dark:border-gray-800 shadow-md ml-[10px]"></div>
                   </div>
 
                   {/* Trait horizontal + Contenu */}
                   <div className="flex-1 ml-4 pl-4 border-l-2 border-github-blue/30 dark:border-blue-500/30">
-                    <div className="bg-white dark:bg-gray-700 border border-github-border dark:border-gray-600 rounded-lg p-4 shadow-sm">
+                    <div className="bg-white dark:bg-gray-700 border border-github-border dark:border-gray-600 rounded-lg p-4 shadow-xs">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-sm">
                           {event.type === "formation" ? "🎓" : "💼"}
@@ -125,7 +125,7 @@ export default function Timeline() {
                   {event.side === "left" && (
                     <>
                       <div className="w-5/12 pr-8 text-right relative z-20">
-                        <div className="bg-white dark:bg-gray-700 border border-github-border dark:border-gray-600 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer hover:border-github-blue dark:hover:border-blue-400">
+                        <div className="bg-white dark:bg-gray-700 border border-github-border dark:border-gray-600 rounded-lg p-6 shadow-xs hover:shadow-md transition-shadow cursor-pointer hover:border-github-blue dark:hover:border-blue-400">
                           <div className="flex items-center justify-end gap-2 mb-2">
                             <h3 className="text-lg font-semibold text-github-gray-dark dark:text-white">
                               {event.title}
@@ -172,7 +172,7 @@ export default function Timeline() {
                       </div>
 
                       <div className="w-5/12 pl-8 relative z-20">
-                        <div className="bg-white dark:bg-gray-700 border border-github-border dark:border-gray-600 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer hover:border-github-blue dark:hover:border-blue-400">
+                        <div className="bg-white dark:bg-gray-700 border border-github-border dark:border-gray-600 rounded-lg p-6 shadow-xs hover:shadow-md transition-shadow cursor-pointer hover:border-github-blue dark:hover:border-blue-400">
                           <div className="flex items-center gap-2 mb-2">
                             <span className="text-sm font-semibold text-github-blue dark:text-blue-400">
                               {event.type === "formation" ? "🎓" : "💼"}

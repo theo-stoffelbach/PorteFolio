@@ -19,7 +19,7 @@ export default function ContactSection() {
           Contact
         </h2>
 
-        <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8 shadow-sm">
+        <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8 shadow-xs">
           <p className="text-github-gray-dark dark:text-gray-300 mb-6">
             Vous avez un projet ou une opportunité à discuter ?
           </p>
