@@ -4,20 +4,20 @@ export default function AdminPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {/* Placeholder cards */}
           <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-6">
-            <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4"></div>
+            <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse mb-4"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-3/4"></div>
           </div>
           <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-6">
-            <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4"></div>
+            <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse mb-4"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-3/4"></div>
           </div>
           <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-6">
-            <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4"></div>
+            <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse mb-4"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-3/4"></div>
           </div>
           <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-6">
-            <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4"></div>
+            <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse mb-4"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-sm animate-pulse w-3/4"></div>
           </div>
         </div>
 
