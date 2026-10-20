@@ -11,6 +11,9 @@ docker-compose.yml
 .vscode
 .idea
 source_code
+# Les tests importent source_code/ (exclu ci-dessus) : laissés dans le
+# contexte, le type-check de next build échoue (TS2307). Inutiles à l'image.
+tests
 .env
 .env.*
 
