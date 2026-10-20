@@ -26,7 +26,7 @@ Théo ne se contente pas d'écrire des applications : il les déploie et les exp
 
 ## Capabilities and Constraints
 
-- Stack existante conservée : Next.js 16 (App Router), React 19, TypeScript, Tailwind 3, framer-motion.
+- Stack existante conservée : Next.js 16 (App Router), React 19, TypeScript, Tailwind 4, framer-motion.
 - L'espace admin (login JWT, édition des projets/expériences/formations en JSON via l'API) est conservé ; seul le site public est reconstruit. Les tests de sécurité (`tests/security.test.ts`) et la CSP (`lib/securityHeaders.ts`) doivent continuer à passer : pas de script ni de police depuis un domaine tiers.
 - Données publiques servies depuis `data/*.json` via `lib/dataManager.ts`.
 - Sortie Docker `standalone` ; aucun service externe requis au runtime.

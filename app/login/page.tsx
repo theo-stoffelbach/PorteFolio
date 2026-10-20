@@ -50,7 +50,7 @@ export default function LoginPage() {
         >
           Retour au site
         </Link>
-        <div className="bg-paper text-cobalt-deep rounded p-8 shadow-[10px_10px_0_var(--desk-ink)] [--focus-ring:var(--framboise-ink)]">
+        <div className="bg-paper text-cobalt-deep rounded-sm p-8 shadow-[10px_10px_0_var(--desk-ink)] [--focus-ring:var(--framboise-ink)]">
           <h1 className="font-display text-3xl text-cobalt mb-2">
             Accès admin
           </h1>
@@ -69,7 +69,7 @@ export default function LoginPage() {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-cobalt rounded-md bg-white text-cobalt-deep placeholder:text-cobalt-light focus:outline-none focus:ring-4 focus:ring-framboise-ink"
+                className="w-full px-4 py-3 border-2 border-cobalt rounded-md bg-white text-cobalt-deep placeholder:text-cobalt-light focus:outline-hidden focus:ring-4 focus:ring-framboise-ink"
                 placeholder="votre@email.com"
                 autoComplete="username"
                 required
@@ -86,7 +86,7 @@ export default function LoginPage() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-cobalt rounded-md bg-white text-cobalt-deep placeholder:text-cobalt-light focus:outline-none focus:ring-4 focus:ring-framboise-ink"
+                className="w-full px-4 py-3 border-2 border-cobalt rounded-md bg-white text-cobalt-deep placeholder:text-cobalt-light focus:outline-hidden focus:ring-4 focus:ring-framboise-ink"
                 placeholder="••••••••"
                 autoComplete="current-password"
                 required

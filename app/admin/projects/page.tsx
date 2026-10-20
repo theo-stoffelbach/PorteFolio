@@ -139,7 +139,7 @@ export default function AdminProjectsPage() {
         {projects.map((project, index) => (
           <div
             key={project.id}
-            className="relative bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8 shadow-sm hover:shadow-md transition-shadow"
+            className="relative bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8 shadow-xs hover:shadow-md transition-shadow"
           >
             {/* Boutons d'action - En haut à droite */}
             <div className="absolute -top-4 -right-4 flex gap-2">
@@ -188,7 +188,7 @@ export default function AdminProjectsPage() {
             {/* Contenu du projet */}
             <div className="flex items-start gap-6">
               {/* Image du projet */}
-              <div className="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700">
+              <div className="shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700">
                 {project.imageUrl && (
                   <img
                     src={project.imageUrl}

@@ -1,203 +1,373 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss' source(none);
 
 /*
- * Jetons du monde « Console TS-27 ».
- * Source unique pour la console, la notice imprimée et les pages de cartouche.
- * Les polices (--font-display, --font-body, --font-pixel) sont posées par
- * next/font dans app/layout.tsx.
+ * Fichiers analysés par Tailwind (l'ancien `content` de tailwind.config.ts) :
+ * l'application racine seulement, source_code/ a sa propre configuration.
  */
-:root {
-  /* Bureau aubergine, la nuit */
-  --desk: #211a28;
-  --desk-deep: #19141f;
-  --desk-ink: #100c15;
-  --desk-grain: #292030;
-  --desk-edge: #3b2e46;
+@source '../app';
+@source '../components';
 
-  /* Plastique cobalt de la console */
-  --cobalt-night: #0c1130;
-  --cobalt-deep: #1a275a;
-  --cobalt-mid: #233574;
-  --cobalt: #2e4a99;
-  --cobalt-light: #4064bb;
-  --cobalt-glint: #6b8edd;
-  --cobalt-mist: #aab4e0;
-  --cobalt-dim: #8e9ad0;
-  /* Texte secondaire lisible sur l'aplat cobalt (5,4:1) */
-  --cobalt-haze: #c9d0f0;
+/* L'admin utilise encore des variantes dark: ; sans classe .dark posée, elles restent inactives. */
+@custom-variant dark (&:is(.dark *));
 
-  /* Framboise : boutons A et B, seconde encre de la notice */
-  --framboise-night: #3a0d1e;
-  --framboise-deep: #8c2843;
-  --framboise-ink: #b03552;
-  --framboise: #c7425c;
-  --framboise-light: #e86d81;
-  --framboise-pale: #ffb2b8;
+/*
+ * Thème (l'ancien tailwind.config.ts). `inline` : les utilitaires reprennent la
+ * valeur telle quelle, comme en v3 (bg-desk → var(--desk)), et suivent donc un
+ * jeton redéfini localement.
+ */
+@theme inline {
+  /* Palette de l'admin, conservée telle quelle */
+  --color-github-gray-dark: #24292e;
+  --color-github-gray: #586069;
+  --color-github-gray-light: #f6f8fa;
+  --color-github-blue: #0366d6;
+  --color-github-green: #28a745;
+  --color-github-border: #e1e4e8;
 
-  /* Jaune du bouton START */
-  --start-deep: #5a3808;
-  --start-shade: #c4841a;
-  --start: #ffc53a;
-  --start-pale: #fff0a6;
+  /* Couleurs du monde « Console TS-27 » (jetons définis plus bas, dans :root) */
+  --color-desk: var(--desk);
+  --color-desk-deep: var(--desk-deep);
+  --color-desk-ink: var(--desk-ink);
+  --color-desk-edge: var(--desk-edge);
 
-  /* Ardoise du bouton SELECT */
-  --slate-0: #090a12;
-  --slate-1: #191b2a;
-  --slate-2: #292c41;
-  --slate-3: #444a6c;
+  --color-cobalt: var(--cobalt);
+  --color-cobalt-night: var(--cobalt-night);
+  --color-cobalt-deep: var(--cobalt-deep);
+  --color-cobalt-mid: var(--cobalt-mid);
+  --color-cobalt-light: var(--cobalt-light);
+  --color-cobalt-glint: var(--cobalt-glint);
+  --color-cobalt-haze: var(--cobalt-haze);
 
-  /* Écran LCD, quatre tons */
-  --lcd-0: #f9e8d2;
-  --lcd-1: #eca07f;
-  --lcd-2: #b4465c;
-  --lcd-3: #3b1734;
+  --color-framboise: var(--framboise);
+  --color-framboise-deep: var(--framboise-deep);
+  --color-framboise-ink: var(--framboise-ink);
+  --color-framboise-light: var(--framboise-light);
+  --color-framboise-pale: var(--framboise-pale);
 
-  /* Crème des étiquettes et du texte posé sur le bureau */
-  --cream: #f3e6d0;
-  --label: #f2e4cb;
-  --rose: #ef9295;
-  --led: #82ffb8;
+  --color-start: var(--start);
+  --color-start-deep: var(--start-deep);
+  --color-start-shade: var(--start-shade);
+  --color-start-pale: var(--start-pale);
 
-  /* Bandeaux de catégorie des cartouches */
-  --cat-infra: #2c8a83;
-  --cat-infra-deep: #1d5b5a;
-  --cat-infra-light: #5ebcad;
-  --cat-ia: #7552c4;
-  --cat-ia-deep: #4a2e86;
-  --cat-ia-light: #a78bf0;
-  --cat-jeux: #5e9537;
-  --cat-jeux-deep: #3a5e22;
-  --cat-jeux-light: #92c65a;
-  --cat-web: #d68926;
-  --cat-web-deep: #8e5414;
-  --cat-web-light: #f5bc5b;
+  --color-lcd-0: var(--lcd-0);
+  --color-lcd-1: var(--lcd-1);
+  --color-lcd-2: var(--lcd-2);
+  --color-lcd-3: var(--lcd-3);
 
-  /* Notice imprimée en deux tons sur papier rose LCD */
-  --paper: var(--lcd-0);
-  --paper-shade: #f0d8bd;
-  --ink: var(--cobalt-deep);
-  --ink-soft: var(--cobalt);
-  --ink-accent: var(--framboise-ink);
+  --color-paper: var(--paper);
+  --color-paper-shade: var(--paper-shade);
 
-  /* Anneau de focus : jaune sur le bureau et le cobalt, framboise sur le papier */
-  --focus-ring: var(--start);
+  --color-cream: var(--cream);
+  --color-label: var(--label);
 
+  --color-cat-infra: var(--cat-infra);
+  --color-cat-ia: var(--cat-ia);
+  --color-cat-jeux: var(--cat-jeux);
+  --color-cat-web: var(--cat-web);
+
+  --font-sans: var(--font-body), system-ui, sans-serif;
+}
+
+/*
+ * Polices posées par next/font dans app/layout.tsx. Les variables de next/font
+ * portent déjà ces noms : `reference` évite de les redéclarer sur :root.
+ */
+@theme inline reference {
+  --font-display: var(--font-display), var(--font-body), sans-serif;
+  --font-pixel: var(--font-pixel), monospace;
+}
+
+/*
+ * Teintes de Tailwind 3 pour les familles qu'utilise l'admin : la palette par
+ * défaut de la v4 (oklch) est plus saturée et changerait ses boutons et badges.
+ */
+@theme {
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  --color-gray-950: #030712;
+
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-300: #fca5a5;
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+  --color-red-900: #7f1d1d;
+  --color-red-950: #450a0a;
+
+  --color-yellow-50: #fefce8;
+  --color-yellow-100: #fef9c3;
+  --color-yellow-200: #fef08a;
+  --color-yellow-300: #fde047;
+  --color-yellow-400: #facc15;
+  --color-yellow-500: #eab308;
+  --color-yellow-600: #ca8a04;
+  --color-yellow-700: #a16207;
+  --color-yellow-800: #854d0e;
+  --color-yellow-900: #713f12;
+  --color-yellow-950: #422006;
+
+  --color-green-50: #f0fdf4;
+  --color-green-100: #dcfce7;
+  --color-green-200: #bbf7d0;
+  --color-green-300: #86efac;
+  --color-green-400: #4ade80;
+  --color-green-500: #22c55e;
+  --color-green-600: #16a34a;
+  --color-green-700: #15803d;
+  --color-green-800: #166534;
+  --color-green-900: #14532d;
+  --color-green-950: #052e16;
+
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
+  --color-blue-950: #172554;
+}
+
+/*
+ * Compatibilité avec le préflight de Tailwind 3, dont l'admin et /login dépendent
+ * encore (guide de migration v4) :
+ * - bordure par défaut gray-200 (currentColor en v4) ;
+ * - texte indicatif gray-400 (couleur du texte à 50 % en v4) ;
+ * - curseur main sur les boutons (retiré du préflight en v4).
+ */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-gray-400);
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/*
+ * Styles de base du site. En couche `base` : les utilitaires Tailwind les
+ * surchargent (comme en v3, où ils gagnaient par spécificité) et les CSS modules
+ * restent prioritaires.
+ */
+@layer base {
   /*
-   * Échelle du monde pixel (pixels CSS par pixel logique). Valeur de départ avant
-   * le JavaScript, qui la remplace par la valeur exacte (components/console/render/scale.ts) :
-   * la console paysage (468 pixels logiques dessinés) tient en largeur, et en hauteur
-   * avec le haut de l'étagère jusqu'au nom des premières cartouches (253 + 47 = 300).
+   * Jetons du monde « Console TS-27 ».
+   * Source unique pour la console, la notice imprimée et les pages de cartouche.
+   * Les polices (--font-display, --font-body, --font-pixel) sont posées par
+   * next/font dans app/layout.tsx.
    */
-  --px: max(min(calc((100vw - 32px) / 468), calc(100svh / 300), 6px), 1px);
-
-  /* Lames du bureau aubergine : tuile pixel de 480 × 100 (graine 27 de la maquette) */
-  --desk-tile: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 100' shape-rendering='crispEdges'><rect x='0' y='0' width='480' height='1' fill='%2319141f'/><rect x='193' y='3' width='12' height='1' fill='%23292030'/><rect x='81' y='18' width='22' height='1' fill='%23292030'/><rect x='129' y='4' width='32' height='1' fill='%23292030'/><rect x='249' y='10' width='34' height='1' fill='%23292030'/><rect x='219' y='9' width='21' height='1' fill='%23292030'/><rect x='2' y='14' width='27' height='1' fill='%23292030'/><rect x='349' y='19' width='39' height='1' fill='%23292030'/><rect x='83' y='1' width='1' height='24' fill='%2319141f'/><rect x='0' y='25' width='480' height='1' fill='%2319141f'/><rect x='198' y='43' width='23' height='1' fill='%23292030'/><rect x='410' y='31' width='26' height='1' fill='%23292030'/><rect x='84' y='31' width='18' height='1' fill='%23292030'/><rect x='299' y='40' width='26' height='1' fill='%23292030'/><rect x='433' y='30' width='47' height='1' fill='%23292030'/><rect x='315' y='34' width='32' height='1' fill='%23292030'/><rect x='311' y='35' width='21' height='1' fill='%23292030'/><rect x='280' y='26' width='1' height='24' fill='%2319141f'/><rect x='0' y='50' width='480' height='1' fill='%2319141f'/><rect x='42' y='66' width='44' height='1' fill='%23292030'/><rect x='133' y='62' width='41' height='1' fill='%23292030'/><rect x='103' y='63' width='17' height='1' fill='%23292030'/><rect x='116' y='66' width='13' height='1' fill='%23292030'/><rect x='414' y='58' width='28' height='1' fill='%23292030'/><rect x='306' y='56' width='18' height='1' fill='%23292030'/><rect x='129' y='54' width='46' height='1' fill='%23292030'/><rect x='477' y='51' width='1' height='24' fill='%2319141f'/><rect x='0' y='75' width='480' height='1' fill='%2319141f'/><rect x='397' y='84' width='29' height='1' fill='%23292030'/><rect x='72' y='81' width='23' height='1' fill='%23292030'/><rect x='37' y='91' width='36' height='1' fill='%23292030'/><rect x='216' y='85' width='38' height='1' fill='%23292030'/><rect x='124' y='84' width='24' height='1' fill='%23292030'/><rect x='243' y='88' width='47' height='1' fill='%23292030'/><rect x='34' y='87' width='17' height='1' fill='%23292030'/><rect x='194' y='76' width='1' height='24' fill='%2319141f'/></svg>");
-
-  /* Ombre portée des objets posés sur le bureau : 5 pixels logiques, comme la console */
-  --drop: calc(5 * var(--px)) calc(5 * var(--px)) 0 var(--desk-ink);
-}
-
-/* Console portrait (mobile) : 260 pixels logiques de large, même seuil qu'en JavaScript */
-@media (max-width: 719.98px) {
   :root {
-    --px: min(calc((100vw - 32px) / 260), 4px);
+    /* Bureau aubergine, la nuit */
+    --desk: #211a28;
+    --desk-deep: #19141f;
+    --desk-ink: #100c15;
+    --desk-grain: #292030;
+    --desk-edge: #3b2e46;
+
+    /* Plastique cobalt de la console */
+    --cobalt-night: #0c1130;
+    --cobalt-deep: #1a275a;
+    --cobalt-mid: #233574;
+    --cobalt: #2e4a99;
+    --cobalt-light: #4064bb;
+    --cobalt-glint: #6b8edd;
+    --cobalt-mist: #aab4e0;
+    --cobalt-dim: #8e9ad0;
+    /* Texte secondaire lisible sur l'aplat cobalt (5,4:1) */
+    --cobalt-haze: #c9d0f0;
+
+    /* Framboise : boutons A et B, seconde encre de la notice */
+    --framboise-night: #3a0d1e;
+    --framboise-deep: #8c2843;
+    --framboise-ink: #b03552;
+    --framboise: #c7425c;
+    --framboise-light: #e86d81;
+    --framboise-pale: #ffb2b8;
+
+    /* Jaune du bouton START */
+    --start-deep: #5a3808;
+    --start-shade: #c4841a;
+    --start: #ffc53a;
+    --start-pale: #fff0a6;
+
+    /* Ardoise du bouton SELECT */
+    --slate-0: #090a12;
+    --slate-1: #191b2a;
+    --slate-2: #292c41;
+    --slate-3: #444a6c;
+
+    /* Écran LCD, quatre tons */
+    --lcd-0: #f9e8d2;
+    --lcd-1: #eca07f;
+    --lcd-2: #b4465c;
+    --lcd-3: #3b1734;
+
+    /* Crème des étiquettes et du texte posé sur le bureau */
+    --cream: #f3e6d0;
+    --label: #f2e4cb;
+    --rose: #ef9295;
+    --led: #82ffb8;
+
+    /* Bandeaux de catégorie des cartouches */
+    --cat-infra: #2c8a83;
+    --cat-infra-deep: #1d5b5a;
+    --cat-infra-light: #5ebcad;
+    --cat-ia: #7552c4;
+    --cat-ia-deep: #4a2e86;
+    --cat-ia-light: #a78bf0;
+    --cat-jeux: #5e9537;
+    --cat-jeux-deep: #3a5e22;
+    --cat-jeux-light: #92c65a;
+    --cat-web: #d68926;
+    --cat-web-deep: #8e5414;
+    --cat-web-light: #f5bc5b;
+
+    /* Notice imprimée en deux tons sur papier rose LCD */
+    --paper: var(--lcd-0);
+    --paper-shade: #f0d8bd;
+    --ink: var(--cobalt-deep);
+    --ink-soft: var(--cobalt);
+    --ink-accent: var(--framboise-ink);
+
+    /* Anneau de focus : jaune sur le bureau et le cobalt, framboise sur le papier */
+    --focus-ring: var(--start);
+
+    /*
+     * Échelle du monde pixel (pixels CSS par pixel logique). Valeur de départ avant
+     * le JavaScript, qui la remplace par la valeur exacte (components/console/render/scale.ts) :
+     * la console paysage (468 pixels logiques dessinés) tient en largeur, et en hauteur
+     * avec le haut de l'étagère jusqu'au nom des premières cartouches (253 + 47 = 300).
+     */
+    --px: max(min(calc((100vw - 32px) / 468), calc(100svh / 300), 6px), 1px);
+
+    /* Lames du bureau aubergine : tuile pixel de 480 × 100 (graine 27 de la maquette) */
+    --desk-tile: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 100' shape-rendering='crispEdges'><rect x='0' y='0' width='480' height='1' fill='%2319141f'/><rect x='193' y='3' width='12' height='1' fill='%23292030'/><rect x='81' y='18' width='22' height='1' fill='%23292030'/><rect x='129' y='4' width='32' height='1' fill='%23292030'/><rect x='249' y='10' width='34' height='1' fill='%23292030'/><rect x='219' y='9' width='21' height='1' fill='%23292030'/><rect x='2' y='14' width='27' height='1' fill='%23292030'/><rect x='349' y='19' width='39' height='1' fill='%23292030'/><rect x='83' y='1' width='1' height='24' fill='%2319141f'/><rect x='0' y='25' width='480' height='1' fill='%2319141f'/><rect x='198' y='43' width='23' height='1' fill='%23292030'/><rect x='410' y='31' width='26' height='1' fill='%23292030'/><rect x='84' y='31' width='18' height='1' fill='%23292030'/><rect x='299' y='40' width='26' height='1' fill='%23292030'/><rect x='433' y='30' width='47' height='1' fill='%23292030'/><rect x='315' y='34' width='32' height='1' fill='%23292030'/><rect x='311' y='35' width='21' height='1' fill='%23292030'/><rect x='280' y='26' width='1' height='24' fill='%2319141f'/><rect x='0' y='50' width='480' height='1' fill='%2319141f'/><rect x='42' y='66' width='44' height='1' fill='%23292030'/><rect x='133' y='62' width='41' height='1' fill='%23292030'/><rect x='103' y='63' width='17' height='1' fill='%23292030'/><rect x='116' y='66' width='13' height='1' fill='%23292030'/><rect x='414' y='58' width='28' height='1' fill='%23292030'/><rect x='306' y='56' width='18' height='1' fill='%23292030'/><rect x='129' y='54' width='46' height='1' fill='%23292030'/><rect x='477' y='51' width='1' height='24' fill='%2319141f'/><rect x='0' y='75' width='480' height='1' fill='%2319141f'/><rect x='397' y='84' width='29' height='1' fill='%23292030'/><rect x='72' y='81' width='23' height='1' fill='%23292030'/><rect x='37' y='91' width='36' height='1' fill='%23292030'/><rect x='216' y='85' width='38' height='1' fill='%23292030'/><rect x='124' y='84' width='24' height='1' fill='%23292030'/><rect x='243' y='88' width='47' height='1' fill='%23292030'/><rect x='34' y='87' width='17' height='1' fill='%23292030'/><rect x='194' y='76' width='1' height='24' fill='%2319141f'/></svg>");
+
+    /* Ombre portée des objets posés sur le bureau : 5 pixels logiques, comme la console */
+    --drop: calc(5 * var(--px)) calc(5 * var(--px)) 0 var(--desk-ink);
+  }
+
+  /* Console portrait (mobile) : 260 pixels logiques de large, même seuil qu'en JavaScript */
+  @media (max-width: 719.98px) {
+    :root {
+      --px: min(calc((100vw - 32px) / 260), 4px);
+    }
+  }
+
+  html {
+    background: var(--desk);
+    scrollbar-color: var(--cobalt-light) var(--desk-ink);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100vh;
+    background: var(--desk);
+    color: var(--cream);
+    font-family: var(--font-body), system-ui, sans-serif;
+    font-weight: 500;
+    line-height: 1.55;
+    overflow-x: clip;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Barres de défilement thématisées pour les navigateurs sans scrollbar-color */
+  @supports not (scrollbar-color: auto) {
+    ::-webkit-scrollbar {
+      width: 14px;
+      height: 14px;
+      background: var(--desk-ink);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--cobalt-light);
+      border: 3px solid var(--desk-ink);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--cobalt-glint);
+    }
+
+    ::-webkit-scrollbar-corner {
+      background: var(--desk-ink);
+    }
+  }
+
+  ::selection {
+    background: var(--framboise-ink);
+    color: var(--paper);
+  }
+
+  input,
+  textarea,
+  [contenteditable='true'] {
+    caret-color: var(--framboise-ink);
+  }
+
+  a {
+    color: inherit;
+    text-underline-offset: 0.24em;
+    text-decoration-thickness: 0.1em;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+
+  /* Lien d'évitement : visible seulement au clavier */
+  .skip-link {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    z-index: 100;
+    padding: 10px 16px;
+    background: var(--start);
+    color: var(--start-deep);
+    font-family: var(--font-pixel), monospace;
+    font-size: 1rem;
+    text-decoration: none;
+    box-shadow: inset 0 -3px 0 var(--start-shade);
+    transform: translateY(-200%);
+  }
+
+  .skip-link:focus {
+    transform: none;
+    outline: 3px solid var(--paper);
+    outline-offset: 3px;
   }
 }
 
-html {
-  background: var(--desk);
-  scrollbar-color: var(--cobalt-light) var(--desk-ink);
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
-body {
-  min-height: 100vh;
-  background: var(--desk);
-  color: var(--cream);
-  font-family: var(--font-body), system-ui, sans-serif;
-  font-weight: 500;
-  line-height: 1.55;
-  overflow-x: clip;
-  text-rendering: optimizeLegibility;
-}
-
-/* Barres de défilement thématisées pour les navigateurs sans scrollbar-color */
-@supports not (scrollbar-color: auto) {
-  ::-webkit-scrollbar {
-    width: 14px;
-    height: 14px;
-    background: var(--desk-ink);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: var(--cobalt-light);
-    border: 3px solid var(--desk-ink);
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--cobalt-glint);
-  }
-
-  ::-webkit-scrollbar-corner {
-    background: var(--desk-ink);
-  }
-}
-
-::selection {
-  background: var(--framboise-ink);
-  color: var(--paper);
-}
-
-input,
-textarea,
-[contenteditable='true'] {
-  caret-color: var(--framboise-ink);
-}
-
-a {
-  color: inherit;
-  text-underline-offset: 0.24em;
-  text-decoration-thickness: 0.1em;
-}
-
-:focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 3px;
-}
-
-/* Lien d'évitement : visible seulement au clavier */
-.skip-link {
-  position: absolute;
-  left: 16px;
-  top: 16px;
-  z-index: 100;
-  padding: 10px 16px;
-  background: var(--start);
-  color: var(--start-deep);
-  font-family: var(--font-pixel), monospace;
-  font-size: 1rem;
-  text-decoration: none;
-  box-shadow: inset 0 -3px 0 var(--start-shade);
-  transform: translateY(-200%);
-}
-
-.skip-link:focus {
-  transform: none;
-  outline: 3px solid var(--paper);
-  outline-offset: 3px;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  .pixelated {
-    image-rendering: pixelated;
-  }
+/* text-balance est fourni nativement par Tailwind 4 */
+@utility pixelated {
+  image-rendering: pixelated;
 }
 
 @media (prefers-reduced-motion: reduce) {

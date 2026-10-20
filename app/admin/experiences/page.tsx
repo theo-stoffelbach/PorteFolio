@@ -73,7 +73,7 @@ export default function AdminExperiencesPage() {
         {experiences.map((experience, index) => (
           <div
             key={experience.id}
-            className="relative bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8 shadow-sm hover:shadow-md transition-shadow"
+            className="relative bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8 shadow-xs hover:shadow-md transition-shadow"
           >
             {/* Bulle avec crayon pour éditer */}
             <button
@@ -98,7 +98,7 @@ export default function AdminExperiencesPage() {
 
             {/* Contenu de l'expérience */}
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-github-blue dark:bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+              <div className="shrink-0 w-12 h-12 bg-github-blue dark:bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
                 {index + 1}
               </div>
 

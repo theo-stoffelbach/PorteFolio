@@ -115,7 +115,7 @@ export default function PhaseManager({ phases = [], onPhasesChange }: PhaseManag
               className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
             >
               <div className="flex items-center gap-4 flex-1 text-left">
-                <div className="flex-shrink-0 w-10 h-10 bg-github-blue dark:bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                <div className="shrink-0 w-10 h-10 bg-github-blue dark:bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
                   {phase.emoji || phase.week}
                 </div>
                 <div>
@@ -158,7 +158,7 @@ export default function PhaseManager({ phases = [], onPhasesChange }: PhaseManag
                     <button
                       type="button"
                       onClick={() => setEmojiOpen(emojiOpen === index ? null : index)}
-                      className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue text-2xl flex items-center justify-center"
+                      className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue text-2xl flex items-center justify-center"
                     >
                       {phase.emoji || "😊"}
                     </button>
@@ -175,7 +175,7 @@ export default function PhaseManager({ phases = [], onPhasesChange }: PhaseManag
                                 handlePhaseChange(index, "emoji", emoji);
                                 setEmojiOpen(null);
                               }}
-                              className="aspect-square text-lg flex items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                              className="aspect-square text-lg flex items-center justify-center rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
                             >
                               {emoji}
                             </button>
@@ -197,7 +197,7 @@ export default function PhaseManager({ phases = [], onPhasesChange }: PhaseManag
                     onChange={(e) =>
                       handlePhaseChange(index, "phase", e.target.value)
                     }
-                    className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
+                    className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue"
                     placeholder="ex: Initialisation, Développement..."
                   />
                 </div>
@@ -213,7 +213,7 @@ export default function PhaseManager({ phases = [], onPhasesChange }: PhaseManag
                       handlePhaseChange(index, "description", e.target.value)
                     }
                     rows={4}
-                    className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue resize-none"
+                    className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue resize-none"
                     placeholder="Décrivez ce qui a été fait durant cette semaine..."
                   />
                 </div>
