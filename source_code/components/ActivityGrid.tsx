@@ -80,7 +80,7 @@ export default function ActivityGrid() {
           Activité Projets
         </h2>
 
-        <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-6 shadow-sm">
+        <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-6 shadow-xs">
           {/* Header avec années à droite */}
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-sm font-semibold text-github-gray-dark dark:text-gray-200">
@@ -121,7 +121,7 @@ export default function ActivityGrid() {
             <>
               {/* Numéros de semaine en haut */}
               <div className="flex gap-3 mb-2">
-                <div className="w-32 flex-shrink-0"></div>
+                <div className="w-32 shrink-0"></div>
                 <div className="flex gap-1 flex-1">
                   {Array.from({ length: weeks.length }, (_, i) => i + 1).map(
                     (weekNum, index) => (
@@ -145,7 +145,7 @@ export default function ActivityGrid() {
                 {projects.map((project) => (
                   <div key={project.id} className="flex gap-3 items-center">
                     {/* Nom du projet à gauche */}
-                    <div className="w-32 flex-shrink-0 text-xs text-github-gray-dark dark:text-gray-200 truncate">
+                    <div className="w-32 shrink-0 text-xs text-github-gray-dark dark:text-gray-200 truncate">
                       {project.title}
                     </div>
 
@@ -163,7 +163,7 @@ export default function ActivityGrid() {
                         return (
                           <div
                             key={weekNum}
-                            className={`flex-1 aspect-square rounded-sm cursor-pointer hover:ring-2 hover:ring-gray-400 transition-all ${
+                            className={`flex-1 aspect-square rounded-xs cursor-pointer hover:ring-2 hover:ring-gray-400 transition-all ${
                               !isActive ? "dark:bg-gray-700" : ""
                             }`}
                             style={{

@@ -168,7 +168,7 @@ Les données sont stockées dans `/data` au format JSON:
 
 ### Palette de Couleurs GitHub
 
-Modifié dans `tailwind.config.ts`:
+Définie dans le bloc `@theme` de `app/globals.css` (Tailwind CSS 4) :
 
 - `github-gray-dark`: #24292e
 - `github-gray`: #586069

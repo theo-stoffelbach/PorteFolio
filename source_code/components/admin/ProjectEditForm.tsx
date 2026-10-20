@@ -165,7 +165,7 @@ export default function ProjectEditForm({
                 name="title"
                 value={project.title}
                 onChange={handleBasicChange}
-                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
+                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue"
                 required
               />
             </div>
@@ -180,7 +180,7 @@ export default function ProjectEditForm({
                 value={project.description}
                 onChange={handleBasicChange}
                 rows={4}
-                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue resize-none"
+                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue resize-none"
                 required
               />
             </div>
@@ -195,7 +195,7 @@ export default function ProjectEditForm({
                 name="imageUrl"
                 value={project.imageUrl}
                 onChange={handleBasicChange}
-                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
+                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue"
               />
             </div>
 
@@ -209,7 +209,7 @@ export default function ProjectEditForm({
                 name="year"
                 value={project.year}
                 onChange={handleBasicChange}
-                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
+                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue"
                 required
               />
             </div>
@@ -222,7 +222,7 @@ export default function ProjectEditForm({
                 id="featured"
                 checked={project.featured || false}
                 onChange={handleBasicChange}
-                className="w-5 h-5 border border-github-border rounded cursor-pointer"
+                className="w-5 h-5 border border-github-border rounded-sm cursor-pointer"
               />
               <label
                 htmlFor="featured"
@@ -246,7 +246,7 @@ export default function ProjectEditForm({
                 type="text"
                 value={technologiesInput}
                 onChange={handleTechnologiesChange}
-                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
+                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue"
                 placeholder="React, Node.js, TypeScript"
               />
             </div>
@@ -262,14 +262,14 @@ export default function ProjectEditForm({
                   name="color"
                   value={project.color}
                   onChange={handleBasicChange}
-                  className="h-12 w-20 border border-github-border rounded cursor-pointer"
+                  className="h-12 w-20 border border-github-border rounded-sm cursor-pointer"
                 />
                 <input
                   type="text"
                   name="color"
                   value={project.color}
                   onChange={handleBasicChange}
-                  className="flex-1 px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
+                  className="flex-1 px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue"
                   placeholder="#000000"
                 />
               </div>
@@ -287,7 +287,7 @@ export default function ProjectEditForm({
                 type="text"
                 value={weeksInput}
                 onChange={handleWeeksChange}
-                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
+                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue"
                 placeholder="1, 2, 3, 4, 5, 6"
               />
             </div>
@@ -302,7 +302,7 @@ export default function ProjectEditForm({
                 name="projectUrl"
                 value={project.projectUrl || ""}
                 onChange={handleBasicChange}
-                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
+                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue"
                 placeholder="https://..."
               />
             </div>

@@ -107,7 +107,7 @@ export default async function ProjectDetailPage({
         </div>
 
         {/* Contenu */}
-        <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8 shadow-sm">
+        <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8 shadow-xs">
           <h2 className="text-2xl font-semibold text-github-gray-dark dark:text-white mb-4">
             À propos du projet
           </h2>

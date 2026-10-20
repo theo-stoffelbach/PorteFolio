@@ -81,7 +81,7 @@ export default function ExperienceEditModal({
               name="position"
               value={formData.position}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
+              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue"
               required
             />
           </div>
@@ -96,7 +96,7 @@ export default function ExperienceEditModal({
               name="company"
               value={formData.company}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
+              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue"
               required
             />
           </div>
@@ -111,7 +111,7 @@ export default function ExperienceEditModal({
               name="duration"
               value={formData.duration}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
+              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue"
               required
             />
           </div>
@@ -126,7 +126,7 @@ export default function ExperienceEditModal({
               value={formData.description}
               onChange={handleChange}
               rows={4}
-              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue resize-none"
+              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue resize-none"
               required
             />
           </div>
@@ -140,7 +140,7 @@ export default function ExperienceEditModal({
               type="text"
               value={technologiesInput}
               onChange={handleTechnologiesChange}
-              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
+              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue"
               placeholder="React, Node.js, TypeScript"
             />
           </div>
@@ -155,7 +155,7 @@ export default function ExperienceEditModal({
               name="location"
               value={formData.location || ""}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue"
+              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue"
             />
           </div>
 
@@ -169,7 +169,7 @@ export default function ExperienceEditModal({
               value={formData.fullDescription || ""}
               onChange={handleChange}
               rows={4}
-              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue resize-none"
+              className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-hidden focus:ring-2 focus:ring-github-blue resize-none"
             />
           </div>
 
