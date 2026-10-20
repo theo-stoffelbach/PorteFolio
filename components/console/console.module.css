@@ -1,0 +1,440 @@
+/*
+ * Console TS-27 : tout est dessiné en basse résolution puis agrandi par --px
+ * (pixels CSS par pixel logique). --px est posé sur la racine du document :
+ * une première valeur en CSS (app/globals.css), puis la valeur exacte calculée
+ * en JavaScript (render/scale.ts), fluide en largeur et en hauteur.
+ */
+
+.root {
+  position: relative;
+  container-type: inline-size;
+  background-color: #211a28;
+  color: #f3e6d0;
+  overflow-x: clip;
+}
+
+.scaler {
+  /* Échelle de l'étagère : celle de la console, un peu plus grande sur mobile. */
+  --spx: var(--px);
+  /* Les mêmes lames de bureau que sous la notice, à la même échelle. */
+  background-image: var(--desk-tile);
+  background-size: calc(480 * var(--px)) calc(100 * var(--px));
+  image-rendering: pixelated;
+}
+
+@media (max-width: 719.98px) {
+  .scaler {
+    --spx: max(var(--px), 1.75px);
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Scène de la console ---------- */
+
+/* En paysage, le post-it et l'encart de quête sont à un pixel logique du haut de
+   la page, comme sur la maquette : la place gagnée sert à montrer l'étagère. */
+.stageWrap {
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+}
+
+.stage {
+  position: relative;
+  flex: none;
+  width: calc(480 * var(--px));
+  height: calc(258 * var(--px));
+}
+
+/* Placement en coordonnées logiques : --l* en paysage, --q* en portrait. */
+.abs {
+  position: absolute;
+  left: calc(var(--lx) * var(--px));
+  top: calc(var(--ly) * var(--px));
+  width: calc(var(--lw) * var(--px));
+  height: calc(var(--lh) * var(--px));
+}
+
+.body {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+
+.bodyPortrait {
+  display: none;
+}
+
+.slot {
+  z-index: 0;
+  pointer-events: none;
+}
+
+.slot canvas {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+/* Cartouche au repos avant son premier dessin : bandeau de catégorie et titre court. */
+.slotFallback {
+  position: absolute;
+  inset: 0 calc(5 * var(--px)) calc(5 * var(--px)) 0;
+  display: flex;
+  justify-content: center;
+  padding: calc(14 * var(--px)) calc(4 * var(--px)) 0;
+  border: calc(4 * var(--px)) solid var(--cat, #2c8a83);
+  border-top-width: calc(10 * var(--px));
+  background: #f2e4cb;
+  color: #241a2c;
+  font-family: var(--font-pixel), monospace;
+  font-size: calc(8 * var(--px));
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.slotAnchor {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/*
+ * Écran LCD : le tampon est déjà agrandi à la densité réelle de pixels, trame
+ * comprise (pixel/engine.ts, presentLcd). Le lissage du navigateur n'ajuste que
+ * l'écart d'une échelle fractionnaire : les pixels restent réguliers, sans moiré.
+ */
+.screenCanvas {
+  z-index: 2;
+  display: block;
+  background-color: #f9e8d2;
+  image-rendering: auto;
+  pointer-events: none;
+}
+
+.screen {
+  z-index: 4;
+  cursor: pointer;
+  border-radius: 2px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.screen:focus-visible {
+  outline: 2px solid #ffc53a;
+  outline-offset: calc(4 * var(--px));
+}
+
+.screenLink {
+  position: absolute;
+  z-index: 5;
+  display: block;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.screenLink:focus-visible {
+  outline: 2px solid #3b1734;
+  outline-offset: 1px;
+}
+
+.noscript {
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 1em;
+  background: #f9e8d2;
+  color: #3b1734;
+  font-size: max(12px, calc(5 * var(--px)));
+  line-height: 1.3;
+  text-align: center;
+}
+
+.noscript a {
+  color: #3b1734;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---------- Commandes superposées au corps dessiné ---------- */
+
+.control {
+  z-index: 4;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: calc(6 * var(--px));
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.control:focus-visible,
+.arrow:focus-visible {
+  outline: 2px solid #ffc53a;
+  outline-offset: 2px;
+}
+
+.round {
+  border-radius: 50%;
+}
+
+.dpad {
+  z-index: 4;
+  border-radius: 50%;
+  cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Les flèches restent accessibles au clavier ; la zone ronde reçoit le pointeur. */
+.arrow {
+  z-index: 5;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: calc(3 * var(--px));
+  background: transparent;
+  pointer-events: none;
+}
+
+.flyingCart {
+  position: fixed;
+  z-index: 60;
+  margin: 0;
+  pointer-events: none;
+  image-rendering: pixelated;
+  transform-origin: 0 0;
+}
+
+/* ---------- Étagère « Ludothèque » ---------- */
+
+/*
+ * Haut de l'étagère serré pour qu'à 1440 × 900 l'étiquette des premières
+ * cartouches (bandeau et nom) passe au-dessus de la ligne de flottaison :
+ * l'étagère commence juste sous l'ombre de la console (rangée 253 de la scène
+ * paysage) et la rangée de cartouches suit le titre de près. Ces hauteurs sont
+ * reprises par SCALE.shelfRows (render/scale.ts).
+ */
+.shelf {
+  position: relative;
+  margin-top: calc(-5 * var(--px));
+  padding: calc(3 * var(--spx)) 16px calc(14 * var(--spx));
+  border-top: var(--spx) solid #3b2e46;
+  background-color: #121626;
+  background-image: repeating-linear-gradient(
+    90deg,
+    #1a2034 0 var(--spx),
+    transparent var(--spx) calc(48 * var(--spx))
+  );
+  box-shadow: inset 0 calc(3 * var(--spx)) 0 #19141f;
+}
+
+.shelfInner {
+  width: min(100%, calc(472 * var(--px)));
+  margin: 0 auto;
+}
+
+.shelfHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(4 * var(--spx)) calc(12 * var(--spx));
+  margin: 0;
+}
+
+/* Titre et légende en police pixel (Silkscreen : capitales de 5 pixels pour 8 de corps). */
+.shelfTitle,
+.legend,
+.empty {
+  font-family: var(--font-pixel), monospace;
+  font-size: calc(8 * var(--spx));
+  font-weight: 400;
+  line-height: calc(8 * var(--spx));
+  text-transform: uppercase;
+}
+
+.shelfTitle {
+  display: flex;
+  align-items: center;
+  gap: calc(3 * var(--spx));
+  margin: 0;
+  color: #f3e6d0;
+}
+
+.shelfArrow {
+  flex: none;
+  width: calc(5 * var(--spx));
+  height: calc(3 * var(--spx));
+  fill: currentColor;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 calc(8 * var(--spx));
+  margin: 0;
+  padding: 0;
+  color: #8e9ad0;
+  list-style: none;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: calc(3 * var(--spx));
+}
+
+.swatch {
+  flex: none;
+  width: calc(5 * var(--spx));
+  height: calc(5 * var(--spx));
+  background: var(--cat);
+}
+
+/* Rangées de 52 : 4 de dégagement (la cartouche se soulève de 2 au survol),
+   40 de cartouche, puis la planche (1 de chant, 3 d'ombre) et 4 de vide. */
+.cartList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, calc(72 * var(--spx)));
+  grid-auto-rows: calc(52 * var(--spx));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 calc(44 * var(--spx)),
+    #3b2e46 calc(44 * var(--spx)) calc(45 * var(--spx)),
+    #19141f calc(45 * var(--spx)) calc(48 * var(--spx)),
+    transparent calc(48 * var(--spx)) calc(52 * var(--spx))
+  );
+}
+
+.cartItem {
+  position: relative;
+}
+
+.cartLink {
+  position: relative;
+  display: block;
+  width: calc(67 * var(--spx));
+  height: calc(40 * var(--spx));
+  margin-top: calc(4 * var(--spx));
+  border-radius: 1px;
+  color: #241a2c;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cartLink:hover,
+.cartLink:focus-visible {
+  transform: translateY(calc(-2 * var(--spx)));
+}
+
+.cartLink:active {
+  transform: translateY(var(--spx));
+}
+
+.cartLink:focus-visible {
+  outline: 2px solid #ffc53a;
+  outline-offset: calc(2 * var(--spx));
+}
+
+.cartLink canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  image-rendering: pixelated;
+}
+
+/* Rendu de secours avant le dessin du canvas (ou sans JavaScript). */
+.cartFallback {
+  position: absolute;
+  inset: 0 calc(3 * var(--spx)) 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(10 * var(--spx)) calc(4 * var(--spx)) calc(2 * var(--spx));
+  border-top: calc(9 * var(--spx)) solid var(--cat, #2c8a83);
+  background: #f2e4cb;
+  font-family: var(--font-pixel), monospace;
+  font-size: max(10px, calc(6 * var(--spx)));
+  font-weight: 400;
+  line-height: 1.1;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: pre-line;
+}
+
+.empty {
+  margin: calc(6 * var(--spx)) 0 0;
+  color: #8e9ad0;
+}
+
+@media (max-width: 719.98px) {
+  /* En portrait, la scène garde sa marge du haut et son recouvrement d'origine :
+     l'étagère ne doit pas mordre sur le post-it posé sous la console. */
+  .stageWrap {
+    padding-top: calc(5 * var(--px));
+  }
+
+  .stage {
+    /* Dimensions de PORTRAIT dans render/layout.ts */
+    width: calc(260 * var(--px));
+    height: calc(479 * var(--px));
+  }
+
+  .shelf {
+    margin-top: calc(-3 * var(--px));
+  }
+
+  .abs {
+    left: calc(var(--qx) * var(--px));
+    top: calc(var(--qy) * var(--px));
+    width: calc(var(--qw) * var(--px));
+    height: calc(var(--qh) * var(--px));
+  }
+
+  .bodyLandscape {
+    display: none;
+  }
+
+  .bodyPortrait {
+    display: block;
+  }
+
+  .shelfInner {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cartLink:hover,
+  .cartLink:focus-visible,
+  .cartLink:active {
+    transform: none;
+  }
+}

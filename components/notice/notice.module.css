@@ -1,0 +1,715 @@
+/* La notice (mode rapide) : un livret imprimé posé sur le bureau, sous la console. */
+
+.notice {
+  padding: clamp(56px, 6vw + 24px, 120px) 16px clamp(64px, 7vw + 24px, 128px);
+}
+
+/* SELECT donne le focus à la notice : pas d'anneau autour de toute la section… */
+.notice:focus {
+  outline: none;
+}
+
+/* … mais un cadre pointillé quand on y arrive au clavier */
+.notice:focus-visible .booklet {
+  outline: 3px dashed var(--start);
+  outline-offset: 12px;
+}
+
+.booklet {
+  display: grid;
+  gap: clamp(24px, 2vw + 12px, 40px);
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.anchor {
+  scroll-margin-top: 24px;
+}
+
+/* ---------- Couverture ---------- */
+
+.cover {
+  overflow: hidden;
+}
+
+/* Cadre imprimé en réserve, comme sur les couvertures de notices */
+.cover::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 2px solid var(--cobalt-glint);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.coverGrid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: clamp(32px, 3vw + 16px, 56px);
+  align-items: end;
+}
+
+.coverTitle {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  margin: 0;
+  font-weight: 400;
+}
+
+.coverLogo {
+  color: var(--paper);
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(3.5rem, 1.75rem + 8vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  /* La seconde encre, légèrement décalée : le repérage d'une impression deux tons */
+  text-shadow: 0.05em 0.05em 0 var(--framboise);
+}
+
+.coverMode {
+  padding: 0.3em 0.6em 0.36em;
+  border-radius: 4px;
+  background: var(--framboise-ink);
+  color: var(--paper);
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.25rem, 0.9rem + 1.4vw, 2rem);
+  line-height: 1.1;
+}
+
+.coverWho {
+  max-width: 30ch;
+  margin-top: clamp(24px, 2vw + 12px, 36px);
+  font-size: clamp(1.125rem, 1rem + 0.6vw, 1.4375rem);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.coverWho strong {
+  font-weight: 800;
+}
+
+/* La quête en cours, dans la ligne : libellé jaune (comme sur le bureau) puis la valeur */
+.quest {
+  margin-top: 22px;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.questLabel {
+  color: var(--start);
+  font-family: var(--font-pixel), monospace;
+  font-size: 1rem;
+}
+
+.questValue {
+  color: var(--paper);
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.125rem, 0.95rem + 0.7vw, 1.4375rem);
+}
+
+.coverHint {
+  max-width: 44ch;
+  margin-top: 20px;
+  color: var(--cobalt-haze);
+}
+
+.coverActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  margin-top: 24px;
+}
+
+.coverBack {
+  font-weight: 800;
+}
+
+/* Colonne de droite : la console dessinée, puis le sommaire */
+.coverSide {
+  display: grid;
+  gap: clamp(24px, 2vw + 12px, 40px);
+  align-self: stretch;
+  align-content: space-between;
+}
+
+.coverArt {
+  --sprite-px: 12px;
+  justify-self: end;
+}
+
+/* Sommaire imprimé à même la couverture, filets en pointillés */
+.contents {
+  display: grid;
+  align-content: end;
+}
+
+.contentsTitle {
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--paper);
+  color: var(--paper);
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.375rem;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.contentsList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contentsList li + li {
+  border-top: 2px dotted var(--cobalt-glint);
+}
+
+.contentsLink {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 13px 0;
+  color: var(--paper);
+  font-size: 1.0625rem;
+  font-weight: 800;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+.contentsLink:hover .contentsLabel {
+  color: var(--start);
+  text-decoration: underline;
+  text-decoration-thickness: 0.12em;
+  text-underline-offset: 0.22em;
+}
+
+.contentsValue {
+  margin-left: auto;
+  padding-left: 8px;
+  color: var(--start);
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.875rem;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* ---------- Le personnage ---------- */
+
+.character {
+  display: grid;
+  grid-template-columns: minmax(0, 13.5rem) minmax(0, 1fr);
+  gap: clamp(24px, 3vw + 12px, 56px);
+  align-items: start;
+}
+
+.portrait {
+  display: grid;
+  width: 100%;
+  max-width: 13.5rem;
+  margin: 0;
+}
+
+/* Trame de points framboise derrière le personnage */
+.portraitFrame {
+  --sprite-px: 8px;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  border: 4px solid var(--ink-soft);
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background-color: var(--paper);
+  background-image: radial-gradient(
+    var(--framboise-light) 1.3px,
+    transparent 1.7px
+  );
+  background-size: 7px 7px;
+}
+
+.nameplate {
+  padding: 9px 12px 10px;
+  border-radius: 0 0 6px 6px;
+  background: var(--ink-soft);
+  color: var(--paper);
+  font-family: var(--font-pixel), monospace;
+  font-size: 1rem;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.characterName {
+  color: var(--ink-soft);
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+  font-weight: 400;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.characterClass {
+  margin-top: 10px;
+  color: var(--ink-accent);
+  font-size: 1.1875rem;
+  font-weight: 800;
+}
+
+.lead {
+  max-width: 56ch;
+  margin-top: 16px;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+/* Tableaux clé / valeur de la fiche du personnage */
+.table {
+  margin-top: 12px;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 4px 20px;
+  padding: 12px 0;
+}
+
+.tableRow + .tableRow {
+  border-top: 2px dotted var(--ink-soft);
+}
+
+.factKey {
+  padding-top: 0.2em;
+  color: var(--ink-accent);
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+}
+
+.factValue {
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+/* La quête : l'information que cherche un recruteur, en framboise */
+.factQuest {
+  color: var(--ink-accent);
+}
+
+.subTitle {
+  margin-top: clamp(28px, 2vw + 16px, 40px);
+  padding-bottom: 8px;
+  border-bottom: 3px solid var(--ink-soft);
+  color: var(--ink-soft);
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.375rem;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.moveKey {
+  color: var(--ink-accent);
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.1875rem;
+  line-height: 1.3;
+}
+
+.moveValue {
+  max-width: 58ch;
+  line-height: 1.55;
+}
+
+/* ---------- Les cartouches ---------- */
+
+.intro {
+  max-width: 56ch;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.groups {
+  display: grid;
+  gap: clamp(36px, 3vw + 20px, 56px);
+  margin-top: clamp(28px, 2vw + 16px, 44px);
+}
+
+.groupTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--ink-soft);
+  font-weight: 400;
+}
+
+.groupName {
+  color: var(--ink-soft);
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.625rem);
+  line-height: 1.15;
+}
+
+.groupCount {
+  margin-left: auto;
+  color: var(--ink-accent);
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+}
+
+.cartList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cartRow {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  gap: 10px clamp(20px, 3vw, 44px);
+  padding: 22px 0 24px;
+}
+
+.cartRow + .cartRow {
+  border-top: 2px dotted var(--ink-soft);
+}
+
+.cartTitle {
+  color: var(--ink-soft);
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.cartLink {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--framboise-ink);
+  text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.2em;
+}
+
+.cartLink:hover {
+  color: var(--framboise-ink);
+}
+
+.cartArrow {
+  margin-left: 0.35em;
+  vertical-align: 0.05em;
+}
+
+.cartWhen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+}
+
+.tagline {
+  max-width: 56ch;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.cartStats {
+  display: grid;
+  gap: 2px;
+  font-weight: 500;
+}
+
+.cartStatValue {
+  color: var(--ink-accent);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.cartFacts {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.cartFact {
+  display: grid;
+  grid-template-columns: 5.75rem minmax(0, 1fr);
+  gap: 12px;
+}
+
+.cartFactKey {
+  padding-top: 0.15em;
+  color: var(--ink-accent);
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.875rem;
+}
+
+.cartFactValue {
+  margin: 0;
+}
+
+/* Le rôle en gras ; la stack reste en graisse normale pour ne pas noircir la liste */
+.cartRole {
+  font-weight: 800;
+}
+
+.empty {
+  padding: 28px 24px;
+  border: 3px dashed var(--ink-soft);
+  border-radius: 6px;
+  font-weight: 800;
+  text-align: center;
+}
+
+/* ---------- Les niveaux ---------- */
+
+.levels {
+  display: grid;
+  gap: clamp(28px, 3vw + 12px, 48px);
+}
+
+.levels .subTitle {
+  margin-top: 0;
+}
+
+.levelList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Rangée « nom et dates | texte », sur le modèle des cartouches */
+.level {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  gap: 10px clamp(20px, 3vw, 44px);
+  padding: 20px 0 22px;
+}
+
+.levelBody > :first-child {
+  margin-top: 0;
+}
+
+.level + .level {
+  border-top: 2px dotted var(--ink-soft);
+}
+
+.levelName {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.3125rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.levelRole {
+  margin-top: 6px;
+  color: var(--ink-accent);
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.levelWhen {
+  margin-top: 6px;
+  color: var(--ink-soft);
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.levelText {
+  max-width: 56ch;
+  margin-top: 10px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.levelPoints {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.levelPoints li {
+  position: relative;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+/* Puce carrée, un gros pixel framboise */
+.levelPoints li::before {
+  content: '';
+  position: absolute;
+  top: 0.55em;
+  left: 2px;
+  width: 7px;
+  height: 7px;
+  background: var(--framboise-ink);
+}
+
+.levelTech {
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  font-weight: 800;
+}
+
+/* ---------- Le service après-vente (dos du livret) ---------- */
+
+.serviceLead {
+  max-width: 44ch;
+  font-size: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.email {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 20px;
+  color: var(--paper);
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.25rem, 0.55rem + 3.4vw, 2.75rem);
+  line-height: 1.15;
+  text-decoration: none;
+}
+
+.emailText {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-decoration-line: underline;
+  text-decoration-color: var(--framboise-pale);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+}
+
+.email:hover {
+  color: var(--start);
+}
+
+.email:hover .emailText {
+  text-decoration-color: var(--start);
+}
+
+.serviceActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 14px;
+  margin-top: 28px;
+}
+
+/* Message de copie : sur sa propre ligne, sous les boutons */
+.copyStatus {
+  order: 1;
+  flex-basis: 100%;
+  color: var(--cobalt-haze);
+  font-weight: 800;
+}
+
+/* L'onglet et le facteur restent sur la même ligne (div. : plus précis que .rubric) */
+div.serviceRubric {
+  flex-wrap: nowrap;
+}
+
+.service {
+  display: grid;
+  align-items: start;
+}
+
+/* Le facteur, posé sur le filet de la rubrique */
+.postman {
+  --sprite-px: 6px;
+  margin-right: 8px;
+  line-height: 0;
+}
+
+.colophon {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px 32px;
+  margin-top: clamp(32px, 3vw + 16px, 52px);
+  padding-top: 16px;
+  border-top: 2px solid var(--cobalt-glint);
+  color: var(--cobalt-haze);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.colophon p {
+  max-width: 56ch;
+}
+
+/* ---------- Adaptation aux petits écrans ---------- */
+
+@media (max-width: 760px) {
+  .coverGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .coverArt {
+    display: none;
+  }
+
+  .character {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .portrait {
+    max-width: 9rem;
+  }
+
+  .portraitFrame {
+    --sprite-px: 5px;
+  }
+
+  .cartRow,
+  .level {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .postman {
+    --sprite-px: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tableRow,
+  .cartFact {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+
+  .groupCount {
+    margin-left: 0;
+  }
+}
+
+@media print {
+  .notice {
+    padding: 0;
+    background: none;
+  }
+
+  .booklet > * {
+    box-shadow: none;
+    break-inside: avoid-page;
+  }
+}
