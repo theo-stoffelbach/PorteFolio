@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -41,36 +42,43 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-github-gray-light dark:bg-gray-900 px-4">
+    <main className="min-h-screen flex items-center justify-center bg-desk px-4 py-12">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-gray-800 border border-github-border dark:border-gray-700 rounded-lg p-8 shadow-lg">
-          <h1 className="text-3xl font-bold text-github-gray-dark dark:text-white mb-2 text-center">
-            Accès Admin
+        <Link
+          href="/"
+          className="inline-block mb-6 font-extrabold text-cream underline-offset-4 hover:text-start hover:underline"
+        >
+          Retour au site
+        </Link>
+        <div className="bg-paper text-cobalt-deep rounded p-8 shadow-[10px_10px_0_var(--desk-ink)] [--focus-ring:var(--framboise-ink)]">
+          <h1 className="font-display text-3xl text-cobalt mb-2">
+            Accès admin
           </h1>
-          <p className="text-github-gray dark:text-gray-400 text-center mb-8">
-            Connectez-vous pour accéder au panel d'administration
+          <p className="mb-8">
+            Connectez-vous pour accéder au panel d'administration.
           </p>
 
           <form onSubmit={handleLogin} className="space-y-6">
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-github-gray-dark dark:text-white mb-2">
-                Email
+              <label htmlFor="email" className="block font-pixel text-sm text-framboise-ink mb-2">
+                E-mail
               </label>
               <input
                 type="email"
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue dark:focus:ring-blue-500"
+                className="w-full px-4 py-3 border-2 border-cobalt rounded-md bg-white text-cobalt-deep placeholder:text-cobalt-light focus:outline-none focus:ring-4 focus:ring-framboise-ink"
                 placeholder="votre@email.com"
+                autoComplete="username"
                 required
               />
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-github-gray-dark dark:text-white mb-2">
+              <label htmlFor="password" className="block font-pixel text-sm text-framboise-ink mb-2">
                 Mot de passe
               </label>
               <input
@@ -78,16 +86,17 @@ export default function LoginPage() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-github-border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-github-gray-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-github-blue dark:focus:ring-blue-500"
+                className="w-full px-4 py-3 border-2 border-cobalt rounded-md bg-white text-cobalt-deep placeholder:text-cobalt-light focus:outline-none focus:ring-4 focus:ring-framboise-ink"
                 placeholder="••••••••"
+                autoComplete="current-password"
                 required
               />
             </div>
 
             {/* Error message */}
             {error && (
-              <div className="p-4 bg-red-50 dark:bg-red-900 dark:bg-opacity-20 border border-red-200 dark:border-red-700 rounded-lg">
-                <p className="text-red-700 dark:text-red-400 text-sm">{error}</p>
+              <div role="alert" className="p-4 border-2 border-framboise-ink rounded-md bg-white">
+                <p className="text-framboise-ink font-extrabold text-sm">{error}</p>
               </div>
             )}
 
@@ -95,17 +104,13 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-2 bg-github-blue text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full min-h-12 px-4 py-3 rounded-[14px] bg-cobalt text-paper font-display shadow-[inset_0_3px_0_var(--cobalt-light),inset_0_-4px_0_var(--cobalt-deep)] hover:bg-cobalt-mid active:translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {loading ? "Connexion en cours..." : "Se connecter"}
             </button>
           </form>
-
-          <p className="text-center text-sm text-github-gray dark:text-gray-400 mt-8">
-            Demande d'accès ? Contactez l'administrateur
-          </p>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

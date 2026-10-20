@@ -5,6 +5,15 @@ export interface ProjectPhase {
   emoji?: string;
 }
 
+export type ProjectCategory = 'infra' | 'ia' | 'jeux' | 'web';
+
+export type ProjectStatus = 'en-cours' | 'termine' | 'prototype';
+
+export interface ProjectStat {
+  label: string;
+  value: string;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -17,6 +26,19 @@ export interface Project {
   phases?: ProjectPhase[];
   year: number;
   featured?: boolean;
+  // Champs de présentation de la console (tous optionnels pour rester
+  // compatibles avec les projets créés depuis l'admin)
+  category?: ProjectCategory;
+  shortTitle?: string;
+  tagline?: string;
+  role?: string;
+  period?: string;
+  status?: ProjectStatus;
+  highlights?: string[];
+  stats?: ProjectStat[];
+  repoUrl?: string;
+  isPrivate?: boolean;
+  order?: number;
 }
 
 export interface Experience {
@@ -40,15 +62,6 @@ export interface Formation {
   period: string;
   description: string;
   skills: string[];
-}
-
-export interface TimelineEvent {
-  id: string;
-  title: string;
-  date: string;
-  type: 'formation' | 'experience' | 'project';
-  description: string;
-  side: 'left' | 'right';
 }
 
 export interface ActivityWeek {

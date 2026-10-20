@@ -1,0 +1,222 @@
+/*
+ * Primitives imprimées partagées par la notice, les fiches de cartouche et
+ * les pages d'erreur : bureau, feuilles, onglets de rubrique, boutons.
+ * Deux encres seulement sur le papier : cobalt et framboise.
+ */
+
+/*
+ * Le bureau aubergine, avec ses lattes : la même tuile que sous la console
+ * (--desk-tile), à la même échelle de pixel (--px).
+ */
+.desk {
+  background-color: var(--desk);
+  background-image: var(--desk-tile);
+  background-size: calc(480 * var(--px)) calc(100 * var(--px));
+}
+
+/* Une feuille de papier rose posée sur le bureau */
+.sheet {
+  --focus-ring: var(--framboise-ink);
+  position: relative;
+  padding: clamp(28px, 3vw + 16px, 64px) clamp(20px, 4vw + 4px, 64px);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--drop);
+}
+
+/* Couverture et dos : aplat d'encre cobalt, texte en réserve */
+.sheetCobalt {
+  --focus-ring: var(--start);
+  background: var(--cobalt);
+  color: var(--paper);
+}
+
+/* Onglet de rubrique posé sur un filet, comme le nom du locuteur dans la boîte de dialogue */
+.rubric {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-bottom: clamp(22px, 2vw + 12px, 36px);
+  border-bottom: 4px solid var(--ink-soft);
+}
+
+.rubricTitle {
+  margin: 0;
+  padding: 0.42em 0.7em 0.32em;
+  border-radius: 8px 8px 0 0;
+  background: var(--ink-soft);
+  color: var(--paper);
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.375rem, 1rem + 1.5vw, 2.125rem);
+  font-weight: 400;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.rubricMeta {
+  padding-bottom: 10px;
+  color: var(--ink-accent);
+  font-family: var(--font-pixel), monospace;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.sheetCobalt .rubric {
+  border-color: var(--paper);
+}
+
+.sheetCobalt .rubricTitle {
+  background: var(--paper);
+  color: var(--cobalt);
+}
+
+.sheetCobalt .rubricMeta {
+  color: var(--start);
+}
+
+/*
+ * Boutons en plastique, sur le modèle de START, A et SELECT :
+ * contour sombre, biseau complet (reflet en haut et à gauche, ombre en bas et à droite).
+ */
+.button {
+  --btn-bg: var(--paper);
+  --btn-bg-hover: var(--btn-bg);
+  --btn-fg: var(--cobalt-deep);
+  --btn-hi: #fff7ec;
+  --btn-shade: var(--paper-shade);
+  --btn-outline: var(--cobalt-night);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: 48px;
+  padding: 0.7em 1.2em 0.8em;
+  border: 2px solid var(--btn-outline);
+  border-radius: 14px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow:
+    inset 0 3px 0 var(--btn-hi),
+    inset 2px 0 0 var(--btn-hi),
+    inset 0 -3px 0 var(--btn-shade),
+    inset -2px 0 0 var(--btn-shade);
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.15;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--btn-bg-hover);
+}
+
+/* Appui : le bouton s'enfonce d'un pas, sans transition douce */
+.button:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 3px 0 var(--btn-shade),
+    inset 2px 0 0 var(--btn-shade);
+}
+
+.buttonStart {
+  --btn-bg: var(--start);
+  --btn-bg-hover: #ffd35f;
+  --btn-fg: var(--start-deep);
+  --btn-hi: var(--start-pale);
+  --btn-shade: var(--start-shade);
+  --btn-outline: var(--start-deep);
+}
+
+.buttonFramboise {
+  --btn-bg: var(--framboise-ink);
+  --btn-bg-hover: var(--framboise-deep);
+  --btn-fg: var(--paper);
+  --btn-hi: var(--framboise);
+  --btn-shade: var(--framboise-night);
+  --btn-outline: var(--framboise-night);
+}
+
+.buttonCobalt {
+  --btn-bg: var(--cobalt);
+  --btn-bg-hover: var(--cobalt-mid);
+  --btn-fg: var(--paper);
+  --btn-hi: var(--cobalt-light);
+  --btn-shade: var(--cobalt-deep);
+  --btn-outline: var(--cobalt-night);
+}
+
+.buttonPaper {
+  --btn-bg-hover: var(--start-pale);
+}
+
+/* Lien de texte imprimé : soulignement framboise */
+.inkLink {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--framboise-ink);
+  text-decoration-thickness: 0.12em;
+  text-underline-offset: 0.22em;
+}
+
+.inkLink:hover {
+  color: var(--framboise-ink);
+  text-decoration-thickness: 0.2em;
+}
+
+.sheetCobalt .inkLink {
+  text-decoration-color: var(--framboise-pale);
+}
+
+.sheetCobalt .inkLink:hover {
+  color: var(--start);
+  text-decoration-color: var(--start);
+}
+
+/* Pastille de statut : En cours / Terminé / Prototype */
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3em 0.6em 0.35em;
+  border: 2px solid var(--ink-soft);
+  border-radius: 6px;
+  color: var(--ink-soft);
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.status[data-status='en-cours'] {
+  border-color: var(--framboise-ink);
+  background: var(--framboise-ink);
+  color: var(--paper);
+}
+
+.status[data-status='prototype'] {
+  border-style: dashed;
+}
+
+.icon {
+  display: inline-block;
+  flex: none;
+}
+
+/* Liste de technologies séparées par des points médians */
+.inlineList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 0;
+}
+
+.inlineList li:not(:last-child)::after {
+  content: '·';
+  padding: 0 0.45em;
+  color: var(--ink-accent);
+}

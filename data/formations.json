@@ -1,17 +1,23 @@
 [
   {
     "id": "ynov-master",
-    "school": "Ynov Campus",
-    "period": "2023 - 2025",
-    "description": "Master en développement web avec spécialisation backend. Formation axée sur les technologies modernes et les architectures microservices.",
-    "skills": ["NodeJS", "React", "TypeScript", "Docker", "Kubernetes", "CI/CD", "Agile", "Scrum"]
+    "school": "Ynov Campus Toulouse",
+    "period": "2025 → 2027",
+    "description": "Master en alternance : M1 en 2025-2026, M2 en 2026-2027, diplôme prévu en juin 2027. Préparation du titre RNCP « Expert en développement logiciel ».",
+    "skills": ["CI/CD", "GitHub Actions", "Docker", "Docker Compose", "Prometheus", "Tests automatisés"]
+  },
+  {
+    "id": "ynov-bachelor",
+    "school": "Ynov Campus Toulouse",
+    "period": "2022 → 2025",
+    "description": "Trois premières années de la filière informatique d'Ynov, avec une spécialisation web en 3e année.",
+    "skills": ["JavaScript", "React", "Node.js", "Express", "PostgreSQL"]
   },
   {
     "id": "epitech-digital",
-    "school": "Epitech Digital",
-    "period": "2022 - 2023",
-    "description": "Formation intensive en développement web avec projets pratiques. Approche pédagogique basée sur la pratique et l'autonomie.",
+    "school": "Epitech Digital Toulouse",
+    "period": "2021 → 2022",
+    "description": "Première année terminée major de promotion. L'école a fermé depuis.",
     "skills": ["JavaScript", "HTML/CSS", "PHP", "Python", "Git", "Linux", "MySQL"]
   }
 ]
-

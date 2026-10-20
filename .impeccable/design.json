@@ -1,0 +1,1007 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-20T18:41:02.996Z",
+  "title": "Design System: Console TS-27",
+  "extensions": {
+    "colorMeta": {
+      "desk": {
+        "role": "neutral",
+        "displayName": "Bureau aubergine",
+        "tonalRamp": [
+          "#100c15",
+          "#19141f",
+          "#211a28",
+          "#292030",
+          "#3b2e46",
+          "#5a4a66",
+          "#8a7a96",
+          "#cfc4d6"
+        ]
+      },
+      "desk-deep": {
+        "role": "neutral",
+        "displayName": "Lame sombre du bureau",
+        "tonalRamp": [
+          "#100c15",
+          "#19141f",
+          "#211a28",
+          "#292030",
+          "#3b2e46",
+          "#5a4a66",
+          "#8a7a96",
+          "#cfc4d6"
+        ]
+      },
+      "desk-ink": {
+        "role": "neutral",
+        "displayName": "Encre d'ombre du bureau",
+        "tonalRamp": [
+          "#100c15",
+          "#19141f",
+          "#211a28",
+          "#292030",
+          "#3b2e46",
+          "#5a4a66",
+          "#8a7a96",
+          "#cfc4d6"
+        ]
+      },
+      "desk-grain": {
+        "role": "neutral",
+        "displayName": "Grain des lames",
+        "tonalRamp": [
+          "#100c15",
+          "#19141f",
+          "#211a28",
+          "#292030",
+          "#3b2e46",
+          "#5a4a66",
+          "#8a7a96",
+          "#cfc4d6"
+        ]
+      },
+      "desk-edge": {
+        "role": "neutral",
+        "displayName": "Chant de l'étagère",
+        "tonalRamp": [
+          "#100c15",
+          "#19141f",
+          "#211a28",
+          "#292030",
+          "#3b2e46",
+          "#5a4a66",
+          "#8a7a96",
+          "#cfc4d6"
+        ]
+      },
+      "cobalt-night": {
+        "role": "primary",
+        "displayName": "Contour cobalt",
+        "tonalRamp": [
+          "#0c1130",
+          "#1a275a",
+          "#233574",
+          "#2e4a99",
+          "#4064bb",
+          "#6b8edd",
+          "#aab4e0",
+          "#c9d0f0"
+        ]
+      },
+      "cobalt-deep": {
+        "role": "primary",
+        "displayName": "Encre cobalt profonde",
+        "tonalRamp": [
+          "#0c1130",
+          "#1a275a",
+          "#233574",
+          "#2e4a99",
+          "#4064bb",
+          "#6b8edd",
+          "#aab4e0",
+          "#c9d0f0"
+        ]
+      },
+      "cobalt-mid": {
+        "role": "primary",
+        "displayName": "Cobalt enfoncé",
+        "tonalRamp": [
+          "#0c1130",
+          "#1a275a",
+          "#233574",
+          "#2e4a99",
+          "#4064bb",
+          "#6b8edd",
+          "#aab4e0",
+          "#c9d0f0"
+        ]
+      },
+      "cobalt": {
+        "role": "primary",
+        "displayName": "Plastique cobalt",
+        "tonalRamp": [
+          "#0c1130",
+          "#1a275a",
+          "#233574",
+          "#2e4a99",
+          "#4064bb",
+          "#6b8edd",
+          "#aab4e0",
+          "#c9d0f0"
+        ]
+      },
+      "cobalt-light": {
+        "role": "primary",
+        "displayName": "Biseau cobalt",
+        "tonalRamp": [
+          "#0c1130",
+          "#1a275a",
+          "#233574",
+          "#2e4a99",
+          "#4064bb",
+          "#6b8edd",
+          "#aab4e0",
+          "#c9d0f0"
+        ]
+      },
+      "cobalt-glint": {
+        "role": "primary",
+        "displayName": "Reflet cobalt",
+        "tonalRamp": [
+          "#0c1130",
+          "#1a275a",
+          "#233574",
+          "#2e4a99",
+          "#4064bb",
+          "#6b8edd",
+          "#aab4e0",
+          "#c9d0f0"
+        ]
+      },
+      "cobalt-dim": {
+        "role": "primary",
+        "displayName": "Légende cobalt",
+        "tonalRamp": [
+          "#0c1130",
+          "#1a275a",
+          "#233574",
+          "#2e4a99",
+          "#4064bb",
+          "#6b8edd",
+          "#aab4e0",
+          "#c9d0f0"
+        ]
+      },
+      "cobalt-mist": {
+        "role": "primary",
+        "displayName": "Pilule cobalt",
+        "tonalRamp": [
+          "#0c1130",
+          "#1a275a",
+          "#233574",
+          "#2e4a99",
+          "#4064bb",
+          "#6b8edd",
+          "#aab4e0",
+          "#c9d0f0"
+        ]
+      },
+      "cobalt-haze": {
+        "role": "primary",
+        "displayName": "Brume cobalt",
+        "tonalRamp": [
+          "#0c1130",
+          "#1a275a",
+          "#233574",
+          "#2e4a99",
+          "#4064bb",
+          "#6b8edd",
+          "#aab4e0",
+          "#c9d0f0"
+        ]
+      },
+      "framboise-night": {
+        "role": "secondary",
+        "displayName": "Contour framboise",
+        "tonalRamp": [
+          "#3a0d1e",
+          "#8c2843",
+          "#b03552",
+          "#c7425c",
+          "#e86d81",
+          "#f597a2",
+          "#ffb2b8",
+          "#ffdde0"
+        ]
+      },
+      "framboise-deep": {
+        "role": "secondary",
+        "displayName": "Framboise enfoncée",
+        "tonalRamp": [
+          "#3a0d1e",
+          "#8c2843",
+          "#b03552",
+          "#c7425c",
+          "#e86d81",
+          "#f597a2",
+          "#ffb2b8",
+          "#ffdde0"
+        ]
+      },
+      "framboise-ink": {
+        "role": "secondary",
+        "displayName": "Encre framboise",
+        "tonalRamp": [
+          "#3a0d1e",
+          "#8c2843",
+          "#b03552",
+          "#c7425c",
+          "#e86d81",
+          "#f597a2",
+          "#ffb2b8",
+          "#ffdde0"
+        ]
+      },
+      "framboise": {
+        "role": "secondary",
+        "displayName": "Bouton framboise",
+        "tonalRamp": [
+          "#3a0d1e",
+          "#8c2843",
+          "#b03552",
+          "#c7425c",
+          "#e86d81",
+          "#f597a2",
+          "#ffb2b8",
+          "#ffdde0"
+        ]
+      },
+      "framboise-light": {
+        "role": "secondary",
+        "displayName": "Trame framboise",
+        "tonalRamp": [
+          "#3a0d1e",
+          "#8c2843",
+          "#b03552",
+          "#c7425c",
+          "#e86d81",
+          "#f597a2",
+          "#ffb2b8",
+          "#ffdde0"
+        ]
+      },
+      "framboise-pale": {
+        "role": "secondary",
+        "displayName": "Soulignement framboise pâle",
+        "tonalRamp": [
+          "#3a0d1e",
+          "#8c2843",
+          "#b03552",
+          "#c7425c",
+          "#e86d81",
+          "#f597a2",
+          "#ffb2b8",
+          "#ffdde0"
+        ]
+      },
+      "start-deep": {
+        "role": "tertiary",
+        "displayName": "Encre START",
+        "tonalRamp": [
+          "#3a2405",
+          "#5a3808",
+          "#8f5c10",
+          "#c4841a",
+          "#ffc53a",
+          "#ffd35f",
+          "#ffe58a",
+          "#fff0a6"
+        ]
+      },
+      "start-shade": {
+        "role": "tertiary",
+        "displayName": "Ombre START",
+        "tonalRamp": [
+          "#3a2405",
+          "#5a3808",
+          "#8f5c10",
+          "#c4841a",
+          "#ffc53a",
+          "#ffd35f",
+          "#ffe58a",
+          "#fff0a6"
+        ]
+      },
+      "start": {
+        "role": "tertiary",
+        "displayName": "Jaune START",
+        "tonalRamp": [
+          "#3a2405",
+          "#5a3808",
+          "#8f5c10",
+          "#c4841a",
+          "#ffc53a",
+          "#ffd35f",
+          "#ffe58a",
+          "#fff0a6"
+        ]
+      },
+      "start-pale": {
+        "role": "tertiary",
+        "displayName": "Reflet START",
+        "tonalRamp": [
+          "#3a2405",
+          "#5a3808",
+          "#8f5c10",
+          "#c4841a",
+          "#ffc53a",
+          "#ffd35f",
+          "#ffe58a",
+          "#fff0a6"
+        ]
+      },
+      "slate-0": {
+        "role": "tertiary",
+        "displayName": "Contour SELECT",
+        "tonalRamp": [
+          "#090a12",
+          "#191b2a",
+          "#292c41",
+          "#444a6c",
+          "#646b8f",
+          "#8a90b0",
+          "#b4b8cf",
+          "#dcdee9"
+        ]
+      },
+      "slate-1": {
+        "role": "tertiary",
+        "displayName": "Ardoise SELECT sombre",
+        "tonalRamp": [
+          "#090a12",
+          "#191b2a",
+          "#292c41",
+          "#444a6c",
+          "#646b8f",
+          "#8a90b0",
+          "#b4b8cf",
+          "#dcdee9"
+        ]
+      },
+      "slate-2": {
+        "role": "tertiary",
+        "displayName": "Ardoise SELECT",
+        "tonalRamp": [
+          "#090a12",
+          "#191b2a",
+          "#292c41",
+          "#444a6c",
+          "#646b8f",
+          "#8a90b0",
+          "#b4b8cf",
+          "#dcdee9"
+        ]
+      },
+      "slate-3": {
+        "role": "tertiary",
+        "displayName": "Reflet SELECT",
+        "tonalRamp": [
+          "#090a12",
+          "#191b2a",
+          "#292c41",
+          "#444a6c",
+          "#646b8f",
+          "#8a90b0",
+          "#b4b8cf",
+          "#dcdee9"
+        ]
+      },
+      "lcd-0": {
+        "role": "neutral",
+        "displayName": "Papier LCD",
+        "tonalRamp": [
+          "#1f0b1b",
+          "#3b1734",
+          "#7a2e48",
+          "#b4465c",
+          "#d0745f",
+          "#eca07f",
+          "#f4c8a8",
+          "#f9e8d2"
+        ]
+      },
+      "lcd-1": {
+        "role": "neutral",
+        "displayName": "Saumon LCD",
+        "tonalRamp": [
+          "#1f0b1b",
+          "#3b1734",
+          "#7a2e48",
+          "#b4465c",
+          "#d0745f",
+          "#eca07f",
+          "#f4c8a8",
+          "#f9e8d2"
+        ]
+      },
+      "lcd-2": {
+        "role": "neutral",
+        "displayName": "Rose sombre LCD",
+        "tonalRamp": [
+          "#1f0b1b",
+          "#3b1734",
+          "#7a2e48",
+          "#b4465c",
+          "#d0745f",
+          "#eca07f",
+          "#f4c8a8",
+          "#f9e8d2"
+        ]
+      },
+      "lcd-3": {
+        "role": "neutral",
+        "displayName": "Prune LCD",
+        "tonalRamp": [
+          "#1f0b1b",
+          "#3b1734",
+          "#7a2e48",
+          "#b4465c",
+          "#d0745f",
+          "#eca07f",
+          "#f4c8a8",
+          "#f9e8d2"
+        ]
+      },
+      "cream": {
+        "role": "neutral",
+        "displayName": "Crème du bureau",
+        "tonalRamp": [
+          "#5c4a33",
+          "#8f7b5d",
+          "#cdb995",
+          "#e6d2b4",
+          "#f0d8bd",
+          "#f2e4cb",
+          "#f3e6d0",
+          "#f9e8d2"
+        ]
+      },
+      "label": {
+        "role": "neutral",
+        "displayName": "Étiquette crème",
+        "tonalRamp": [
+          "#5c4a33",
+          "#8f7b5d",
+          "#cdb995",
+          "#e6d2b4",
+          "#f0d8bd",
+          "#f2e4cb",
+          "#f3e6d0",
+          "#f9e8d2"
+        ]
+      },
+      "label-ink": {
+        "role": "neutral",
+        "displayName": "Encre d'étiquette",
+        "tonalRamp": [
+          "#100c15",
+          "#19141f",
+          "#211a28",
+          "#292030",
+          "#3b2e46",
+          "#5a4a66",
+          "#8a7a96",
+          "#cfc4d6"
+        ]
+      },
+      "paper-shade": {
+        "role": "neutral",
+        "displayName": "Ombre du papier",
+        "tonalRamp": [
+          "#5c4a33",
+          "#8f7b5d",
+          "#cdb995",
+          "#e6d2b4",
+          "#f0d8bd",
+          "#f2e4cb",
+          "#f3e6d0",
+          "#f9e8d2"
+        ]
+      },
+      "shelf": {
+        "role": "neutral",
+        "displayName": "Bois nuit de l'étagère",
+        "tonalRamp": [
+          "#0b0e19",
+          "#121626",
+          "#1a2034",
+          "#252c45",
+          "#363f5e",
+          "#525c80",
+          "#7d86a6",
+          "#b5bbd0"
+        ]
+      },
+      "shelf-post": {
+        "role": "neutral",
+        "displayName": "Montant d'étagère",
+        "tonalRamp": [
+          "#0b0e19",
+          "#121626",
+          "#1a2034",
+          "#252c45",
+          "#363f5e",
+          "#525c80",
+          "#7d86a6",
+          "#b5bbd0"
+        ]
+      },
+      "led": {
+        "role": "tertiary",
+        "displayName": "LED DISPO",
+        "tonalRamp": [
+          "#0d3322",
+          "#1e6a46",
+          "#2f9563",
+          "#45bd82",
+          "#5fdc9c",
+          "#82ffb8",
+          "#b0ffd2",
+          "#dcffeb"
+        ]
+      },
+      "cat-infra": {
+        "role": "tertiary",
+        "displayName": "Bandeau sarcelle INFRA",
+        "tonalRamp": [
+          "#0f1d24",
+          "#1d5b5a",
+          "#24726e",
+          "#2c8a83",
+          "#45a398",
+          "#5ebcad",
+          "#93d6cb",
+          "#c9ece6"
+        ]
+      },
+      "cat-infra-deep": {
+        "role": "tertiary",
+        "displayName": "Ombre sarcelle INFRA",
+        "tonalRamp": [
+          "#0f1d24",
+          "#1d5b5a",
+          "#24726e",
+          "#2c8a83",
+          "#45a398",
+          "#5ebcad",
+          "#93d6cb",
+          "#c9ece6"
+        ]
+      },
+      "cat-infra-light": {
+        "role": "tertiary",
+        "displayName": "Reflet sarcelle INFRA",
+        "tonalRamp": [
+          "#0f1d24",
+          "#1d5b5a",
+          "#24726e",
+          "#2c8a83",
+          "#45a398",
+          "#5ebcad",
+          "#93d6cb",
+          "#c9ece6"
+        ]
+      },
+      "cat-ia": {
+        "role": "tertiary",
+        "displayName": "Bandeau violet IA",
+        "tonalRamp": [
+          "#170f2a",
+          "#4a2e86",
+          "#5f40a5",
+          "#7552c4",
+          "#8e6eda",
+          "#a78bf0",
+          "#c6b3f6",
+          "#e4dbfb"
+        ]
+      },
+      "cat-ia-deep": {
+        "role": "tertiary",
+        "displayName": "Ombre violet IA",
+        "tonalRamp": [
+          "#170f2a",
+          "#4a2e86",
+          "#5f40a5",
+          "#7552c4",
+          "#8e6eda",
+          "#a78bf0",
+          "#c6b3f6",
+          "#e4dbfb"
+        ]
+      },
+      "cat-ia-light": {
+        "role": "tertiary",
+        "displayName": "Reflet violet IA",
+        "tonalRamp": [
+          "#170f2a",
+          "#4a2e86",
+          "#5f40a5",
+          "#7552c4",
+          "#8e6eda",
+          "#a78bf0",
+          "#c6b3f6",
+          "#e4dbfb"
+        ]
+      },
+      "cat-jeux": {
+        "role": "tertiary",
+        "displayName": "Bandeau vert JEUX",
+        "tonalRamp": [
+          "#121c0c",
+          "#3a5e22",
+          "#4c792c",
+          "#5e9537",
+          "#78ad48",
+          "#92c65a",
+          "#b8da92",
+          "#dcedc8"
+        ]
+      },
+      "cat-jeux-deep": {
+        "role": "tertiary",
+        "displayName": "Ombre vert JEUX",
+        "tonalRamp": [
+          "#121c0c",
+          "#3a5e22",
+          "#4c792c",
+          "#5e9537",
+          "#78ad48",
+          "#92c65a",
+          "#b8da92",
+          "#dcedc8"
+        ]
+      },
+      "cat-jeux-light": {
+        "role": "tertiary",
+        "displayName": "Reflet vert JEUX",
+        "tonalRamp": [
+          "#121c0c",
+          "#3a5e22",
+          "#4c792c",
+          "#5e9537",
+          "#78ad48",
+          "#92c65a",
+          "#b8da92",
+          "#dcedc8"
+        ]
+      },
+      "cat-web": {
+        "role": "tertiary",
+        "displayName": "Bandeau orange WEB",
+        "tonalRamp": [
+          "#2a1606",
+          "#8e5414",
+          "#b26f1d",
+          "#d68926",
+          "#e6a340",
+          "#f5bc5b",
+          "#f9d595",
+          "#fcebcc"
+        ]
+      },
+      "cat-web-deep": {
+        "role": "tertiary",
+        "displayName": "Ombre orange WEB",
+        "tonalRamp": [
+          "#2a1606",
+          "#8e5414",
+          "#b26f1d",
+          "#d68926",
+          "#e6a340",
+          "#f5bc5b",
+          "#f9d595",
+          "#fcebcc"
+        ]
+      },
+      "cat-web-light": {
+        "role": "tertiary",
+        "displayName": "Reflet orange WEB",
+        "tonalRamp": [
+          "#2a1606",
+          "#8e5414",
+          "#b26f1d",
+          "#d68926",
+          "#e6a340",
+          "#f5bc5b",
+          "#f9d595",
+          "#fcebcc"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Logo de couverture",
+        "purpose": "Logo de la couverture de la notice uniquement, avec repérage framboise."
+      },
+      "headline": {
+        "displayName": "Onglet de rubrique",
+        "purpose": "Titres de rubrique en onglet et nom du personnage."
+      },
+      "title": {
+        "displayName": "Titre de cartouche",
+        "purpose": "Titres de cartouche, noms de niveau, sous-titres à filet, libellés de bouton."
+      },
+      "body": {
+        "displayName": "Texte courant",
+        "purpose": "Lecture sur papier et sur bureau, 56 à 58ch au plus."
+      },
+      "body-lead": {
+        "displayName": "Chapô",
+        "purpose": "Introductions de section et texte du personnage."
+      },
+      "body-strong": {
+        "displayName": "Emphase 800",
+        "purpose": "Valeurs de tableau, rôles, dates, technologies, liens de sommaire."
+      },
+      "label": {
+        "displayName": "Sérigraphie Silkscreen",
+        "purpose": "Clés, méta de rubrique, statuts, dates, compteurs, légendes d'étagère."
+      }
+    },
+    "shadows": [
+      {
+        "name": "drop",
+        "value": "calc(5 * var(--px)) calc(5 * var(--px)) 0 var(--desk-ink)",
+        "purpose": "Ombre pleine des objets posés sur le bureau (feuilles de notice), comme celle du corps de la console."
+      },
+      {
+        "name": "button-bevel",
+        "value": "inset 0 3px 0 var(--btn-hi), inset 2px 0 0 var(--btn-hi), inset 0 -3px 0 var(--btn-shade), inset -2px 0 0 var(--btn-shade)",
+        "purpose": "Biseau de plastique des boutons au repos."
+      },
+      {
+        "name": "button-pressed",
+        "value": "inset 0 3px 0 var(--btn-shade), inset 2px 0 0 var(--btn-shade)",
+        "purpose": "Biseau inversé à l'appui, avec translateY(2px)."
+      },
+      {
+        "name": "cartridge-shell",
+        "value": "inset 3px 3px 0 var(--cat-light), inset -6px -6px 0 var(--cat-deep)",
+        "purpose": "Coque de cartouche imprimée sur les fiches projet."
+      },
+      {
+        "name": "cartridge-outline",
+        "value": "drop-shadow(3px 0 0 var(--ink)) drop-shadow(-3px 0 0 var(--ink)) drop-shadow(0 3px 0 var(--ink)) drop-shadow(0 -3px 0 var(--ink)) drop-shadow(6px 6px 0 var(--paper-shade))",
+        "purpose": "Contour pixel et ombre de la cartouche imprimée (filter)."
+      },
+      {
+        "name": "print-registration",
+        "value": "0.05em 0.05em 0 var(--framboise)",
+        "purpose": "Repérage deux tons du logo de couverture (text-shadow)."
+      },
+      {
+        "name": "shelf-recess",
+        "value": "inset 0 calc(3 * var(--spx)) 0 #19141f",
+        "purpose": "Creux sous le chant de l'étagère."
+      }
+    ],
+    "motion": [
+      {
+        "name": "cartridge-flight",
+        "value": "450ms steps(10, end)",
+        "purpose": "Vol de la cartouche de l'étagère vers la fente (Web Animations)."
+      },
+      {
+        "name": "cartridge-sink",
+        "value": "140ms steps(distance / 2, end)",
+        "purpose": "Enfoncement de la cartouche dans la fente, par pas de 2 pixels logiques."
+      },
+      {
+        "name": "idle-frame",
+        "value": "120ms par image",
+        "purpose": "Clignotement et balancement des sprites au repos dans le jeu."
+      },
+      {
+        "name": "press",
+        "value": "translateY(2px), sans transition",
+        "purpose": "Appui d'un bouton imprimé, en un seul pas."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation-duration: 1ms; transition-duration: 1ms",
+        "purpose": "Sous prefers-reduced-motion : vol, enfoncement, démarrage, flash, clignotement et soulèvements supprimés."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "portrait",
+        "value": "719.98px",
+        "purpose": "Console portrait (260 × 479 pixels logiques) en dessous ; même seuil en CSS et en JavaScript."
+      },
+      {
+        "name": "notice-single",
+        "value": "760px",
+        "purpose": "Notice sur une colonne, dessin de couverture masqué."
+      },
+      {
+        "name": "notice-stack",
+        "value": "480px",
+        "purpose": "Tableaux clé / valeur empilés."
+      }
+    ],
+    "pixelScale": {
+      "variable": "--px",
+      "cssFallback": "max(min(calc((100vw - 32px) / 468), calc(100svh / 300), 6px), 1px)",
+      "portraitFallback": "min(calc((100vw - 32px) / 260), 4px)",
+      "source": "components/console/render/scale.ts",
+      "landscapeStage": "480 × 258",
+      "portraitStage": "260 × 479",
+      "max": {
+        "landscape": "6px",
+        "portrait": "4px"
+      }
+    },
+    "rasterProvenance": {
+      "served": [
+        "/pixel/console-paysage.png",
+        "/pixel/console-portrait.png"
+      ],
+      "generator": "app/pixel/[name]/route.ts (force-static) via components/console/render/body.ts et render/png.ts",
+      "handDrawnOrAiGenerated": false,
+      "note": "Tout le reste est dessiné à l'exécution en canvas, en SVG pixel (PixelArt.tsx) ou en CSS ; app/icon.svg est vectoriel."
+    }
+  },
+  "components": [
+    {
+      "name": "Bouton START",
+      "kind": "button",
+      "refersTo": "button-start",
+      "description": "Action de contact : le jaune du bouton START, biseau plastique, enfoncement d'un pas.",
+      "html": "<button class=\"ds-btn-start\"><svg width=\"20\" height=\"16\" viewBox=\"0 0 10 8\" shape-rendering=\"crispEdges\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M0 0h10v1H0zM0 7h10v1H0zM0 1h1v6H0zM9 1h1v6H9zM1 1h1v1H1zM2 2h1v1H2zM3 3h1v1H3zM4 4h2v1H4zM6 3h1v1H6zM7 2h1v1H7zM8 1h1v1H8z\"/></svg>Écrire à Théo</button>",
+      "css": ".ds-btn-start { --btn-bg: #ffc53a; --btn-bg-hover: #ffd35f; --btn-fg: #5a3808; --btn-hi: #fff0a6; --btn-shade: #c4841a; --btn-outline: #5a3808; --ring: #ffc53a; display: inline-flex; align-items: center; justify-content: center; gap: 0.6em; min-height: 48px; padding: 0.7em 1.2em 0.8em; border: 2px solid var(--btn-outline); border-radius: 14px; background: var(--btn-bg); color: var(--btn-fg); box-shadow: inset 0 3px 0 var(--btn-hi), inset 2px 0 0 var(--btn-hi), inset 0 -3px 0 var(--btn-shade), inset -2px 0 0 var(--btn-shade); font-family: var(--font-display), 'Dela Gothic One', sans-serif; font-size: 1.0625rem; font-weight: 400; line-height: 1.15; text-decoration: none; cursor: pointer; } .ds-btn-start:hover { background: var(--btn-bg-hover); } .ds-btn-start:active { transform: translateY(2px); box-shadow: inset 0 3px 0 var(--btn-shade), inset 2px 0 0 var(--btn-shade); } .ds-btn-start:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }"
+    },
+    {
+      "name": "Bouton framboise",
+      "kind": "button",
+      "refersTo": "button-framboise",
+      "description": "Action principale sur papier : bouton A, seconde encre de la notice.",
+      "html": "<button class=\"ds-btn-framboise\">Insérer la cartouche</button>",
+      "css": ".ds-btn-framboise { --btn-bg: #b03552; --btn-bg-hover: #8c2843; --btn-fg: #f9e8d2; --btn-hi: #c7425c; --btn-shade: #3a0d1e; --btn-outline: #3a0d1e; --ring: #b03552; display: inline-flex; align-items: center; justify-content: center; gap: 0.6em; min-height: 48px; padding: 0.7em 1.2em 0.8em; border: 2px solid var(--btn-outline); border-radius: 14px; background: var(--btn-bg); color: var(--btn-fg); box-shadow: inset 0 3px 0 var(--btn-hi), inset 2px 0 0 var(--btn-hi), inset 0 -3px 0 var(--btn-shade), inset -2px 0 0 var(--btn-shade); font-family: var(--font-display), 'Dela Gothic One', sans-serif; font-size: 1.0625rem; font-weight: 400; line-height: 1.15; text-decoration: none; cursor: pointer; } .ds-btn-framboise:hover { background: var(--btn-bg-hover); } .ds-btn-framboise:active { transform: translateY(2px); box-shadow: inset 0 3px 0 var(--btn-shade), inset 2px 0 0 var(--btn-shade); } .ds-btn-framboise:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }"
+    },
+    {
+      "name": "Bouton cobalt",
+      "kind": "button",
+      "refersTo": "button-cobalt",
+      "description": "Action secondaire sur papier, en plastique cobalt.",
+      "html": "<button class=\"ds-btn-cobalt\">Voir le code</button>",
+      "css": ".ds-btn-cobalt { --btn-bg: #2e4a99; --btn-bg-hover: #233574; --btn-fg: #f9e8d2; --btn-hi: #4064bb; --btn-shade: #1a275a; --btn-outline: #0c1130; --ring: #b03552; display: inline-flex; align-items: center; justify-content: center; gap: 0.6em; min-height: 48px; padding: 0.7em 1.2em 0.8em; border: 2px solid var(--btn-outline); border-radius: 14px; background: var(--btn-bg); color: var(--btn-fg); box-shadow: inset 0 3px 0 var(--btn-hi), inset 2px 0 0 var(--btn-hi), inset 0 -3px 0 var(--btn-shade), inset -2px 0 0 var(--btn-shade); font-family: var(--font-display), 'Dela Gothic One', sans-serif; font-size: 1.0625rem; font-weight: 400; line-height: 1.15; text-decoration: none; cursor: pointer; } .ds-btn-cobalt:hover { background: var(--btn-bg-hover); } .ds-btn-cobalt:active { transform: translateY(2px); box-shadow: inset 0 3px 0 var(--btn-shade), inset 2px 0 0 var(--btn-shade); } .ds-btn-cobalt:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }"
+    },
+    {
+      "name": "Bouton papier",
+      "kind": "button",
+      "refersTo": "button-paper",
+      "description": "Action neutre posée sur l'aplat cobalt de la couverture.",
+      "html": "<button class=\"ds-btn-paper\">Copier l'adresse</button>",
+      "css": ".ds-btn-paper { --btn-bg: #f9e8d2; --btn-bg-hover: #fff0a6; --btn-fg: #1a275a; --btn-hi: #fff7ec; --btn-shade: #f0d8bd; --btn-outline: #0c1130; --ring: #ffc53a; display: inline-flex; align-items: center; justify-content: center; gap: 0.6em; min-height: 48px; padding: 0.7em 1.2em 0.8em; border: 2px solid var(--btn-outline); border-radius: 14px; background: var(--btn-bg); color: var(--btn-fg); box-shadow: inset 0 3px 0 var(--btn-hi), inset 2px 0 0 var(--btn-hi), inset 0 -3px 0 var(--btn-shade), inset -2px 0 0 var(--btn-shade); font-family: var(--font-display), 'Dela Gothic One', sans-serif; font-size: 1.0625rem; font-weight: 400; line-height: 1.15; text-decoration: none; cursor: pointer; } .ds-btn-paper:hover { background: var(--btn-bg-hover); } .ds-btn-paper:active { transform: translateY(2px); box-shadow: inset 0 3px 0 var(--btn-shade), inset 2px 0 0 var(--btn-shade); } .ds-btn-paper:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }"
+    },
+    {
+      "name": "Pastille de statut",
+      "kind": "chip",
+      "refersTo": "status-chip",
+      "description": "Statut de projet : En cours (plein framboise), Terminé (contour), Prototype (tirets).",
+      "html": "<span class=\"ds-status ds-status-on\">En cours</span> <span class=\"ds-status\">Terminé</span> <span class=\"ds-status ds-status-proto\">Prototype</span>",
+      "css": ".ds-status { display: inline-flex; align-items: center; padding: 0.3em 0.6em 0.35em; border: 2px solid #2e4a99; border-radius: 6px; color: #2e4a99; background: #f9e8d2; font-family: var(--font-pixel), 'Silkscreen', monospace; font-size: 0.875rem; line-height: 1; white-space: nowrap; } .ds-status-on { border-color: #b03552; background: #b03552; color: #f9e8d2; } .ds-status-proto { border-style: dashed; }"
+    },
+    {
+      "name": "Feuille de notice avec rubrique",
+      "kind": "card",
+      "refersTo": "sheet-paper",
+      "description": "Feuille de papier rose posée sur le bureau, ombre pleine, onglet de rubrique sur filet.",
+      "html": "<div class=\"ds-desk\"><section class=\"ds-sheet\"><div class=\"ds-rubric\"><h2 class=\"ds-rubric-title\">Les cartouches</h2><p class=\"ds-rubric-meta\">14 cartouches</p></div><p class=\"ds-sheet-text\">Des projets réels, rangés par catégorie. <a class=\"ds-ink-link\" href=\"#\">Lire la fiche</a></p></section></div>",
+      "css": ".ds-desk { padding: 32px; background: #211a28; } .ds-sheet { padding: 40px 32px; border-radius: 3px; background: #f9e8d2; color: #1a275a; box-shadow: 10px 10px 0 #100c15; font-family: var(--font-body), 'M PLUS Rounded 1c', system-ui, sans-serif; font-weight: 500; line-height: 1.55; } .ds-rubric { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 24px; margin-bottom: 24px; border-bottom: 4px solid #2e4a99; } .ds-rubric-title { margin: 0; padding: 0.42em 0.7em 0.32em; border-radius: 8px 8px 0 0; background: #2e4a99; color: #f9e8d2; font-family: var(--font-display), 'Dela Gothic One', sans-serif; font-size: 1.75rem; font-weight: 400; line-height: 1.1; } .ds-rubric-meta { margin: 0; padding-bottom: 10px; color: #b03552; font-family: var(--font-pixel), 'Silkscreen', monospace; font-size: 1rem; } .ds-sheet-text { margin: 0; max-width: 56ch; } .ds-ink-link { color: inherit; text-decoration: underline; text-decoration-color: #b03552; text-decoration-thickness: 0.12em; text-underline-offset: 0.22em; } .ds-ink-link:hover { color: #b03552; text-decoration-thickness: 0.2em; } .ds-ink-link:focus-visible { outline: 3px solid #b03552; outline-offset: 3px; }"
+    },
+    {
+      "name": "Sommaire de couverture",
+      "kind": "nav",
+      "refersTo": "sheet-cobalt",
+      "description": "Sommaire imprimé en réserve sur l'aplat cobalt, filets pointillés, valeurs Silkscreen jaunes.",
+      "html": "<nav class=\"ds-cover\"><p class=\"ds-contents-title\">Sommaire</p><ul class=\"ds-contents\"><li><a href=\"#\">Le personnage <span class=\"ds-val\">P.2</span></a></li><li><a href=\"#\">Les cartouches <span class=\"ds-val\">14</span></a></li><li><a href=\"#\">Les niveaux <span class=\"ds-val\">P.4</span></a></li></ul></nav>",
+      "css": ".ds-cover { padding: 32px; border-radius: 3px; background: #2e4a99; color: #f9e8d2; font-family: var(--font-body), 'M PLUS Rounded 1c', system-ui, sans-serif; } .ds-contents-title { margin: 0; padding-bottom: 10px; border-bottom: 3px solid #f9e8d2; font-family: var(--font-display), 'Dela Gothic One', sans-serif; font-size: 1.375rem; line-height: 1.1; } .ds-contents { margin: 0; padding: 0; list-style: none; } .ds-contents li + li { border-top: 2px dotted #6b8edd; } .ds-contents a { display: flex; align-items: baseline; gap: 10px; padding: 13px 0; color: #f9e8d2; font-size: 1.0625rem; font-weight: 800; line-height: 1.3; text-decoration: none; } .ds-contents a:hover { color: #ffc53a; text-decoration: underline; text-decoration-thickness: 0.12em; text-underline-offset: 0.22em; } .ds-contents a:focus-visible { outline: 3px solid #ffc53a; outline-offset: 3px; } .ds-val { margin-left: auto; color: #ffc53a; font-family: var(--font-pixel), 'Silkscreen', monospace; font-size: 0.875rem; font-weight: 400; }"
+    },
+    {
+      "name": "Cartouche d'étagère",
+      "kind": "custom",
+      "refersTo": "cartridge-label",
+      "description": "Cartouche de la Ludothèque (rendu DOM de secours) : bandeau de catégorie, étiquette crème, soulèvement d'un pas au survol.",
+      "html": "<div class=\"ds-shelf\"><a class=\"ds-cart\" href=\"#\" style=\"--cat:#7552c4\">GMAILIA</a><a class=\"ds-cart\" href=\"#\" style=\"--cat:#2c8a83\">PORTFOLIO NAS</a></div>",
+      "css": ".ds-shelf { display: flex; gap: 24px; padding: 24px 16px 20px; background: #121626; border-top: 3px solid #3b2e46; } .ds-cart { display: flex; align-items: center; justify-content: center; width: 134px; height: 80px; padding: 20px 8px 4px; border-top: 18px solid var(--cat); background: #f2e4cb; color: #241a2c; box-shadow: 6px 6px 0 #19141f; font-family: var(--font-pixel), 'Silkscreen', monospace; font-size: 12px; line-height: 1.1; text-align: center; text-transform: uppercase; text-decoration: none; } .ds-cart:hover, .ds-cart:focus-visible { transform: translateY(-4px); } .ds-cart:active { transform: translateY(2px); } .ds-cart:focus-visible { outline: 2px solid #ffc53a; outline-offset: 4px; } @media (prefers-reduced-motion: reduce) { .ds-cart:hover, .ds-cart:focus-visible, .ds-cart:active { transform: none; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La console de chevet",
+    "overview": "Le système est un objet de jeu tenu en main, posé la nuit sur un bureau aubergine : une console portable cobalt en pixel art, son écran LCD rose-sépia à quatre tons, une étagère de cartouches et, en dessous, la notice imprimée qui reprend tout le contenu en HTML lisible. Deux régimes coexistent et ne se mélangent pas. Le **régime pixel** (console, LCD, étagère, cartouches, bureau) est dessiné en basse résolution puis agrandi par un seul facteur, `--px` : chaque forme, ombre et marge y est un multiple entier de ce pixel logique. Le **régime imprimé** (notice, fiches `/projets/<id>`, pages d'erreur) est une feuille de papier rose LCD imprimée en deux encres, cobalt et framboise, posée sur le même bureau.\n\nLa densité est celle d'un vrai objet : tout est contenu dans des silhouettes (coque, écran, étiquette, feuille), jamais dans des cartes flottantes. La profondeur vient d'ombres pleines décalées et de biseaux, comme le plastique moulé et le papier posé, sans flou. Le mouvement avance par pas de pixel (`steps()`), jamais par easing doux.\n\nRejets confirmés par le build : pas de hero coupé en deux, pas de grille de cartes, pas de frise chronologique ; le parcours s'exprime en « cartouches » et en « niveaux » sur des rangées de notice séparées par des filets pointillés.",
+    "keyCharacteristics": [
+      "Une seule échelle pixel (`--px`) pilote la console, l'étagère et les lames du bureau.",
+      "Palette fermée : bureau aubergine, plastique cobalt, framboise, jaune START, ardoise SELECT, LCD quatre tons, bandeaux de catégorie.",
+      "Deux encres sur le papier, cobalt et framboise ; le jaune START n'apparaît que sur le bureau et le cobalt.",
+      "Ombres pleines et biseaux internes, aucune ombre floue.",
+      "Mouvement en `steps()`, entièrement coupé sous `prefers-reduced-motion`.",
+      "Tout le contenu existe aussi en HTML dans la notice."
+    ],
+    "rules": [
+      {
+        "name": "The Two Inks Rule",
+        "body": "Sur le papier, seulement deux encres : cobalt pour le texte et la structure, framboise pour l'accent (clés, rôles, liens, statut actif). Aucune troisième couleur imprimée, catégories exceptées sur les dessins de cartouche.",
+        "section": "colors"
+      },
+      {
+        "name": "The Four Tones Rule",
+        "body": "L'écran LCD n'affiche que `lcd-0` à `lcd-3`, trame comprise. Un sprite ou un texte de jeu qui demande un cinquième ton est faux.",
+        "section": "colors"
+      },
+      {
+        "name": "The START Is Yellow Rule",
+        "body": "Le jaune signale le contact et le focus. Il ne se pose jamais sur le papier rose ; là, le focus devient framboise.",
+        "section": "colors"
+      },
+      {
+        "name": "The Bitmap Belongs To The Canvas Rule",
+        "body": "Les polices 3 × 5 et 5 × 7 ne sont dessinées que dans les canvas (console, LCD, cartouches). En DOM, la voix pixel est Silkscreen ; le texte de lecture reste en M PLUS Rounded.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Facts Rule",
+        "body": "Dates, compteurs et chiffres de projet utilisent `font-variant-numeric: tabular-nums`.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Pixel Rule",
+        "body": "Dans le régime pixel, toute dimension s'écrit `calc(N * var(--px))` (ou `--spx` sur l'étagère) avec N entier. Une valeur en px fixe dans la scène casse la grille.",
+        "section": "layout"
+      },
+      {
+        "name": "The Logical Coordinates Rule",
+        "body": "Un élément posé sur la console se place en coordonnées logiques des deux gabarits (`render/layout.ts`), jamais en pourcentages ni en flex.",
+        "section": "layout"
+      },
+      {
+        "name": "The Hard Shadow Rule",
+        "body": "Toute ombre a un flou de 0. Une ombre floue ou diffuse n'existe pas dans ce monde.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Print Strips Depth Rule",
+        "body": "À l'impression, la console disparaît et les feuilles perdent leur ombre.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Stepped Motion Rule",
+        "body": "Toute animation avance par `steps()` ou par images entières ; aucune courbe d'easing douce, aucune transition CSS d'état. Les petites animations au repos du jeu tournent à 120 ms par image.",
+        "section": "components"
+      },
+      {
+        "name": "The Reduced Motion Rule",
+        "body": "Sous `prefers-reduced-motion`, le vol et l'enfoncement de cartouche, l'écran de démarrage, le flash d'insertion, le clignotement et le balancement des sprites sont supprimés, et les soulèvements de cartouche aussi ; le contenu reste identique.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do dimensionner tout élément de la scène pixel en `calc(N * var(--px))` avec N entier, et le placer en coordonnées logiques des deux gabarits (paysage 480 × 258, portrait 260 × 479).",
+      "Do poser le contenu lisible sur des feuilles de papier `lcd-0` à deux encres, cobalt et framboise, avec l'ombre de bureau `--drop`.",
+      "Do animer par pas (`steps()`) et couper toute animation sous `prefers-reduced-motion`.",
+      "Do garder l'anneau de focus de 3 px décalé de 3 px : jaune `start` sur le bureau et le cobalt, `framboise-ink` sur le papier.",
+      "Do dessiner les nouveaux visuels en grilles de pixels rendues par `PixelArt` ou par le moteur canvas, aux couleurs de la palette fermée.",
+      "Do doubler tout contenu montré dans la console par du HTML dans la notice.",
+      "Do utiliser Silkscreen pour les libellés courts et M PLUS Rounded 800 pour l'emphase, jamais une autre police."
+    ],
+    "donts": [
+      "Don't utiliser d'ombre floue ni d'easing doux : les ombres ont un flou de 0, les mouvements avancent par pas.",
+      "Don't afficher dans l'écran LCD un ton hors de `lcd-0` à `lcd-3`.",
+      "Don't poser le jaune START sur le papier rose, ni une troisième encre imprimée.",
+      "Don't reconstruire le portfolio de dev classique : pas de hero coupé en deux, pas de grille de cartes, pas de frise chronologique.",
+      "Don't charger de police, script ou image depuis un domaine tiers (CSP `self`).",
+      "Don't importer une image peinte, photographique ou générée : les seuls rasters servis sont les deux PNG de la console rendus au build."
+    ]
+  }
+}

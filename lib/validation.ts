@@ -1,10 +1,22 @@
 import { ApiRequestError } from '@/lib/apiSecurity';
-import { Experience, Formation, Project, ProjectPhase } from '@/lib/types';
+import { CATEGORY_META, STATUS_LABEL } from '@/lib/catalog';
+import {
+  Experience,
+  Formation,
+  Project,
+  ProjectCategory,
+  ProjectPhase,
+  ProjectStat,
+  ProjectStatus,
+} from '@/lib/types';
 
 type UnknownRecord = Record<string, unknown>;
 
 const ID_PATTERN = /^[a-zA-Z0-9_-]+$/;
 const COLOR_PATTERN = /^#[0-9a-fA-F]{6}$/;
+// Les valeurs autorisées viennent du catalogue pour rester alignées avec l'affichage.
+const PROJECT_CATEGORIES = Object.keys(CATEGORY_META) as ProjectCategory[];
+const PROJECT_STATUSES = Object.keys(STATUS_LABEL) as ProjectStatus[];
 
 function invalid(message: string): never {
   throw new ApiRequestError(message, 400);
@@ -56,6 +68,28 @@ function optionalString(
     invalid(`${key} ne doit pas dépasser ${maxLength} caractères`);
   }
   return trimmed;
+}
+
+// Texte facultatif : une chaîne vide efface le champ au lieu de l'enregistrer vide.
+function optionalText(
+  record: UnknownRecord,
+  key: string,
+  maxLength: number
+): string | undefined {
+  return optionalString(record, key, maxLength) || undefined;
+}
+
+function enumValue<T extends string>(
+  record: UnknownRecord,
+  key: string,
+  allowed: readonly T[]
+): T | undefined {
+  const value = record[key];
+  if (value === undefined) return undefined;
+  if (typeof value !== 'string' || !allowed.includes(value as T)) {
+    invalid(`${key} doit valoir ${allowed.join(', ')}`);
+  }
+  return value as T;
 }
 
 function idString(record: UnknownRecord, required: boolean): string | undefined {
@@ -162,6 +196,16 @@ function safeUrl(
   }
 }
 
+// Lien externe obligatoirement absolu en HTTPS ; une chaîne vide efface le champ.
+function httpsUrl(record: UnknownRecord, key: string): string | undefined {
+  const value = safeUrl(record, key, false);
+  if (!value) return undefined;
+  if (!value.startsWith('https://')) {
+    invalid(`${key} doit être une URL HTTPS`);
+  }
+  return value;
+}
+
 function weeksArray(
   record: UnknownRecord,
   required: boolean
@@ -200,6 +244,23 @@ function phasesArray(record: UnknownRecord): ProjectPhase[] | undefined {
   });
 }
 
+function statsArray(record: UnknownRecord): ProjectStat[] | undefined {
+  const value = record.stats;
+  if (value === undefined) return undefined;
+  if (!Array.isArray(value) || value.length > 6) {
+    invalid('stats doit être un tableau de 6 éléments maximum');
+  }
+
+  return value.map((statValue) => {
+    const stat = asRecord(statValue);
+    rejectUnknownKeys(stat, ['label', 'value']);
+    return {
+      label: requiredString(stat, 'label', 32),
+      value: requiredString(stat, 'value', 32),
+    };
+  });
+}
+
 function validateProjectSchedule(project: Partial<Project>): void {
   if (project.phases === undefined) return;
 
@@ -227,6 +288,18 @@ const PROJECT_KEYS = [
   'phases',
   'year',
   'featured',
+  // Champs de présentation de la console, tous facultatifs
+  'category',
+  'shortTitle',
+  'tagline',
+  'role',
+  'period',
+  'status',
+  'highlights',
+  'stats',
+  'repoUrl',
+  'isPrivate',
+  'order',
 ] as const;
 
 function parseProject(
@@ -276,6 +349,37 @@ function parseProject(
   }
   if (record.featured !== undefined) {
     project.featured = booleanValue(record, 'featured');
+  }
+  if (record.category !== undefined) {
+    project.category = enumValue(record, 'category', PROJECT_CATEGORIES);
+  }
+  if (record.shortTitle !== undefined) {
+    project.shortTitle = optionalText(record, 'shortTitle', 30);
+  }
+  if (record.tagline !== undefined) {
+    project.tagline = optionalText(record, 'tagline', 160);
+  }
+  if (record.role !== undefined) {
+    project.role = optionalText(record, 'role', 120);
+  }
+  if (record.period !== undefined) {
+    project.period = optionalText(record, 'period', 60);
+  }
+  if (record.status !== undefined) {
+    project.status = enumValue(record, 'status', PROJECT_STATUSES);
+  }
+  if (record.highlights !== undefined) {
+    project.highlights = stringArray(record, 'highlights', 8, 300, false);
+  }
+  if (record.stats !== undefined) project.stats = statsArray(record);
+  if (record.repoUrl !== undefined) {
+    project.repoUrl = httpsUrl(record, 'repoUrl');
+  }
+  if (record.isPrivate !== undefined) {
+    project.isPrivate = booleanValue(record, 'isPrivate');
+  }
+  if (record.order !== undefined) {
+    project.order = integer(record, 'order', 0, 1000, false);
   }
   validateProjectSchedule(project);
 
