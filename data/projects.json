@@ -1,0 +1,928 @@
+[
+  {
+    "id": "gmailia",
+    "title": "GmailIA",
+    "shortTitle": "GmailIA",
+    "category": "ia",
+    "tagline": "Boîte mail unifiée et auto-hébergée, avec un tri IA prévisualisé et annulable.",
+    "description": "Assistant de messagerie auto-hébergé qui regroupe plusieurs comptes Gmail, Outlook et IMAP dans une boîte unifiée. Le tri passe d'abord par des règles par mots-clés qui ne consomment aucun token, puis par un LLM (Groq ou JEV de TypeSafe) ; chaque proposition s'affiche en aperçu, se valide et reste annulable. L'application gère aussi les résumés, les brouillons de réponse, un digest quotidien et la synchronisation Gmail en temps réel. Projet solo, développé avec assistance IA et encadré par des tests mesurés et une CI.",
+    "highlights": [
+      "Tri IA en cascade : règles sans appel IA, un seul classement par expéditeur, puis classement par lots en JSON. Le dossier proposé doit figurer dans une liste autorisée et les e-mails sont traités comme des données non fiables.",
+      "Flux aperçu → application → annulation en tâches Celery ; l'annulation regroupe les restaurations et repère les e-mails modifiés ailleurs entre-temps.",
+      "8 services Docker Compose sur 3 réseaux isolés : PostgreSQL et Redis sur un réseau interne, images épinglées par digest, conteneurs exposés en lecture seule et sans capabilities.",
+      "Sécurité : MFA TOTP, jetons OAuth chiffrés (Fernet), limite de débit à fenêtre glissante dans Redis, HTML des e-mails nettoyé par DOMPurify puis affiché dans une iframe sandboxée.",
+      "CI : ruff, pip-audit, bandit, pytest avec seuil de couverture à 80 %, gitleaks et Vitest ; tests E2E Playwright chaque nuit avec alerte en cas d'échec."
+    ],
+    "technologies": [
+      "Python",
+      "FastAPI",
+      "PostgreSQL",
+      "Redis",
+      "Celery",
+      "React",
+      "TypeScript",
+      "Groq (LLM)",
+      "Docker Compose",
+      "GitHub Actions",
+      "Playwright"
+    ],
+    "role": "Solo · développé avec assistance IA",
+    "period": "juin 2026 → aujourd'hui",
+    "status": "en-cours",
+    "stats": [
+      {
+        "label": "Commits au 18/10/2026",
+        "value": "488"
+      },
+      {
+        "label": "PR fusionnées",
+        "value": "47 sur 54"
+      },
+      {
+        "label": "Tests pytest au 13/10/2026",
+        "value": "1 233 · 91 % couverts"
+      },
+      {
+        "label": "Tests E2E au 13/10/2026",
+        "value": "299 Playwright"
+      }
+    ],
+    "isPrivate": true,
+    "featured": true,
+    "order": 1,
+    "year": 2026,
+    "weeks": [
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42
+    ],
+    "color": "#7552c4",
+    "imageUrl": ""
+  },
+  {
+    "id": "convertisseur",
+    "title": "Convertisseur",
+    "shortTitle": "Convertisseur",
+    "category": "web",
+    "tagline": "Outils vidéo, image, PDF et sous-titres, avec un worker pour les traitements lourds.",
+    "description": "Application Next.js qui rassemble des outils de conversion et de traitement de fichiers : compression et découpe vidéo, conversion d'images, fusion et OCR de PDF, QR codes, sous-titres. Les traitements longs (compression, agrandissement d'image par IA, OCR, transcription Whisper) partent dans une file BullMQ sur Redis, consommée par un worker Node séparé qui renvoie la progression au navigateur par WebSocket. Le projet comprend aussi des abonnements Stripe, une API REST publique avec clés et quotas, et des tests qui vont du composant à l'E2E multi-navigateurs.",
+    "highlights": [
+      "Deux processus : l'app publie les jobs dans une file BullMQ (3 tentatives, backoff exponentiel) et un worker séparé les consomme ; la progression arrive par un WebSocket authentifié par un ticket HMAC valable 60 s.",
+      "Quotas atomiques : concurrence par utilisateur et quotas de l'API publique réservés par des scripts Lua dans Redis ; les clés API ne sont stockées qu'en empreinte SHA-256.",
+      "IA locale : transcription Whisper sur GPU avec repli sur CPU, agrandissement Swin2SR côté serveur, détourage RMBG exécuté dans le navigateur en WASM.",
+      "Facturation Stripe (Checkout et portail client) avec un webhook dont la signature est vérifiée et le traitement idempotent.",
+      "Tests à plusieurs niveaux : Vitest, Testing Library et Playwright sur Chromium, Firefox, WebKit et mobile, avec contrôles d'accessibilité axe-core."
+    ],
+    "technologies": [
+      "TypeScript",
+      "Next.js",
+      "React",
+      "Prisma",
+      "SQLite",
+      "Redis",
+      "BullMQ",
+      "WebSocket",
+      "FFmpeg",
+      "Transformers.js",
+      "Stripe",
+      "Playwright",
+      "Docker"
+    ],
+    "role": "Solo",
+    "period": "avril 2026 → aujourd'hui",
+    "status": "en-cours",
+    "stats": [
+      {
+        "label": "Commits au 17/10/2026",
+        "value": "202"
+      },
+      {
+        "label": "PR fusionnées",
+        "value": "30 sur 34"
+      },
+      {
+        "label": "Fichiers de test",
+        "value": "304"
+      },
+      {
+        "label": "Routes d'API",
+        "value": "95"
+      }
+    ],
+    "isPrivate": true,
+    "featured": true,
+    "order": 2,
+    "year": 2026,
+    "weeks": [
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42
+    ],
+    "color": "#d68926",
+    "imageUrl": ""
+  },
+  {
+    "id": "moss-and-mayhem",
+    "title": "Moss & Mayhem",
+    "shortTitle": "Moss & Mayhem",
+    "category": "jeux",
+    "tagline": "Survie coopérative en pixel art jusqu'à 4 joueurs, sur un serveur multijoueur autoritaire.",
+    "description": "Jeu web de survie en vue du dessus où les armes tirent seules, en solo ou en coopération jusqu'à 4 joueurs (8 dans le mode raid). Une même simulation TypeScript déterministe à 60 Hz tourne dans le navigateur en solo et sur un serveur Node autoritaire en multijoueur, qui envoie 20 fois par seconde des instantanés binaires limités à ce qui entoure chaque joueur. Projet d'équipe consacré au développement assisté par IA : le code est surtout écrit par des agents, pilotés et relus par l'équipe.",
+    "highlights": [
+      "Netcode : serveur autoritaire à pas fixe de 60 Hz, instantanés binaires (DataView) à 20 Hz filtrés autour de chaque joueur, prédiction du joueur local et interpolation des autres.",
+      "Pathfinding par champ de flux : Dijkstra multi-sources en 8 directions sur tas binaire, recalculé toutes les 0,2 s ; grille spatiale reconstruite à chaque tick sans allocation.",
+      "Comptes OAuth2 Discord et Google écrits sans bibliothèque, avec PKCE et state anti-CSRF ; la base ne garde que le hachage du jeton de session.",
+      "Musique chiptune synthétisée en WebAudio : un séquenceur à couches suit la pression de la partie. Le rendu Canvas 2D est lui aussi entièrement généré par le code.",
+      "Conteneur en lecture seule, sans capabilities, limité à 1 CPU et 384 Mo ; tests E2E Playwright chaque nuit."
+    ],
+    "technologies": [
+      "TypeScript",
+      "Node.js",
+      "WebSocket",
+      "Canvas 2D",
+      "WebAudio",
+      "SQLite",
+      "OAuth2",
+      "Vitest",
+      "Playwright",
+      "Docker"
+    ],
+    "role": "Équipe de 3 · pilotage et relecture d'agents IA",
+    "period": "septembre 2026 → aujourd'hui",
+    "status": "en-cours",
+    "stats": [
+      {
+        "label": "Commits de Théo au 17/10/2026",
+        "value": "509 sur 688"
+      },
+      {
+        "label": "PR fusionnées",
+        "value": "139"
+      },
+      {
+        "label": "Fichiers de tests Vitest",
+        "value": "132"
+      },
+      {
+        "label": "Simulation / réseau",
+        "value": "60 Hz / 20 Hz"
+      }
+    ],
+    "isPrivate": true,
+    "featured": true,
+    "order": 3,
+    "year": 2026,
+    "weeks": [
+      39,
+      40,
+      41,
+      42
+    ],
+    "color": "#5e9537",
+    "imageUrl": ""
+  },
+  {
+    "id": "tp-docker-cloud",
+    "title": "TP Docker Cloud",
+    "shortTitle": "TP Docker Cloud",
+    "category": "infra",
+    "tagline": "Mini-cloud Docker sans Docker Hub : chaque image part de FROM scratch.",
+    "description": "TP de M2 à Ynov : construire un mini-cloud avec Docker sans aucune image Docker Hub. Chaque image part de FROM scratch et de l'archive Alpine officielle : un front nginx en reverse proxy, une API Node.js sans aucune dépendance npm et un serveur Minecraft, sur deux réseaux isolés, avec healthchecks, ordre de démarrage et limites cgroups. Une branche encore en revue ajoute un proxy de jeu et l'allumage ou l'arrêt automatique des serveurs selon le nombre de joueurs.",
+    "highlights": [
+      "3 images construites FROM scratch à partir de l'archive alpine-minirootfs, avec tini en PID 1 et un utilisateur non-root.",
+      "Arrêt propre de Minecraft : la console est branchée sur un FIFO et un trap sur SIGTERM y écrit « stop » pour sauvegarder le monde avant la sortie.",
+      "API Node.js sans dépendance npm : clients des protocoles binaires Server List Ping (VarInt) et RCON écrits à la main avec node:net.",
+      "Panel admin : cookie HttpOnly SameSite=Strict, comparaison des identifiants en temps constant, 5 actions autorisées et pseudos validés par regex contre l'injection de commandes.",
+      "Autoscaling (branche en revue) : un serveur de plus quand tous les serveurs ouverts ont au moins 8 joueurs, arrêt après 5 minutes à vide."
+    ],
+    "technologies": [
+      "Docker",
+      "Docker Compose",
+      "Alpine Linux",
+      "nginx",
+      "Node.js",
+      "Shell POSIX",
+      "Java"
+    ],
+    "role": "Solo · TP de M2 Ynov",
+    "period": "octobre 2026 (3 jours)",
+    "status": "termine",
+    "stats": [
+      {
+        "label": "Images FROM scratch",
+        "value": "3"
+      },
+      {
+        "label": "Dépendances npm du back",
+        "value": "0"
+      },
+      {
+        "label": "Image front (mesure du TP)",
+        "value": "17 Mo"
+      },
+      {
+        "label": "Commits en octobre 2026",
+        "value": "31 en 3 jours"
+      }
+    ],
+    "isPrivate": true,
+    "featured": true,
+    "order": 4,
+    "year": 2026,
+    "weeks": [
+      41
+    ],
+    "color": "#2c8a83",
+    "imageUrl": ""
+  },
+  {
+    "id": "boutique-reparation",
+    "title": "Boutique en ligne d'un réparateur de téléphones",
+    "shortTitle": "Boutique de réparation",
+    "category": "web",
+    "tagline": "Site e-commerce et back-office réalisés seul pour un vrai commerce de réparation.",
+    "description": "Site de vente en ligne et back-office réalisés seul pour un commerce de réparation de téléphones, commencés pendant un stage d'avril à juin 2024 puis poursuivis jusqu'en avril 2025. L'administrateur compose la page d'accueil à partir de sections (texte ou liste de produits) qu'il crée, ordonne et modifie sans toucher au code. Le paiement passe par l'API PayPal Orders v2, en environnement de test, et chaque push déclenche un déploiement continu sur un VPS.",
+    "highlights": [
+      "API REST Express de 23 routes réparties dans 5 routeurs, sur un schéma PostgreSQL de 4 tables écrit en SQL.",
+      "Page d'accueil composée de sections ordonnables (texte ou produits) gérées depuis le back-office, avec archivage des produits et suivi des commandes.",
+      "Paiement PayPal : jeton OAuth2 côté serveur, commande créée puis capturée par l'API ; prix stockés en centimes.",
+      "Déploiement continu : à chaque push, GitHub Actions se connecte au VPS en SSH, reconstruit le front et redémarre l'API avec PM2."
+    ],
+    "technologies": [
+      "React",
+      "Vite",
+      "Sass",
+      "Node.js",
+      "Express",
+      "PostgreSQL",
+      "API PayPal",
+      "GitHub Actions",
+      "PM2"
+    ],
+    "role": "Solo · projet client démarré en stage",
+    "period": "mai 2024 → avril 2025",
+    "status": "termine",
+    "stats": [
+      {
+        "label": "Commits (tous de Théo)",
+        "value": "55"
+      },
+      {
+        "label": "Routes d'API REST",
+        "value": "23"
+      },
+      {
+        "label": "Tables PostgreSQL",
+        "value": "4"
+      }
+    ],
+    "isPrivate": true,
+    "featured": true,
+    "order": 5,
+    "year": 2024,
+    "weeks": [
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52
+    ],
+    "color": "#d68926",
+    "imageUrl": ""
+  },
+  {
+    "id": "logomachie",
+    "title": "Logomachie",
+    "shortTitle": "Logomachie",
+    "category": "jeux",
+    "tagline": "Jeu 5v5 inspiré des MOBA, avec des philosophes pour héros, jouable dans le navigateur.",
+    "description": "Jeu multijoueur inspiré des MOBA, jouable dans le navigateur, dont les héros sont des philosophes : lobby à deux équipes, voies de minions, tours, jungle, boutique, niveaux et or. Monorepo TypeScript en trois paquets : contrat réseau et contenu de jeu partagés, serveur autoritaire à 30 ticks par seconde sur WebSocket, client Preact et Three.js. Les bots sont joués par le serveur, et l'image Docker est publiée sur GHCR par la CD.",
+    "highlights": [
+      "Le client prédit le héros local avec la même fonction de mouvement que le serveur, rejoue les entrées non acquittées et interpole les autres entités avec 100 ms de retard.",
+      "Snapshots delta par client compressés en permessage-deflate ; positions quantifiées au centimètre pour que serveur et client calculent sur les mêmes nombres.",
+      "Chaque message client est validé par un schéma zod borné, puis limité par un seau à jetons (rafale de 120, puis 60 par seconde).",
+      "Bots : A* en 8 directions avec tas binaire et heuristique octile, chemin lissé par ligne de vue.",
+      "Héros modelés en 3D par le code avec des primitives Three.js low poly : aucun fichier de modèle ni image dans le dépôt."
+    ],
+    "technologies": [
+      "TypeScript",
+      "Node.js",
+      "WebSocket",
+      "zod",
+      "Three.js",
+      "Preact",
+      "Vite",
+      "Vitest",
+      "Docker"
+    ],
+    "role": "Solo · assisté par Claude Code (21 commits sur 26 co-signés)",
+    "period": "octobre 2026",
+    "status": "en-cours",
+    "stats": [
+      {
+        "label": "Héros jouables",
+        "value": "5"
+      },
+      {
+        "label": "Simulation serveur",
+        "value": "30 ticks/s"
+      },
+      {
+        "label": "Cas de test (comptés, oct. 2026)",
+        "value": "≈ 550"
+      },
+      {
+        "label": "Commits en octobre 2026",
+        "value": "26"
+      }
+    ],
+    "isPrivate": true,
+    "featured": false,
+    "order": 6,
+    "year": 2026,
+    "weeks": [
+      42
+    ],
+    "color": "#5e9537",
+    "imageUrl": ""
+  },
+  {
+    "id": "wordle-cicd",
+    "title": "Wordle CI/CD",
+    "shortTitle": "Wordle CI/CD",
+    "category": "infra",
+    "tagline": "Livraison continue d'un Wordle fullstack : CD après CI verte, images staging et prod.",
+    "description": "Projet en binôme du module CI/CD de M1 à Ynov : transformer un Wordle (FastAPI, React, PostgreSQL) en application conteneurisée et livrée automatiquement. Le coéquipier a écrit l'essentiel des fonctionnalités ; la part de Théo est la livraison : CD déclenchée uniquement après une CI verte, images GHCR taguées par environnement, compose de production durci et métriques Prometheus. Il en assure aussi la maintenance sécurité après le rendu.",
+    "highlights": [
+      "CD lancée par workflow_run seulement si la CI réussit, sur le SHA exact validé ; images GHCR taguées latest et sha en prod, staging et staging-sha en préproduction.",
+      "Compose de production : PostgreSQL sur un réseau interne sans port publié, healthchecks, limites CPU et mémoire, no-new-privileges, conteneurs non-root.",
+      "Image backend passée sur Alpine pour supprimer 4 CVE critiques ; frontend servi par nginx-unprivileged.",
+      "Métriques Prometheus maison (compteur et histogramme des requêtes) et sonde /ready qui interroge la base.",
+      "Limite de 5 échecs de connexion en 5 minutes par e-mail haché, testée avec une horloge factice."
+    ],
+    "technologies": [
+      "GitHub Actions",
+      "GHCR",
+      "Docker Compose",
+      "Python",
+      "FastAPI",
+      "PostgreSQL",
+      "React",
+      "Prometheus",
+      "pytest"
+    ],
+    "role": "Binôme · CI/CD, déploiement, durcissement et métriques",
+    "period": "mai 2026 → aujourd'hui",
+    "status": "en-cours",
+    "stats": [
+      {
+        "label": "Commits de Théo au 18/10/2026",
+        "value": "29 sur 51"
+      },
+      {
+        "label": "Jobs CI + CD",
+        "value": "3 + 1"
+      },
+      {
+        "label": "CVE critiques retirées",
+        "value": "4"
+      }
+    ],
+    "isPrivate": false,
+    "featured": false,
+    "order": 7,
+    "year": 2026,
+    "weeks": [
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42
+    ],
+    "color": "#2c8a83",
+    "imageUrl": ""
+  },
+  {
+    "id": "veille-annonces",
+    "title": "Veille d'annonces",
+    "shortTitle": "Veille d'annonces",
+    "category": "web",
+    "tagline": "Bot Discord et dashboard qui suivent des recherches d'annonces et leurs baisses de prix.",
+    "description": "Outil de veille personnel qui évite de relancer à la main les mêmes recherches d'annonces de seconde main. Un service Node.js/TypeScript exécute chaque recherche à intervalle régulier, filtre les annonces par mots interdits et obligatoires, garde l'historique des prix dans MongoDB et publie les nouveautés dans un salon Discord dédié. Un dashboard SvelteKit, accessible par connexion Discord, gère recherches, favoris et alertes de prix, affiche les événements en temps réel et calcule un score « bonne affaire » à partir de la médiane des prix.",
+    "highlights": [
+      "Score « bonne affaire » calculé par une agrégation MongoDB $median par recherche, à partir de 3 annonces actives.",
+      "Dashboard SvelteKit : OAuth2 Discord avec vérification du state, sessions Lucia, rôles admin, membre et visiteur, inscriptions fermées par défaut.",
+      "Notifications : messages Discord espacés par une file en mémoire avec 3 tentatives, push navigateur Web Push (VAPID) avec purge des abonnements expirés.",
+      "Docker Compose de 5 services avec healthchecks, limites CPU et mémoire, utilisateurs non-root et bases protégées par mot de passe."
+    ],
+    "technologies": [
+      "TypeScript",
+      "Node.js",
+      "discord.js",
+      "Express",
+      "WebSocket",
+      "MongoDB",
+      "SvelteKit",
+      "Tailwind CSS",
+      "Docker Compose"
+    ],
+    "role": "Solo",
+    "period": "mars 2026 → aujourd'hui",
+    "status": "en-cours",
+    "stats": [
+      {
+        "label": "Commits au 02/08/2026",
+        "value": "66"
+      },
+      {
+        "label": "Services Docker",
+        "value": "5"
+      },
+      {
+        "label": "Sous-commandes de /search",
+        "value": "12"
+      }
+    ],
+    "isPrivate": true,
+    "featured": false,
+    "order": 8,
+    "year": 2026,
+    "weeks": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      42
+    ],
+    "color": "#d68926",
+    "imageUrl": ""
+  },
+  {
+    "id": "planning-tickets-restau",
+    "title": "Planning Tickets Restau",
+    "shortTitle": "Tickets Restau",
+    "category": "web",
+    "tagline": "Calendrier Laravel + Vue des repas du midi qui calcule les tickets restaurant du mois.",
+    "description": "Application web qui remplace un suivi manuel des repas du midi : un calendrier mensuel partagé entre deux personnes, où chaque demi-case de jour passe d'un clic de vide à gamelle, puis à restaurant d'entreprise. Un glisser sur plusieurs jours applique le même statut en une seule requête, et un récapitulatif donne le nombre de tickets du mois. L'API Laravel et le front Vue 3 sont construits en images Docker par la CI, publiés sur GHCR et mis à jour automatiquement en production.",
+    "highlights": [
+      "Authentification SPA par cookie de session Sanctum ; l'en-tête XSRF n'est envoyé qu'à l'origine de l'API, ce que vérifient 6 tests node:test.",
+      "Limite de 5 échecs de connexion (clé hachée e-mail + IP, blocage de 300 s), couverte par 3 tests PHPUnit.",
+      "CI : matrice PHP 8.4 et 8.5, composer audit, npm audit et smoke tests des images, dont le front lancé en lecture seule et sans capabilities.",
+      "Le build du front échoue si l'URL de l'API n'est pas en HTTPS, pointe vers une adresse locale ou contient des identifiants."
+    ],
+    "technologies": [
+      "PHP",
+      "Laravel",
+      "Sanctum",
+      "PostgreSQL",
+      "Vue 3",
+      "Pinia",
+      "Tailwind CSS",
+      "Docker",
+      "GitHub Actions",
+      "PHPUnit"
+    ],
+    "role": "Solo",
+    "period": "octobre 2025 → aujourd'hui",
+    "status": "en-cours",
+    "stats": [
+      {
+        "label": "PR fusionnées au 15/10/2026",
+        "value": "9"
+      },
+      {
+        "label": "Tests ciblés",
+        "value": "3 PHPUnit + 6 node:test"
+      },
+      {
+        "label": "Versions de PHP en CI",
+        "value": "8.4 et 8.5"
+      }
+    ],
+    "isPrivate": true,
+    "featured": false,
+    "order": 9,
+    "year": 2026,
+    "weeks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42
+    ],
+    "color": "#d68926",
+    "imageUrl": ""
+  },
+  {
+    "id": "portfolio",
+    "title": "Ce portfolio",
+    "shortTitle": "Ce portfolio",
+    "category": "infra",
+    "tagline": "Ce site : Next.js auto-hébergé, image Docker durcie, CI qui teste avant de publier.",
+    "description": "Le dépôt a commencé en 2023 comme site statique HTML/CSS, puis a été réécrit en 2026 en application Next.js (App Router, React 19, TypeScript) avec un back-office d'administration protégé par JWT. Le site est empaqueté dans une image Docker durcie, publiée sur GHCR par GitHub Actions puis redéployée automatiquement sur un serveur que Théo administre lui-même. Chaque pull request peut être relue par un script maison qui soumet le diff à quatre CLI d'IA isolées.",
+    "highlights": [
+      "Image Docker en 3 étapes, image de base épinglée par digest, sortie standalone, exécution non-root ; npm et npx sont retirés de l'image finale.",
+      "CI : lint, tsc, tests, npm audit et build avant la publication sur GHCR, avec SBOM et provenance ; actions épinglées par SHA de commit.",
+      "API d'administration : JWT HS256 vérifié (issuer, audience), protection CSRF par origine, 5 tentatives de connexion par 15 minutes, validation stricte des entrées.",
+      "Revue de PR par 4 CLI d'IA : un APPROVE devient COMMENT si le diff est tronqué, et rien n'est publié si le commit de la PR change pendant l'analyse."
+    ],
+    "technologies": [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Tailwind CSS",
+      "jose (JWT)",
+      "node:test",
+      "Docker",
+      "GitHub Actions",
+      "GHCR",
+      "Watchtower"
+    ],
+    "role": "Solo · assisté par des agents IA",
+    "period": "août 2023 → aujourd'hui",
+    "status": "en-cours",
+    "stats": [
+      {
+        "label": "Revue de chaque PR",
+        "value": "4 CLI d'IA isolées"
+      },
+      {
+        "label": "Tentatives de connexion",
+        "value": "5 par 15 min"
+      },
+      {
+        "label": "Limites du conteneur",
+        "value": "512 Mo · 0,5 CPU"
+      }
+    ],
+    "isPrivate": false,
+    "featured": false,
+    "order": 10,
+    "year": 2026,
+    "weeks": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42
+    ],
+    "color": "#2c8a83",
+    "imageUrl": ""
+  },
+  {
+    "id": "ci-canary",
+    "title": "Canari CI",
+    "shortTitle": "Canari CI",
+    "category": "infra",
+    "tagline": "Banc d'essai red team qui vérifie, depuis de vrais jobs, l'isolement d'un runner CI.",
+    "description": "Pour faire tourner la CI/CD de ses projets chez lui sans exposer son réseau, Théo a monté un runner GitHub Actions auto-hébergé qui lance chaque job dans une VM jetable, derrière un proxy à liste blanche et un contrôleur d'admission. Ce dépôt sert de canari : des workflows vérifient que le runner reçoit les jobs, qu'un workflow non autorisé est rejeté, que le gabarit de CD publie bien une image et qu'une batterie de tests red team ne trouve aucune fuite. Chaque accès interdit doit échouer, et des témoins autorisés doivent réussir pour que le résultat ait un sens.",
+    "highlights": [
+      "28 contrôles par run : 25 accès interdits qui doivent échouer et 3 témoins autorisés qui doivent réussir.",
+      "Chaque job tourne dans sa propre VM jetable, les uns après les autres.",
+      "Gabarit de CD imposé : permissions minimales, actions épinglées par SHA, build par un BuildKit distant rootless plutôt que par un Docker local.",
+      "Test d'admission : un workflow hors liste blanche qui vise le runner doit être annulé."
+    ],
+    "technologies": [
+      "GitHub Actions",
+      "Docker",
+      "BuildKit",
+      "GHCR",
+      "Bash",
+      "Alpine Linux"
+    ],
+    "role": "Solo",
+    "period": "octobre 2026",
+    "status": "en-cours",
+    "stats": [
+      {
+        "label": "Bilan red team du 15/10/2026",
+        "value": "28 conformes · 0 faille"
+      },
+      {
+        "label": "Workflows de test",
+        "value": "4"
+      }
+    ],
+    "isPrivate": true,
+    "featured": false,
+    "order": 11,
+    "year": 2026,
+    "weeks": [
+      42
+    ],
+    "color": "#2c8a83",
+    "imageUrl": ""
+  },
+  {
+    "id": "blind-test",
+    "title": "Blind Test de révision",
+    "shortTitle": "Blind Test",
+    "category": "jeux",
+    "tagline": "Appli hors ligne pour réviser un blind test musical, les compositeurs et l'oreille.",
+    "description": "Application web installable pour réviser un blind test musical : reconnaître le compositeur, l'œuvre et l'année de 16 extraits. Elle propose trois niveaux (QCM, menus, saisie libre corrigée avec tolérance aux fautes), un mode examen noté sur 20, une révision espacée qui fait revenir plus souvent les morceaux ratés et un module d'oreille musicale aux sons synthétisés. Tout fonctionne hors ligne : progression locale exportable et service worker généré au build.",
+    "highlights": [
+      "Correction tolérante : normalisation des accents et ligatures, distance de Levenshtein qui compte une inversion de lettres comme une seule faute, tolérance selon la longueur du mot.",
+      "Révision espacée maison : maîtrise de 0 à 100, prochain passage entre 1 minute et 14 jours, tirage pondéré avec 15 % de tirages uniformes.",
+      "Sons synthétisés avec la Web Audio API (notes, intervalles, gammes, accords), sans aucun fichier son.",
+      "Plugin Vite écrit à la main qui génère le service worker ; les requêtes Range sont gérées pour lire l'audio hors ligne."
+    ],
+    "technologies": [
+      "TypeScript",
+      "React",
+      "Vite",
+      "Vitest",
+      "Web Audio API",
+      "Service Worker (PWA)"
+    ],
+    "role": "Solo",
+    "period": "octobre 2026",
+    "status": "termine",
+    "stats": [
+      {
+        "label": "Cas de test Vitest",
+        "value": "93"
+      },
+      {
+        "label": "Extraits à reconnaître",
+        "value": "16"
+      },
+      {
+        "label": "Pages React",
+        "value": "16"
+      }
+    ],
+    "isPrivate": true,
+    "featured": false,
+    "order": 12,
+    "year": 2026,
+    "weeks": [
+      41
+    ],
+    "color": "#5e9537",
+    "imageUrl": ""
+  },
+  {
+    "id": "cost-band",
+    "title": "cost-band",
+    "shortTitle": "cost-band",
+    "category": "ia",
+    "tagline": "Mod Claude Code : coût des messages et limites d'usage affichés au-dessus du prompt.",
+    "description": "Dans Claude Code, le coût d'un message et la consommation des limites d'usage ne restent pas affichés en continu. Ce mod ajoute au-dessus du prompt une ligne avec le coût du dernier message et de la session, les tokens, le temps de travail et les limites restantes sur 5 heures et sur la semaine, qui passent à l'orange puis au rouge selon des seuils. Le rendu est testé sur les deux surfaces, terminal et desktop.",
+    "highlights": [
+      "Coût par message calculé par différence entre le début et la fin du tour ; les tours des sous-agents sont ignorés.",
+      "Gère la remise à zéro de la fenêtre de 5 heures pendant un tour, et affiche un repli lisible quand une donnée manque.",
+      "Seuils d'alerte regroupés en un seul endroit ; tests de rendu qui vérifient le texte et la couleur de chaque valeur."
+    ],
+    "technologies": [
+      "TypeScript",
+      "TSX",
+      "Claude Code (mods)"
+    ],
+    "role": "Solo",
+    "period": "octobre 2026 (1 jour)",
+    "status": "termine",
+    "stats": [
+      {
+        "label": "Commits le 09/10/2026",
+        "value": "3"
+      },
+      {
+        "label": "Tests de rendu",
+        "value": "3"
+      },
+      {
+        "label": "Rafraîchissement",
+        "value": "1 s"
+      }
+    ],
+    "isPrivate": true,
+    "featured": false,
+    "order": 13,
+    "year": 2026,
+    "weeks": [
+      41
+    ],
+    "color": "#7552c4",
+    "imageUrl": ""
+  },
+  {
+    "id": "agentshield",
+    "title": "Contributions à AgentShield",
+    "shortTitle": "AgentShield",
+    "category": "ia",
+    "tagline": "Trois correctifs proposés à un scanner open source de configurations d'agents IA.",
+    "description": "AgentShield est un scanner open source qui note la sécurité d'un dépôt à partir de ses fichiers de configuration d'agents IA ; Théo n'en est pas l'auteur. Sur un dépôt réel, il a relevé trois sources de faux positifs, ouvert deux issues puis trois pull requests avec tests : des hash d'intégrité npm pris pour des clés Azure, des fichiers d'éditeur traités comme des réglages Claude Code, et des consignes rédigées dans une autre langue que l'anglais lues comme dangereuses. Les trois PR ont été fermées par Théo le 17/10/2026, sans fusion.",
+    "highlights": [
+      "Regex de détection de clé Azure corrigée avec un lookbehind pour ignorer les hash sha512 des fichiers package-lock.json.",
+      "Fonction qui retrouve le répertoire de configuration le plus proche d'un fichier (.claude, .vscode, .cursor…), reprise par trois règles.",
+      "Module qui repère les interdictions en six langues au niveau de la proposition, pour distinguer « ne lance jamais… » de « n'hésite pas à lancer… ».",
+      "27 tests Vitest ajoutés sur les trois PR."
+    ],
+    "technologies": [
+      "TypeScript",
+      "Node.js",
+      "Vitest",
+      "Regex Unicode"
+    ],
+    "role": "Contribution à un fork : 3 PR proposées, non fusionnées",
+    "period": "octobre 2026",
+    "status": "termine",
+    "stats": [
+      {
+        "label": "PR proposées",
+        "value": "3, non fusionnées"
+      },
+      {
+        "label": "Issues ouvertes",
+        "value": "2"
+      },
+      {
+        "label": "Tests Vitest ajoutés",
+        "value": "27"
+      },
+      {
+        "label": "Lignes modifiées",
+        "value": "+627 / −38"
+      }
+    ],
+    "repoUrl": "https://github.com/theo-stoffelbach/agentshield",
+    "isPrivate": false,
+    "featured": false,
+    "order": 14,
+    "year": 2026,
+    "weeks": [
+      42
+    ],
+    "color": "#7552c4",
+    "imageUrl": ""
+  }
+]

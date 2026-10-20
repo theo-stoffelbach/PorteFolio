@@ -41,3 +41,8 @@ next-env.d.ts
 
 certbot/conf/
 certbot/www/
+
+# Maquettes et captures de revue : elles citent des dépôts privés, à ne pas publier
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/hook.cache.json
